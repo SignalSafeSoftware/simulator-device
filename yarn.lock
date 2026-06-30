@@ -403,9 +403,10 @@
   dependencies:
     "@signalsafe/tree-spec" "^0.3.3"
 
-"@signalsafe/simulator-react@file:/tmp/signalsafe-simulator-react-0.2.4.tgz":
+"@signalsafe/simulator-react@^0.2.4":
   version "0.2.4"
-  resolved "file:/tmp/signalsafe-simulator-react-0.2.4.tgz#ead6bcfd89dd108f9ec651799ab46cd816aa864a"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.2.4.tgz#ead6bcfd89dd108f9ec651799ab46cd816aa864a"
+  integrity sha512-IQJBITh1b2zsVzznKjj4TDGp+uogabe8QB6Y7m4fKXiM9wuvN+jt575lz+pZnL56sYpSDwIKipiiZXuR5/49gQ==
   dependencies:
     "@signalsafe/simulator-core" "^0.1.7"
     "@signalsafe/tree-spec" "^0.3.3"
