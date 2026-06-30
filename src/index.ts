@@ -44,3 +44,9 @@ export {
 export type { SimulatorPhoneIncomingCallHistoryProps } from './incomingCall/SimulatorPhoneIncomingCallHistory.js';
 
 export { renderPhoneIncomingCallHistoryExtra } from './incomingCall/renderPhoneIncomingCallHistoryExtra.js';
+
+export { default as SimulatorPhoneDevice } from './SimulatorPhoneDevice.js';
+export type {
+    SimulatorPhoneDeviceProps,
+    SimulatorPhoneDeviceContactDetailRenderProps,
+} from './SimulatorPhoneDevice.js';

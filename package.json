@@ -1,8 +1,8 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
-  "description": "Reusable full-device simulator shell and bottom navigation on top of @signalsafe/simulator-react.",
+  "description": "Reusable full phone/device simulator UI composition on top of @signalsafe/simulator-react.",
   "license": "MIT",
   "repository": {
     "type": "git",
