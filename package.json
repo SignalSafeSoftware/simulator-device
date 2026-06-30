@@ -1,6 +1,6 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Reusable full-device simulator shell and bottom navigation on top of @signalsafe/simulator-react.",
   "license": "MIT",
@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@signalsafe/simulator-core": "^0.1.7",
-    "@signalsafe/simulator-react": "^0.2.1"
+    "@signalsafe/simulator-react": "^0.2.4"
   },
   "peerDependencies": {
     "react": "^18.0.0",

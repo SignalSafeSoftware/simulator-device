@@ -20,3 +20,27 @@ export type {
 } from './simulatorPhoneNavMapper.js';
 
 export { SIMULATOR_DEVICE_CLASS_NAMES } from './simulatorDeviceClasses.js';
+
+export {
+    SIMULATOR_DEVICE_SCREEN_CLASS_NAMES,
+    resolveSimulatorPhoneShellHostMode,
+    resolveSimulatorPhoneShellScreenClasses,
+} from './simulatorPhoneShellScreenMapper.js';
+export type { SimulatorPhoneShellHostMode } from './simulatorPhoneShellScreenMapper.js';
+
+export {
+    normalizePhoneNumber,
+    resolveIncomingCallCaller,
+    getRecentCallsForCaller,
+} from './incomingCall/phoneIncomingCallHistoryHelpers.js';
+export type {
+    PhoneIncomingCallCaller,
+    PhoneIncomingCallHistoryRow,
+} from './incomingCall/phoneIncomingCallHistoryHelpers.js';
+
+export {
+    SimulatorPhoneIncomingCallHistory,
+} from './incomingCall/SimulatorPhoneIncomingCallHistory.js';
+export type { SimulatorPhoneIncomingCallHistoryProps } from './incomingCall/SimulatorPhoneIncomingCallHistory.js';
+
+export { renderPhoneIncomingCallHistoryExtra } from './incomingCall/renderPhoneIncomingCallHistoryExtra.js';
