@@ -1,0 +1,79 @@
+{
+  "name": "@signalsafe/simulator-device",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Reusable full-device simulator shell and bottom navigation on top of @signalsafe/simulator-react.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SignalSafeSoftware/simulator-device.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SignalSafeSoftware/simulator-device/issues"
+  },
+  "homepage": "https://github.com/SignalSafeSoftware/simulator-device#readme",
+  "keywords": [
+    "react",
+    "simulator",
+    "device",
+    "phone-shell",
+    "navigation",
+    "training",
+    "security-awareness",
+    "typescript",
+    "signalsafe"
+  ],
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "yarn@1.22.22",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "yarn typecheck",
+    "typecheck": "tsc --noEmit",
+    "smoke:package": "node scripts/smoke-package.mjs",
+    "publish:dry-run": "npm publish --dry-run",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@signalsafe/simulator-core": "^0.1.7",
+    "@signalsafe/simulator-react": "^0.2.1"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitest/coverage-v8": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.2",
+    "vitest": "^3.2.4"
+  }
+}

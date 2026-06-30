@@ -1,0 +1,135 @@
+name: CI
+
+on:
+    push:
+        branches: [main, develop]
+        tags: ["v*"]
+    pull_request:
+        branches: [main, develop]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+env:
+    PUBLISH_NODE_VERSION: "24"
+
+jobs:
+    checks:
+        name: Checks (Node ${{ matrix.node-version }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node-version: ["22", "24"]
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Enable Yarn
+              run: corepack enable
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Lint
+              run: yarn lint
+
+            - name: Typecheck
+              run: yarn typecheck
+
+            - name: Build
+              run: yarn build
+
+    tests:
+        name: Tests (Node ${{ matrix.node-version }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node-version: ["22", "24"]
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Enable Yarn
+              run: corepack enable
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Test with coverage
+              run: yarn test:coverage
+
+    smoke-package:
+        name: Smoke package (Node ${{ matrix.node-version }})
+        needs: [checks, tests]
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node-version: ["22", "24"]
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Enable Yarn
+              run: corepack enable
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Smoke-test packed artifact
+              run: yarn smoke:package
+
+    publish:
+        name: Publish
+        needs: [checks, tests, smoke-package]
+        if: |
+            (
+              (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+              (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+            ) &&
+            needs.checks.result == 'success' &&
+            needs.tests.result == 'success' &&
+            needs.smoke-package.result == 'success'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ env.PUBLISH_NODE_VERSION }}
+
+            - name: Enable Yarn
+              run: corepack enable
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Verify artifact before publish
+              run: yarn smoke:package
+
+            - name: Check package version
+              run: node -e "const p=require('./package.json'); console.log(p.name, p.version)"
+
+            - name: Configure npm auth
+              run: |
+                echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+                echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+              env:
+                NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Publish to npm
+              run: npm publish --access public --ignore-scripts
+              env:
+                NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
