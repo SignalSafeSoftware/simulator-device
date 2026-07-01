@@ -19,6 +19,8 @@ runSmokePackage({
                 'SimulatorPhoneIncomingCallHistory',
                 'renderPhoneIncomingCallHistoryExtra',
                 'SimulatorPhoneDevice',
+                'SimulatorDevice',
+                'resolveSimulatorDeviceKind',
                 'normalizePhoneNumber',
                 'resolveIncomingCallCaller',
                 'getRecentCallsForCaller',

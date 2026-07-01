@@ -6,7 +6,8 @@ Reusable full phone/device simulator UI for hosts building on
 
 This package provides the complete reusable device UI composition:
 
-- **`SimulatorPhoneDevice`** — shell + bottom nav + runtime + default incoming-call history
+- **`SimulatorDevice`** — JSON-driven entry point (`value={simulatorJson}`)
+- **`SimulatorPhoneDevice`** — shell + bottom nav + runtime + default incoming-call history (state/dispatch API)
 - `SimulatorPhoneShell` / `SimulatorPhoneNav` — lower-level primitives for custom layouts
 - Nav, screen-class, host-mode, and incoming-call history helpers
 
@@ -22,6 +23,67 @@ yarn add @signalsafe/simulator-device @signalsafe/simulator-react react react-do
 Peer dependencies: `react`, `react-dom`.
 
 ## Usage
+
+### JSON-driven rendering (recommended)
+
+Pass stored simulator JSON directly — the same full-device shape used in database/API
+`simulator_json` (`entry_point`, `device`, `contacts`, `phone`, `email`, `messages`, `internet`, `home`).
+
+```tsx
+import { SimulatorDevice } from '@signalsafe/simulator-device';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+
+function Preview({ simulatorJson }: { simulatorJson: SimulatorDevicePayload }) {
+  return <SimulatorDevice value={simulatorJson} />;
+}
+```
+
+**DeliveryPlus-style flow:**
+
+1. Load `simulator_json` from the database/API.
+2. Render `<SimulatorDevice value={json} />`.
+3. Optionally wire `onChange` later to persist edits back to the database (read-only rendering today).
+
+Future desktop simulator support can use the same entry point with a discriminated JSON shape;
+unsupported values render `renderUnsupported` or a safe built-in fallback.
+
+### Editable / host phone options
+
+```tsx
+import { SimulatorDevice } from '@signalsafe/simulator-device';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+
+function Preview({
+  simulatorJson,
+  onSave,
+}: {
+  simulatorJson: SimulatorDevicePayload;
+  onSave: (next: SimulatorDevicePayload) => void;
+}) {
+  return (
+    <SimulatorDevice
+      value={simulatorJson}
+      onChange={onSave}
+      phone={{
+        renderContactDetail: ({ contact, onBack }) => (
+          <div>
+            <button type="button" onClick={onBack}>Back</button>
+            <h1>{contact.displayName}</h1>
+          </div>
+        ),
+      }}
+    />
+  );
+}
+```
+
+`onChange` is reserved for future JSON editing; session navigation is owned internally today.
+
+### Advanced phone-only state/dispatch usage
+
+When you already manage session state (preview hosts, timeline tooling, deep links), use
+`SimulatorPhoneDevice` directly with `getInitialSessionState` and `simulatorSessionReducerWithLogging`
+from `@signalsafe/simulator-react`.
 
 ### Basic full phone UI
 
@@ -126,6 +188,10 @@ function DevicePreview({ state, dispatch }: { state: SimulatorSessionState; disp
 
 | Export | Description |
 | --- | --- |
+| `SimulatorDevice` | JSON-driven entry point; owns session from `SimulatorDevicePayload` |
+| `SimulatorDeviceProps` | Props for JSON-driven device rendering |
+| `SimulatorDevicePhoneOptions` | Optional phone overrides passed through to `SimulatorPhoneDevice` |
+| `resolveSimulatorDeviceKind` | Classify supported vs future/unsupported JSON shapes |
 | `SimulatorPhoneDevice` | Composed phone shell + nav + runtime + optional host contact detail |
 | `SimulatorPhoneDeviceProps` | Props for the composed phone device |
 | `SimulatorPhoneDeviceContactDetailRenderProps` | `renderContactDetail` callback context |

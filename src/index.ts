@@ -50,3 +50,15 @@ export type {
     SimulatorPhoneDeviceProps,
     SimulatorPhoneDeviceContactDetailRenderProps,
 } from './SimulatorPhoneDevice.js';
+
+export { default as SimulatorDevice } from './SimulatorDevice.js';
+export type {
+    SimulatorDeviceProps,
+    SimulatorDevicePhoneOptions,
+    SimulatorDeviceUnsupportedRenderProps,
+} from './SimulatorDevice.js';
+
+export { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
+export type { SimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
+
+export type { SimulatorDevicePayload } from './types/simulatorDevicePayload.js';
