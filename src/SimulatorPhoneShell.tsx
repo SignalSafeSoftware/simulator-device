@@ -31,7 +31,7 @@ export default function SimulatorPhoneShell({
     return (
         <div className={shellClassName} data-testid="simulator-device-shell">
             <div className={cls.shellScreen} ref={screenRef}>
-                {children}
+                <div className={cls.shellSessionColumn}>{children}</div>
             </div>
             {nav}
         </div>

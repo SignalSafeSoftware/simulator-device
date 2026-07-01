@@ -23,6 +23,7 @@ export { SIMULATOR_DEVICE_CLASS_NAMES } from './simulatorDeviceClasses.js';
 
 export {
     SIMULATOR_DEVICE_SCREEN_CLASS_NAMES,
+    SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES,
     resolveSimulatorPhoneShellHostMode,
     resolveSimulatorPhoneShellScreenClasses,
 } from './simulatorPhoneShellScreenMapper.js';

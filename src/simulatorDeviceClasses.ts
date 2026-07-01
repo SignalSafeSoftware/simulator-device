@@ -3,6 +3,7 @@ export const SIMULATOR_DEVICE_CLASS_NAMES = {
     shell: 'simulator-device-shell',
     shellHostNav: 'simulator-device-shell--host-nav',
     shellScreen: 'simulator-device-shell__screen',
+    shellSessionColumn: 'simulator-device-shell__session-column',
     nav: 'simulator-device-nav',
     navList: 'simulator-device-nav__list',
     navItem: 'simulator-device-nav__item',

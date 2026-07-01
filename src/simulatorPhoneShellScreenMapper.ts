@@ -1,5 +1,11 @@
 /**
  * Host phone shell screen modifier classes and host overlay mode from session state.
+ *
+ * Screen modifiers: resolveSimulatorPhoneShellScreenClasses emits BOTH
+ * SIMULATOR_DEVICE_SCREEN_CLASS_NAMES (simulator-phone-shell--screen-*) and
+ * SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES (simulator-device-shell--screen-*).
+ * Host CSS should target simulator-device-shell--screen-* only.
+ * Remove simulator-phone-shell--screen-* once host/theme CSS no longer reference them.
  */
 import type { SimulatorSessionState } from '@signalsafe/simulator-react';
 
@@ -20,6 +26,20 @@ export const SIMULATOR_DEVICE_SCREEN_CLASS_NAMES = {
     emailInbox: 'simulator-phone-shell--screen-email-inbox',
     emailOutbox: 'simulator-phone-shell--screen-email-outbox',
     emailTrash: 'simulator-phone-shell--screen-email-trash',
+} as const;
+
+/** Device-shell screen modifier aliases alongside legacy phone-shell names. */
+export const SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES = {
+    phoneHistory: 'simulator-device-shell--screen-phone-history',
+    phoneContacts: 'simulator-device-shell--screen-phone-contacts',
+    phoneDial: 'simulator-device-shell--screen-phone-dial',
+    phoneIncomingCall: 'simulator-device-shell--screen-phone-incoming-call',
+    phoneContactDetail: 'simulator-device-shell--screen-phone-contact-detail',
+    messagesThreads: 'simulator-device-shell--screen-messages-threads',
+    messagesThreadDetail: 'simulator-device-shell--screen-messages-thread-detail',
+    emailInbox: 'simulator-device-shell--screen-email-inbox',
+    emailOutbox: 'simulator-device-shell--screen-email-outbox',
+    emailTrash: 'simulator-device-shell--screen-email-trash',
 } as const;
 
 const DEFAULT_HOST_MODE: SimulatorPhoneShellHostMode = { kind: 'runtime' };
@@ -44,14 +64,15 @@ export function resolveSimulatorPhoneShellHostMode(
     return { kind: 'phone-contact-edit', contactId: contact.id };
 }
 
-function appendPhoneScreenClass(
+function appendPhoneScreenClasses(
     classes: string[],
     view: SimulatorSessionState['view'],
     screen: NonNullable<NonNullable<SimulatorSessionState['view']>['phone']>['screen'],
-    className: string,
+    phoneShellClass: string,
+    deviceShellClass: string,
 ): void {
     if (view?.activeApp === 'phone' && view.phone?.screen === screen) {
-        classes.push(className);
+        classes.push(phoneShellClass, deviceShellClass);
     }
 }
 
@@ -62,11 +83,20 @@ function appendEmailScreenClasses(classes: string[], view: SimulatorSessionState
 
     const screen = view.email?.screen;
     if (screen === 'list') {
-        classes.push(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailInbox);
+        classes.push(
+            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailInbox,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.emailInbox,
+        );
     } else if (screen === 'outbox') {
-        classes.push(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailOutbox);
+        classes.push(
+            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailOutbox,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.emailOutbox,
+        );
     } else if (screen === 'trash') {
-        classes.push(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailTrash);
+        classes.push(
+            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailTrash,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.emailTrash,
+        );
     }
 }
 
@@ -78,36 +108,54 @@ export function resolveSimulatorPhoneShellScreenClasses(
     const classes: string[] = [];
     const view = state.view;
 
-    appendPhoneScreenClass(
+    appendPhoneScreenClasses(
         classes,
         view,
         'history',
         SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneHistory,
+        SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneHistory,
     );
-    appendPhoneScreenClass(
+    appendPhoneScreenClasses(
         classes,
         view,
         'contacts',
         SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneContacts,
+        SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneContacts,
     );
-    appendPhoneScreenClass(classes, view, 'dial', SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneDial);
-    appendPhoneScreenClass(
+    appendPhoneScreenClasses(
+        classes,
+        view,
+        'dial',
+        SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneDial,
+        SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneDial,
+    );
+    appendPhoneScreenClasses(
         classes,
         view,
         'incoming_call',
         SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneIncomingCall,
+        SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneIncomingCall,
     );
 
     if (hostMode.kind === 'phone-contact-edit') {
-        classes.push(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneContactDetail);
+        classes.push(
+            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneContactDetail,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneContactDetail,
+        );
     }
 
     if (view?.activeApp === 'messages' && view.messages?.screen === 'threads') {
-        classes.push(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.messagesThreads);
+        classes.push(
+            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.messagesThreads,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.messagesThreads,
+        );
     }
 
     if (view?.activeApp === 'messages' && view.messages?.screen === 'thread_detail') {
-        classes.push(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.messagesThreadDetail);
+        classes.push(
+            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.messagesThreadDetail,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.messagesThreadDetail,
+        );
     }
 
     appendEmailScreenClasses(classes, view);

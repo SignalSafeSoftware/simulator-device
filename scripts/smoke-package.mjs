@@ -14,6 +14,7 @@ runSmokePackage({
                 'SIMULATOR_PRIMARY_NAV_ITEMS',
                 'SIMULATOR_DEVICE_CLASS_NAMES',
                 'SIMULATOR_DEVICE_SCREEN_CLASS_NAMES',
+                'SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES',
                 'resolveSimulatorPhoneShellHostMode',
                 'resolveSimulatorPhoneShellScreenClasses',
                 'SimulatorPhoneIncomingCallHistory',
