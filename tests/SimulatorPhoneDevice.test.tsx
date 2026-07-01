@@ -246,6 +246,45 @@ describe('SimulatorPhoneDevice', () => {
         expect(renderPhoneIncomingCallHistoryExtra).toBeTypeOf('function');
     });
 
+    it('with contactDetail, clicking a contact row renders package contact detail form', () => {
+        const state = buildContactsScreenState();
+        const dispatch = vi.fn();
+
+        const { container, getByTestId } = render(
+            <SimulatorPhoneDevice
+                state={state}
+                dispatch={dispatch}
+                contactDetail={{ mode: 'editable', onSave: vi.fn() }}
+            />,
+        );
+
+        clickContactRow(container, 'IT Helpdesk');
+
+        expect(getByTestId('simulator-phone-contact-detail')).toBeTruthy();
+        expect(container.querySelector('.simulator-phone__contact-detail')).toBeNull();
+    });
+
+    it('renderContactDetail takes precedence over contactDetail', () => {
+        const state = buildContactsScreenState();
+        const dispatch = vi.fn();
+
+        const { container, getByTestId, queryByTestId } = render(
+            <SimulatorPhoneDevice
+                state={state}
+                dispatch={dispatch}
+                contactDetail={{ mode: 'editable', onSave: vi.fn() }}
+                renderContactDetail={({ contact }) => (
+                    <div data-testid="host-contact-detail">{contact.displayName}</div>
+                )}
+            />,
+        );
+
+        clickContactRow(container, 'HR');
+
+        expect(getByTestId('host-contact-detail')).toBeTruthy();
+        expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
+    });
+
     it('works with a minimal phone payload from simulator-react initial state', () => {
         const state = getInitialSessionState(minimalPhonePayload());
         state.view.activeApp = 'phone';

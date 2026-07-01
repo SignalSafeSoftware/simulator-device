@@ -42,12 +42,97 @@ function Preview({ simulatorJson }: { simulatorJson: SimulatorDevicePayload }) {
 
 1. Load `simulator_json` from the database/API.
 2. Render `<SimulatorDevice value={json} />`.
-3. Optionally wire `onChange` later to persist edits back to the database (read-only rendering today).
+3. Wire `onChange` to persist contact edits back to the database (see editable contact detail below).
 
 Future desktop simulator support can use the same entry point with a discriminated JSON shape;
 unsupported values render `renderUnsupported` or a safe built-in fallback.
 
-### Editable / host phone options
+### Editable contact detail (package-owned form)
+
+Use `phone.contactDetail` for the generic package form. The host owns persistence via
+`onChange` and optional `onSave` / `onDelete` callbacks — the package does not call APIs or databases.
+
+When `onChange` is provided, contact save/delete updates `value.contacts` immutably and calls
+`onChange(nextValue)` **before** host `onSave` / `onDelete` callbacks. If `onChange` is omitted,
+callbacks still fire but no JSON persistence occurs inside the package.
+
+Omit `contactDetail` to keep the built-in `@signalsafe/simulator-react` contact detail view.
+Use `renderContactDetail` as a full escape hatch when you need completely custom UI (it takes
+precedence over `contactDetail` when both are set).
+
+```tsx
+import { SimulatorDevice } from '@signalsafe/simulator-device';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+
+function Preview({
+  simulatorJson,
+  setSimulatorJson,
+}: {
+  simulatorJson: SimulatorDevicePayload;
+  setSimulatorJson: (next: SimulatorDevicePayload) => void;
+}) {
+  return (
+    <SimulatorDevice
+      value={simulatorJson}
+      onChange={setSimulatorJson}
+      phone={{
+        contactDetail: {
+          mode: 'editable',
+          onSave: (contact) => console.log('saved', contact),
+          onDelete: (contact) => console.log('deleted', contact),
+        },
+      }}
+    />
+  );
+}
+```
+
+### Custom fields via `renderExtraFields`
+
+```tsx
+import { SimulatorDevice } from '@signalsafe/simulator-device';
+import type {
+  SimulatorDevicePayload,
+  SimulatorPhoneContactDetailContext,
+  SimulatorPhoneContactDetailValues,
+} from '@signalsafe/simulator-device';
+
+function ExtraFields({
+  contact,
+  updateContact,
+}: {
+  contact: SimulatorPhoneContactDetailValues;
+  updateContact: (patch: Partial<SimulatorPhoneContactDetailValues>) => void;
+  context: SimulatorPhoneContactDetailContext;
+}) {
+  return (
+    <label>
+      Notes
+      <input
+        value={contact.displayName}
+        onChange={(event) => updateContact({ displayName: event.target.value })}
+      />
+    </label>
+  );
+}
+
+function Preview({ value, onChange }: { value: SimulatorDevicePayload; onChange: (v: SimulatorDevicePayload) => void }) {
+  return (
+    <SimulatorDevice
+      value={value}
+      onChange={onChange}
+      phone={{
+        contactDetail: {
+          mode: 'editable',
+          renderExtraFields: (props) => <ExtraFields {...props} />,
+        },
+      }}
+    />
+  );
+}
+```
+
+### Fully custom contact detail (`renderContactDetail`)
 
 ```tsx
 import { SimulatorDevice } from '@signalsafe/simulator-device';
@@ -76,8 +161,6 @@ function Preview({
   );
 }
 ```
-
-`onChange` is reserved for future JSON editing; session navigation is owned internally today.
 
 ### Advanced phone-only state/dispatch usage
 
@@ -121,8 +204,38 @@ const state = getInitialSessionState(templatePayload);
 
 ### Custom host-owned contact detail
 
-Pass `renderContactDetail` to replace the package contact detail view with your own UI.
+**Option A — package generic form (`contactDetail`):**
+
+```tsx
+import { SimulatorPhoneDevice } from '@signalsafe/simulator-device';
+import type { SimulatorDispatchAction, SimulatorSessionState } from '@signalsafe/simulator-react';
+
+function PhonePreview({
+  state,
+  dispatch,
+}: {
+  state: SimulatorSessionState;
+  dispatch: (action: SimulatorDispatchAction) => void;
+}) {
+  return (
+    <SimulatorPhoneDevice
+      state={state}
+      dispatch={dispatch}
+      contactDetail={{
+        mode: 'editable',
+        onSave: (contact) => console.log('save', contact),
+        onDelete: (contact) => console.log('delete', contact),
+      }}
+    />
+  );
+}
+```
+
+**Option B — full escape hatch (`renderContactDetail`):**
+
+Pass `renderContactDetail` to replace the contact detail view with your own UI.
 The device shell applies `simulator-phone-shell--screen-phone-contact-detail` while the overlay is active.
+When both `renderContactDetail` and `contactDetail` are set, `renderContactDetail` wins.
 
 ```tsx
 import { SimulatorPhoneDevice } from '@signalsafe/simulator-device';
@@ -195,6 +308,15 @@ function DevicePreview({ state, dispatch }: { state: SimulatorSessionState; disp
 | `SimulatorPhoneDevice` | Composed phone shell + nav + runtime + optional host contact detail |
 | `SimulatorPhoneDeviceProps` | Props for the composed phone device |
 | `SimulatorPhoneDeviceContactDetailRenderProps` | `renderContactDetail` callback context |
+| `SimulatorPhoneContactDetailForm` | Generic contact detail form (displayName, number, email) |
+| `SimulatorPhoneContactDetailFormProps` | Props for the contact detail form |
+| `SimulatorPhoneContactDetailValues` | Contact value shape for save/delete callbacks |
+| `SimulatorPhoneDeviceContactDetailOptions` | `contactDetail` options for `SimulatorPhoneDevice` / `SimulatorDevice` |
+| `SimulatorPhoneContactDetailContext` | Save/delete callback context (`state`, `dispatch`, `originalContact`) |
+| `contactSnapshotFromSessionContact` | Map session contact → contact detail values |
+| `splitContactDisplayName` | Split display name into first/last parts |
+| `patchContactInDevicePayload` | Immutably update one contact in `SimulatorDevicePayload` |
+| `removeContactFromDevicePayload` | Immutably remove one contact from `SimulatorDevicePayload` |
 | `SimulatorPhoneShell` | Presentational device shell |
 | `SimulatorPhoneNav` | Session-driven bottom navigation |
 | `SimulatorPhoneNavItem` | Single nav button (for custom layouts) |

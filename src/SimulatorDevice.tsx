@@ -6,6 +6,15 @@ import {
     type SimulatorDispatchAction,
     type SimulatorSessionState,
 } from '@signalsafe/simulator-react';
+import {
+    patchContactInDevicePayload,
+    removeContactFromDevicePayload,
+} from './contact/patchContactsInDevicePayload.js';
+import type {
+    SimulatorPhoneContactDetailContext,
+    SimulatorPhoneContactDetailValues,
+    SimulatorPhoneDeviceContactDetailOptions,
+} from './contact/contactDetailTypes.js';
 import type { SimulatorDevicePayload } from './types/simulatorDevicePayload.js';
 import SimulatorPhoneDevice from './SimulatorPhoneDevice.js';
 import type { SimulatorPhoneDeviceProps } from './SimulatorPhoneDevice.js';
@@ -15,6 +24,7 @@ import { simulatorDeviceValueToSessionPayload } from './simulatorDeviceValueToSe
 
 export interface SimulatorDevicePhoneOptions {
     renderContactDetail?: SimulatorPhoneDeviceProps['renderContactDetail'];
+    contactDetail?: SimulatorPhoneDeviceProps['contactDetail'];
     renderIncomingCallExtra?: SimulatorPhoneDeviceProps['renderIncomingCallExtra'];
     className?: SimulatorPhoneDeviceProps['className'];
     screenClassNames?: SimulatorPhoneDeviceProps['screenClassNames'];
@@ -27,10 +37,52 @@ export interface SimulatorDeviceUnsupportedRenderProps {
 export interface SimulatorDeviceProps {
     /** Full-device simulator JSON (database/API `simulator_json` shape). */
     value: SimulatorDevicePayload;
-    /** Reserved for future JSON editing; not invoked in read-only rendering yet. */
+    /**
+     * Called when package contact save/delete updates `value.contacts`.
+     * Host callbacks from `phone.contactDetail` run after `onChange`.
+     */
     onChange?: (nextValue: SimulatorDevicePayload) => void;
     phone?: SimulatorDevicePhoneOptions;
     renderUnsupported?: (props: SimulatorDeviceUnsupportedRenderProps) => ReactNode;
+}
+
+function wrapContactDetailForDevice(
+    value: SimulatorDevicePayload,
+    onChange: SimulatorDeviceProps['onChange'],
+    contactDetail: SimulatorPhoneDeviceContactDetailOptions | undefined,
+): SimulatorPhoneDeviceContactDetailOptions | undefined {
+    if (contactDetail == null) {
+        return undefined;
+    }
+
+    const invokeHostSave = (
+        updated: SimulatorPhoneContactDetailValues,
+        context: SimulatorPhoneContactDetailContext,
+    ) => {
+        if (onChange != null) {
+            onChange(patchContactInDevicePayload(value, updated));
+        }
+        contactDetail.onSave?.(updated, context);
+    };
+
+    const invokeHostDelete = (
+        current: SimulatorPhoneContactDetailValues,
+        context: SimulatorPhoneContactDetailContext,
+    ) => {
+        if (onChange != null) {
+            onChange(removeContactFromDevicePayload(value, current.id));
+        }
+        contactDetail.onDelete?.(current, context);
+    };
+
+    const shouldWireSave = onChange != null || contactDetail.onSave != null;
+    const shouldWireDelete = onChange != null || contactDetail.onDelete != null;
+
+    return {
+        ...contactDetail,
+        onSave: shouldWireSave ? invokeHostSave : undefined,
+        onDelete: shouldWireDelete ? invokeHostDelete : undefined,
+    };
 }
 
 /**
@@ -39,12 +91,10 @@ export interface SimulatorDeviceProps {
  */
 export default function SimulatorDevice({
     value,
-    onChange: _onChange,
+    onChange,
     phone,
     renderUnsupported,
 }: Readonly<SimulatorDeviceProps>) {
-    void _onChange;
-
     const kind = resolveSimulatorDeviceKind(value);
 
     const sessionPayload = useMemo(() => {
@@ -70,6 +120,11 @@ export default function SimulatorDevice({
         setState((prev) => (prev == null ? prev : simulatorSessionReducerWithLogging(prev, action)));
     }, []);
 
+    const deviceContactDetail = useMemo(
+        () => wrapContactDetailForDevice(value, onChange, phone?.contactDetail),
+        [value, onChange, phone?.contactDetail],
+    );
+
     if (kind === 'unsupported') {
         if (renderUnsupported) {
             return <>{renderUnsupported({ value })}</>;
@@ -86,6 +141,7 @@ export default function SimulatorDevice({
             state={state}
             dispatch={dispatch}
             renderContactDetail={phone?.renderContactDetail}
+            contactDetail={deviceContactDetail}
             renderIncomingCallExtra={phone?.renderIncomingCallExtra}
             className={phone?.className}
             screenClassNames={phone?.screenClassNames}

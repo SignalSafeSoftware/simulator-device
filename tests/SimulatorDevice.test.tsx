@@ -55,6 +55,88 @@ describe('SimulatorDevice', () => {
         );
     });
 
+    it('passes phone.contactDetail through to SimulatorPhoneDevice', async () => {
+        capturedPhoneDeviceProps.current = null;
+        const contactDetail = { mode: 'editable' as const, onSave: vi.fn() };
+
+        render(
+            <SimulatorDevice
+                value={buildContactsDeviceJson()}
+                phone={{ contactDetail }}
+            />,
+        );
+
+        await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
+        expect(capturedPhoneDeviceProps.current?.contactDetail).toMatchObject({ mode: 'editable' });
+        expect(capturedPhoneDeviceProps.current?.contactDetail).toHaveProperty('onSave');
+    });
+
+    it('contact save patches value.contacts and calls onChange before host onSave', async () => {
+        capturedPhoneDeviceProps.current = null;
+        const onChange = vi.fn();
+        const onSave = vi.fn();
+        const value = buildContactsDeviceJson();
+
+        render(
+            <SimulatorDevice
+                value={value}
+                onChange={onChange}
+                phone={{ contactDetail: { mode: 'editable', onSave } }}
+            />,
+        );
+
+        await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
+
+        const wrappedOnSave = (
+            capturedPhoneDeviceProps.current?.contactDetail as { onSave?: (contact: unknown) => void }
+        )?.onSave;
+
+        wrappedOnSave?.({
+            id: 'c1',
+            displayName: 'Updated Helpdesk',
+            number: '+1999',
+            email: 'help@example.com',
+        });
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange.mock.calls[0]?.[0]?.contacts?.[0]?.display_name).toBe('Updated Helpdesk');
+        expect(onSave).toHaveBeenCalledTimes(1);
+        expect(onChange.mock.invocationCallOrder[0]).toBeLessThan(onSave.mock.invocationCallOrder[0]!);
+    });
+
+    it('contact delete removes contact and calls onChange before host onDelete', async () => {
+        capturedPhoneDeviceProps.current = null;
+        const onChange = vi.fn();
+        const onDelete = vi.fn();
+        const value = buildContactsDeviceJson();
+
+        render(
+            <SimulatorDevice
+                value={value}
+                onChange={onChange}
+                phone={{ contactDetail: { mode: 'editable', onDelete } }}
+            />,
+        );
+
+        await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
+
+        const wrappedOnDelete = (
+            capturedPhoneDeviceProps.current?.contactDetail as { onDelete?: (contact: unknown) => void }
+        )?.onDelete;
+
+        wrappedOnDelete?.({
+            id: 'c1',
+            displayName: 'IT Helpdesk',
+            number: '+15550001111',
+        });
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange.mock.calls[0]?.[0]?.contacts).toHaveLength(1);
+        expect(onChange.mock.calls[0]?.[0]?.contacts?.[0]?.id).toBe('c2');
+        expect(onDelete).toHaveBeenCalledTimes(1);
+        expect(onChange.mock.invocationCallOrder[0]).toBeLessThan(onDelete.mock.invocationCallOrder[0]!);
+    });
+
     it('passes phone.renderContactDetail through to SimulatorPhoneDevice', async () => {
         capturedPhoneDeviceProps.current = null;
         const renderContactDetail = vi.fn(() => <div data-testid="host-contact-detail" />);

@@ -35,4 +35,37 @@ describe('SimulatorDevice integration', () => {
         expect(within(getByTestId('host-contact-detail')).getByText('IT Helpdesk')).toBeTruthy();
         expect(renderContactDetail).toHaveBeenCalled();
     });
+
+    it('phone.contactDetail renders package form and onChange persists contact edits', async () => {
+        const onChange = vi.fn();
+        const onSave = vi.fn();
+
+        const { getByRole, getByLabelText, getByTestId } = render(
+            <SimulatorDevice
+                value={buildContactsDeviceJson()}
+                onChange={onChange}
+                phone={{
+                    contactDetail: {
+                        mode: 'editable',
+                        onSave,
+                    },
+                }}
+            />,
+        );
+
+        await waitFor(() => expect(getByRole('button', { name: /IT Helpdesk/ })).toBeTruthy());
+        fireEvent.click(getByRole('button', { name: /IT Helpdesk/ }));
+
+        await waitFor(() => expect(getByTestId('simulator-phone-contact-detail')).toBeTruthy());
+
+        fireEvent.change(getByLabelText('Display name'), { target: { value: 'Updated Helpdesk' } });
+        fireEvent.click(getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => expect(onChange).toHaveBeenCalled());
+        expect(onChange.mock.calls[0]?.[0]?.contacts?.[0]?.display_name).toBe('Updated Helpdesk');
+        expect(onSave).toHaveBeenCalledWith(
+            expect.objectContaining({ displayName: 'Updated Helpdesk' }),
+            expect.objectContaining({ dispatch: expect.any(Function) }),
+        );
+    });
 });

@@ -51,6 +51,20 @@ export type {
     SimulatorPhoneDeviceContactDetailRenderProps,
 } from './SimulatorPhoneDevice.js';
 
+export { default as SimulatorPhoneContactDetailForm } from './contact/SimulatorPhoneContactDetailForm.js';
+export type {
+    SimulatorPhoneContactDetailFormProps,
+    SimulatorPhoneContactDetailValues,
+    SimulatorPhoneContactDetailContext,
+    SimulatorPhoneDeviceContactDetailOptions,
+} from './contact/contactDetailTypes.js';
+export { contactSnapshotFromSessionContact } from './contact/contactSnapshotFromSessionContact.js';
+export { splitContactDisplayName } from './contact/splitContactDisplayName.js';
+export {
+    patchContactInDevicePayload,
+    removeContactFromDevicePayload,
+} from './contact/patchContactsInDevicePayload.js';
+
 export { default as SimulatorDevice } from './SimulatorDevice.js';
 export type {
     SimulatorDeviceProps,
