@@ -70,6 +70,8 @@ export type {
     SimulatorDeviceProps,
     SimulatorDevicePhoneOptions,
     SimulatorDeviceUnsupportedRenderProps,
+    SimulatorDeviceRuntimePassthroughProps,
+    SimulatorDeviceManagedPhoneDeviceProps,
 } from './SimulatorDevice.js';
 
 export { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';

@@ -15,12 +15,16 @@ import type {
     SimulatorPhoneContactDetailValues,
     SimulatorPhoneDeviceContactDetailOptions,
 } from './contact/contactDetailTypes.js';
+import type { SimulatorDeviceRuntimePassthroughProps } from './simulatorDeviceRuntimeProps.js';
 import type { SimulatorDevicePayload } from './types/simulatorDevicePayload.js';
 import SimulatorPhoneDevice from './SimulatorPhoneDevice.js';
 import type { SimulatorPhoneDeviceProps } from './SimulatorPhoneDevice.js';
 import SimulatorDeviceFallback from './SimulatorDeviceFallback.js';
 import { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
 import { simulatorDeviceValueToSessionPayload } from './simulatorDeviceValueToSessionPayload.js';
+
+export type { SimulatorDeviceRuntimePassthroughProps } from './simulatorDeviceRuntimeProps.js';
+export type { SimulatorDeviceManagedPhoneDeviceProps } from './simulatorDeviceRuntimeProps.js';
 
 export interface SimulatorDevicePhoneOptions {
     renderContactDetail?: SimulatorPhoneDeviceProps['renderContactDetail'];
@@ -34,7 +38,8 @@ export interface SimulatorDeviceUnsupportedRenderProps {
     value: unknown;
 }
 
-export interface SimulatorDeviceProps {
+export interface SimulatorDeviceProps
+    extends SimulatorDeviceRuntimePassthroughProps {
     /** Full-device simulator JSON (database/API `simulator_json` shape). */
     value: SimulatorDevicePayload;
     /**
@@ -88,12 +93,17 @@ function wrapContactDetailForDevice(
 /**
  * JSON-driven simulator entry point: accepts stored simulator JSON and owns session creation.
  * Renders {@link SimulatorPhoneDevice} for the current full-device payload shape.
+ *
+ * Top-level props (except `value`, `onChange`, `phone`, `renderUnsupported`) are runtime
+ * passthrough to `SimulatorWithSession` — e.g. `onSimulatorEvent`, `developerTools`,
+ * `initialContactsSearch`, exit chrome, and render slots.
  */
 export default function SimulatorDevice({
     value,
     onChange,
     phone,
     renderUnsupported,
+    ...runtimeProps
 }: Readonly<SimulatorDeviceProps>) {
     const kind = resolveSimulatorDeviceKind(value);
 
@@ -138,6 +148,7 @@ export default function SimulatorDevice({
 
     return (
         <SimulatorPhoneDevice
+            {...runtimeProps}
             state={state}
             dispatch={dispatch}
             renderContactDetail={phone?.renderContactDetail}

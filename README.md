@@ -47,6 +47,43 @@ function Preview({ simulatorJson }: { simulatorJson: SimulatorDevicePayload }) {
 Future desktop simulator support can use the same entry point with a discriminated JSON shape;
 unsupported values render `renderUnsupported` or a safe built-in fallback.
 
+### Runtime passthrough (preview/run without manual session)
+
+`SimulatorDevice` owns session state from `value`. Pass runtime props at the top level — they
+forward to `SimulatorPhoneDevice` → `SimulatorWithSession`. You do **not** need `state` / `dispatch`.
+
+| Prop | Purpose |
+| --- | --- |
+| `onSimulatorEvent` | Structured interaction events (clicks, screen views, etc.) |
+| `developerTools` | Developer/QA panel configuration |
+| `developerToolsTimelineEntries` | Timeline entries for the developer panel |
+| `developerToolsRuntimeIssues` | Runtime lint/warning issues for the developer panel |
+| `initialContactsSearch` | Seed contacts search from deep-link query params |
+| `exitLink`, `exitTo`, `exitLabel` | Exit chrome |
+| `compact` | Embedded preview layout |
+| `renderChoice`, `renderFeedback`, `renderContactsOverlay` | Custom render slots |
+
+Phone shell options (`phone.className`, `phone.contactDetail`, etc.) remain under `phone`.
+
+```tsx
+import { SimulatorDevice } from '@signalsafe/simulator-device';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+
+function RunPreview({ simulatorJson }: { simulatorJson: SimulatorDevicePayload }) {
+  return (
+    <SimulatorDevice
+      value={simulatorJson}
+      onSimulatorEvent={(event) => console.log(event)}
+      developerTools={{ enabled: true, sections: { timeline: true } }}
+      exitTo="/courses"
+      exitLabel="Exit"
+      initialContactsSearch="helpdesk"
+      phone={{ contactDetail: { mode: 'editable' } }}
+    />
+  );
+}
+```
+
 ### Editable contact detail (package-owned form)
 
 Use `phone.contactDetail` for the generic package form. The host owns persistence via
@@ -303,6 +340,7 @@ function DevicePreview({ state, dispatch }: { state: SimulatorSessionState; disp
 | --- | --- |
 | `SimulatorDevice` | JSON-driven entry point; owns session from `SimulatorDevicePayload` |
 | `SimulatorDeviceProps` | Props for JSON-driven device rendering |
+| `SimulatorDeviceRuntimePassthroughProps` | Runtime props forwarded to `SimulatorWithSession` (events, dev tools, deep-link search) |
 | `SimulatorDevicePhoneOptions` | Optional phone overrides passed through to `SimulatorPhoneDevice` |
 | `resolveSimulatorDeviceKind` | Classify supported vs future/unsupported JSON shapes |
 | `SimulatorPhoneDevice` | Composed phone shell + nav + runtime + optional host contact detail |

@@ -167,6 +167,65 @@ describe('SimulatorDevice', () => {
         expect(capturedPhoneDeviceProps.current?.renderIncomingCallExtra).toBe(renderIncomingCallExtra);
     });
 
+    it('forwards runtime passthrough props to SimulatorPhoneDevice', async () => {
+        capturedPhoneDeviceProps.current = null;
+        const onSimulatorEvent = vi.fn();
+        const developerTools = { enabled: true, sections: { timeline: true } };
+        const developerToolsTimelineEntries = [{ kind: 'session_started' as const, timestamp: 't', app: 'home', screen: 'home' }];
+        const developerToolsRuntimeIssues = [{ id: 'w1', message: 'warn' }];
+        const renderChoice = vi.fn();
+        const renderFeedback = vi.fn();
+        const renderContactsOverlay = vi.fn();
+        const exitLink = <span>Exit</span>;
+
+        render(
+            <SimulatorDevice
+                value={buildHomeDeviceJson()}
+                onSimulatorEvent={onSimulatorEvent}
+                developerTools={developerTools}
+                developerToolsTimelineEntries={developerToolsTimelineEntries}
+                developerToolsRuntimeIssues={developerToolsRuntimeIssues}
+                initialContactsSearch="alice"
+                compact
+                exitLink={exitLink}
+                exitTo="/leave"
+                exitLabel="Leave"
+                renderChoice={renderChoice}
+                renderFeedback={renderFeedback}
+                renderContactsOverlay={renderContactsOverlay}
+            />,
+        );
+
+        await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
+
+        expect(capturedPhoneDeviceProps.current?.onSimulatorEvent).toBe(onSimulatorEvent);
+        expect(capturedPhoneDeviceProps.current?.developerTools).toBe(developerTools);
+        expect(capturedPhoneDeviceProps.current?.developerToolsTimelineEntries).toBe(
+            developerToolsTimelineEntries,
+        );
+        expect(capturedPhoneDeviceProps.current?.developerToolsRuntimeIssues).toBe(
+            developerToolsRuntimeIssues,
+        );
+        expect(capturedPhoneDeviceProps.current?.initialContactsSearch).toBe('alice');
+        expect(capturedPhoneDeviceProps.current?.compact).toBe(true);
+        expect(capturedPhoneDeviceProps.current?.exitLink).toBe(exitLink);
+        expect(capturedPhoneDeviceProps.current?.exitTo).toBe('/leave');
+        expect(capturedPhoneDeviceProps.current?.exitLabel).toBe('Leave');
+        expect(capturedPhoneDeviceProps.current?.renderChoice).toBe(renderChoice);
+        expect(capturedPhoneDeviceProps.current?.renderFeedback).toBe(renderFeedback);
+        expect(capturedPhoneDeviceProps.current?.renderContactsOverlay).toBe(renderContactsOverlay);
+    });
+
+    it('does not expose state or dispatch on SimulatorDevice public props surface', async () => {
+        capturedPhoneDeviceProps.current = null;
+
+        render(<SimulatorDevice value={buildHomeDeviceJson()} onSimulatorEvent={vi.fn()} />);
+
+        await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
+        expect(capturedPhoneDeviceProps.current?.state).toBeDefined();
+        expect(capturedPhoneDeviceProps.current?.dispatch).toBeTypeOf('function');
+    });
+
     it('renders renderUnsupported for unsupported future shapes', () => {
         const { getByTestId, queryByTestId } = render(
             <SimulatorDevice
