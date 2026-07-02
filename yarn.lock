@@ -396,19 +396,19 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.62.2.tgz#3671ce3f9b928d5c01f879792d5c0b60ae14d4ad"
   integrity sha512-BfzEnDJOt9T8M989/lA37EcJgat01wLRnoi5dQf3QzOH7jzpqTAzdDbVfRljVr5r+jzKqpbHeyOfAaXxAd0PAA==
 
-"@signalsafe/simulator-core@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-core/-/simulator-core-0.1.7.tgz#85dd6c706589a2b0a0531cd8cd6114a5ae72ea52"
-  integrity sha512-l3oKUqcxPFntyR1UzhTDPP2n94AU+LePDMZ3Xo2qRr5sbrLVVb1lxQjQjGQH4zZkCHhAj4cRQ8UqSQP4V/iizQ==
+"@signalsafe/simulator-core@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-core/-/simulator-core-0.1.8.tgz#e16b43e0fb49388e82407a026a8bbade5b32f9fd"
+  integrity sha512-OwAE26GKL0NCsik/DLebzFxzgAKUQEFKGlCgJcSgITLwl8cpIGLKt5EO6N6cvCh3+uvHyLT387NA4YE1GlKUJw==
   dependencies:
     "@signalsafe/tree-spec" "^0.3.3"
 
-"@signalsafe/simulator-react@^0.2.6":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.2.7.tgz#2fb09177a0af6f4fb318c941a5e9cf843465befc"
-  integrity sha512-3gixS2FHKhlrm6HOwuGJhgxvh+dqNlH8gDABr12AsG+3AsXCW6GLrzKTNRw4afqqJg56t3PMcanTGvZLmZEVcg==
+"@signalsafe/simulator-react@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.2.9.tgz#22dcb2f9957819055a5db488b64538b06b8efcc7"
+  integrity sha512-puvhXii7OblLFSYZ0D4TXGLHN1FAtZKXdgHHDcjuiDRqyH0G6/kTsZzkPgTd3QIc0fdp5dOjFQ2aYz3rlaxAmg==
   dependencies:
-    "@signalsafe/simulator-core" "^0.1.7"
+    "@signalsafe/simulator-core" "^0.1.8"
     "@signalsafe/tree-spec" "^0.3.3"
 
 "@signalsafe/tree-spec@^0.3.3":

@@ -1,4 +1,4 @@
-import type { SimulatorApp } from '@signalsafe/simulator-react';
+import type { SimulatorApp } from '@signalsafe/simulator-core';
 
 export type SimulatorDeviceKind = 'phone-full-device' | 'unsupported';
 

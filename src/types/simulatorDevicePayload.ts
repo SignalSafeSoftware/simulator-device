@@ -1,4 +1,4 @@
 /**
- * Full-device simulator JSON (`simulator_json` / `detail.simulator` shape).
+ * Re-export canonical full-device payload type from `@signalsafe/simulator-core`.
  */
-export type { SimulatorDevicePayload } from '@signalsafe/simulator-react';
+export type { SimulatorDevicePayload } from '@signalsafe/simulator-core';
