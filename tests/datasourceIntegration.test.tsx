@@ -117,3 +117,23 @@ it.each([
     await waitFor(() => expect(container.textContent).toBe(before));
   },
 );
+
+it('converts a low-level datasource once while host navigation changes', async () => {
+  const { getInitialSessionState, simulatorDatasourceToPayload } = await import('@signalsafe/simulator-react');
+  const { default: SimulatorPhoneDevice } = await import('../src/SimulatorPhoneDevice.js');
+  const datasource = createSimulatorDatasource(value);
+  const state = getInitialSessionState(simulatorDatasourceToPayload(datasource));
+  const clone = vi.spyOn(globalThis, 'structuredClone');
+  try {
+    const dispatch = vi.fn();
+    const { rerender } = render(<SimulatorPhoneDevice state={state} datasource={datasource} dispatch={dispatch} />);
+    expect(clone).toHaveBeenCalledTimes(1);
+    rerender(<SimulatorPhoneDevice state={{ ...state, view: { ...state.view, activeApp: 'phone' } }} datasource={datasource} dispatch={dispatch} />);
+    expect(clone).toHaveBeenCalledTimes(1);
+    rerender(<SimulatorPhoneDevice state={state} datasource={createSimulatorDatasource(value)} dispatch={dispatch} />);
+    // One new frozen snapshot and one mutable session copy for replacement content.
+    expect(clone).toHaveBeenCalledTimes(3);
+  } finally {
+    clone.mockRestore();
+  }
+});

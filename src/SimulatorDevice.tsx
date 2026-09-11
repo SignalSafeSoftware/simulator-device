@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import {
     getInitialSessionState,
     simulatorDatasourceToPayload,
-    updateSimulatorDatasource,
+    updateSimulatorPayload,
     type SimulatorDatasource,
     simulatorSessionReducerWithLogging,
     type SimulatorDispatchAction,
@@ -134,7 +134,7 @@ export default function SimulatorDevice({
             return;
         }
         setState((previous) => datasource && previous
-            ? updateSimulatorDatasource(previous, datasource)
+            ? updateSimulatorPayload(previous, sessionPayload)
             : getInitialSessionState(sessionPayload));
     }, [sessionPayload, datasource]);
 

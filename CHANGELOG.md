@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 — 2026-09-11
+
+- Adopt simulator-react 0.4 deeply readonly datasource contracts.
+- Convert datasource content once per replacement; reconcile navigation without repeated full-payload clones.
+- Remove the redundant clone/freeze round trip from tolerant legacy JSON conversion.
+- Preserve JSON behavior, datasource refresh navigation and mounted contact drafts.
+
 ## 0.4.0 — 2026-09-11
 
 - Add optional datasource composition and refresh behavior while retaining legacy JSON value consumers.

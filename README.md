@@ -440,3 +440,7 @@ const datasource = createSimulatorDatasource(jsonSource);
 ```
 
 Supply exactly one source. Both properties are a type error and throw at runtime. Datasource replacement preserves navigation and mounted drafts, reconciling removed email selections. Replacing legacy `value` retains its session-reset behavior. `SimulatorPhoneDevice` also accepts an optional datasource alongside its existing controlled state/onAction contract; the host remains responsible for session actions and resets. JSON-only consumers require no transport or callbacks. See the React package's datasource contract for source validation, full-device conventions, readonly snapshots and API ownership.
+
+### Datasource conversion ownership (0.5)
+
+`SimulatorDevice` and `SimulatorPhoneDevice` memoize the mutable session copy by datasource identity. Keep that identity stable while navigating and replace it when content changes. Controlled hosts that already compose `state.payload` should pass `state` without an additional datasource overlay. JSON-only consumers retain their existing normalization and replacement/reset behavior. Datasource snapshots now use simulator-react 0.4 deeply readonly types; edit a mutable session copy or create a replacement snapshot.

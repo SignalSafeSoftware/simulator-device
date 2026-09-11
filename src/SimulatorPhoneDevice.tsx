@@ -2,7 +2,8 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import {
     SimulatorWithSession,
-    updateSimulatorDatasource,
+    simulatorDatasourceToPayload,
+    updateSimulatorPayload,
     type SimulatorDatasource,
     createSimulatorNavigationDispatch,
     type SimulatorDispatchAction,
@@ -81,7 +82,8 @@ export default function SimulatorPhoneDevice({
     screenClassNames: extraScreenClassNames = [],
     ...sessionProps
 }: Readonly<SimulatorPhoneDeviceProps>) {
-    const state = useMemo(() => datasource ? updateSimulatorDatasource(hostState, datasource) : hostState, [hostState, datasource]);
+    const payload = useMemo(() => datasource ? simulatorDatasourceToPayload(datasource) : null, [datasource]);
+    const state = useMemo(() => payload ? updateSimulatorPayload(hostState, payload) : hostState, [hostState, payload]);
     const screenRef = useRef<HTMLDivElement>(null);
     const stateRef = useRef(state);
     stateRef.current = state;
