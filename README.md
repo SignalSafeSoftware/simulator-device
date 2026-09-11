@@ -398,3 +398,45 @@ yarn smoke:package
 ## License
 
 MIT
+
+## Navigation interception (unreleased)
+
+`SimulatorDevice`, `SimulatorPhoneDevice`, and standalone `SimulatorPhoneNav`
+accept the additive synchronous `onNavigation` callback and observational
+`onNavigationEvent`. Return `'handled'` to leave the package state/back stack
+untouched and display a host-owned destination; return `'delegate'` or nothing
+for package navigation. Composed devices apply the boundary once across their
+menu and nested session. Existing `onSimulatorEvent` remains analytics only.
+Secondary Contacts Back now returns to the primary menu consistently with
+simulator-react, without artificial history/contacts screen hops.
+
+The full contract and release sequence are in simulator-react's
+`docs/navigation-contract.md`. Release simulator-react first and raise this
+package's dependency minimum to that new version before releasing device.
+Current package versions and dependency floors have deliberately not been
+published or changed. No host-specific Settings implementation is included.
+
+### Host screen content (source contract; release pending)
+
+`SimulatorPhoneDevice` inherits `screenOverrides` from `SimulatorWithSession`.
+For example, `{ home: { settings: HostSettings } }` replaces Settings content
+inside the existing shell and navigation, without intercepting action variants.
+Stable component types receive typed session/location, intercepted dispatch,
+Back and lazy default rendering. See sibling simulator-react
+[`docs/screen-overrides.md`](../simulator-react/docs/screen-overrides.md) for
+fallback, lifecycle, accessibility and ordered release/adoption requirements.
+Existing contact-detail slots retain their precedence. No release or consumer
+upgrade has been performed; APP-01 integration remains separate.
+
+## Datasource entry point (0.4)
+
+```tsx
+import { createSimulatorDatasource } from '@signalsafe/simulator-react';
+import { SimulatorDevice } from '@signalsafe/simulator-device';
+const datasource = createSimulatorDatasource(jsonSource);
+<SimulatorDevice datasource={datasource} />;
+// Existing consumers remain valid:
+<SimulatorDevice value={jsonSource} />;
+```
+
+Supply exactly one source. Both properties are a type error and throw at runtime. Datasource replacement preserves navigation and mounted drafts, reconciling removed email selections. Replacing legacy `value` retains its session-reset behavior. `SimulatorPhoneDevice` also accepts an optional datasource alongside its existing controlled state/onAction contract; the host remains responsible for session actions and resets. JSON-only consumers require no transport or callbacks. See the React package's datasource contract for source validation, full-device conventions, readonly snapshots and API ownership.

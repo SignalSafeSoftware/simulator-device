@@ -2,6 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
     getInitialSessionState,
+    simulatorDatasourceToPayload,
+    updateSimulatorDatasource,
+    type SimulatorDatasource,
     simulatorSessionReducerWithLogging,
     type SimulatorDispatchAction,
     type SimulatorSessionState,
@@ -38,10 +41,9 @@ export interface SimulatorDeviceUnsupportedRenderProps {
     value: unknown;
 }
 
-export interface SimulatorDeviceProps
+interface SimulatorDeviceOptions
     extends SimulatorDeviceRuntimePassthroughProps {
     /** Full-device simulator JSON (database/API `simulator_json` shape). */
-    value: SimulatorDevicePayload;
     /**
      * Called when package contact save/delete updates `value.contacts`.
      * Host callbacks from `phone.contactDetail` run after `onChange`.
@@ -51,8 +53,13 @@ export interface SimulatorDeviceProps
     renderUnsupported?: (props: SimulatorDeviceUnsupportedRenderProps) => ReactNode;
 }
 
+export type SimulatorDeviceProps = SimulatorDeviceOptions & (
+    | { value: SimulatorDevicePayload; datasource?: never }
+    | { value?: never; datasource: SimulatorDatasource }
+);
+
 function wrapContactDetailForDevice(
-    value: SimulatorDevicePayload,
+    value: SimulatorDevicePayload | undefined,
     onChange: SimulatorDeviceProps['onChange'],
     contactDetail: SimulatorPhoneDeviceContactDetailOptions | undefined,
 ): SimulatorPhoneDeviceContactDetailOptions | undefined {
@@ -64,7 +71,7 @@ function wrapContactDetailForDevice(
         updated: SimulatorPhoneContactDetailValues,
         context: SimulatorPhoneContactDetailContext,
     ) => {
-        if (onChange != null) {
+        if (onChange != null && value != null) {
             onChange(patchContactInDevicePayload(value, updated));
         }
         contactDetail.onSave?.(updated, context);
@@ -74,7 +81,7 @@ function wrapContactDetailForDevice(
         current: SimulatorPhoneContactDetailValues,
         context: SimulatorPhoneContactDetailContext,
     ) => {
-        if (onChange != null) {
+        if (onChange != null && value != null) {
             onChange(removeContactFromDevicePayload(value, current.id));
         }
         contactDetail.onDelete?.(current, context);
@@ -100,19 +107,22 @@ function wrapContactDetailForDevice(
  */
 export default function SimulatorDevice({
     value,
+    datasource,
     onChange,
     phone,
     renderUnsupported,
     ...runtimeProps
 }: Readonly<SimulatorDeviceProps>) {
-    const kind = resolveSimulatorDeviceKind(value);
+    if (value !== undefined && datasource !== undefined) throw new Error('Supply either value or datasource, not both.');
+    const kind = datasource ? 'phone-full-device' : resolveSimulatorDeviceKind(value);
 
     const sessionPayload = useMemo(() => {
-        if (kind !== 'phone-full-device') {
+        if (datasource) return simulatorDatasourceToPayload(datasource);
+        if (kind !== 'phone-full-device' || value === undefined) {
             return null;
         }
         return simulatorDeviceValueToSessionPayload(value);
-    }, [kind, value]);
+    }, [kind, value, datasource]);
 
     const [state, setState] = useState<SimulatorSessionState | null>(() =>
         sessionPayload == null ? null : getInitialSessionState(sessionPayload),
@@ -123,8 +133,10 @@ export default function SimulatorDevice({
             setState(null);
             return;
         }
-        setState(getInitialSessionState(sessionPayload));
-    }, [sessionPayload]);
+        setState((previous) => datasource && previous
+            ? updateSimulatorDatasource(previous, datasource)
+            : getInitialSessionState(sessionPayload));
+    }, [sessionPayload, datasource]);
 
     const dispatch = useCallback((action: SimulatorDispatchAction) => {
         setState((prev) => (prev == null ? prev : simulatorSessionReducerWithLogging(prev, action)));

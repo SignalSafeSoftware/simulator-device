@@ -22,7 +22,7 @@ export type SimulatorPhoneNavModel =
       }
     | {
           mode: 'secondary';
-          app: 'phone' | 'email';
+          app: 'phone' | 'email' | 'home';
           items: SimulatorPhoneNavItemModel[];
           activeId: string;
       };
@@ -119,6 +119,18 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState): Simulato
     }
 
     const activeApp = view.activeApp;
+    if (activeApp === 'home' && view.home.screen === 'settings') {
+        return {
+            mode: 'secondary',
+            app: 'home',
+            activeId: 'settings',
+            items: [
+                { id: 'settings', label: 'Settings', icon: '⚙', action: 'local' },
+                { id: 'back', label: 'Back', icon: '↩', action: 'back' },
+            ],
+        };
+    }
+
     const showSecondaryMenu = !view.showPrimaryMenu && (activeApp === 'phone' || activeApp === 'email');
 
     if (showSecondaryMenu && activeApp === 'phone') {
@@ -167,20 +179,10 @@ export function dispatchSimulatorPhoneNavItem(
     dispatch: (action: SimulatorDispatchAction) => void,
     model: Exclude<SimulatorPhoneNavModel, { mode: 'hidden' }>,
     item: SimulatorPhoneNavItemModel,
-    state?: SimulatorSessionState,
+    _state?: SimulatorSessionState,
 ): void {
     if (item.action === 'back') {
-        if (
-            model.mode === 'secondary' &&
-            model.app === 'phone' &&
-            state?.view.phone?.screen === 'contacts'
-        ) {
-            // ContactsView keeps selected contact in local state; remount via screen hop.
-            dispatch({ type: 'NAV_LOCAL', app: 'phone', screen: 'history' });
-            dispatch({ type: 'NAV_LOCAL', app: 'phone', screen: 'contacts' });
-            return;
-        }
-        dispatch({ type: 'BACK_TO_PRIMARY' });
+        dispatch({ type: model.mode === 'secondary' && model.app === 'home' ? 'BACK' : 'BACK_TO_PRIMARY' });
         return;
     }
 

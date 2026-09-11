@@ -2,6 +2,9 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import {
     SimulatorWithSession,
+    updateSimulatorDatasource,
+    type SimulatorDatasource,
+    createSimulatorNavigationDispatch,
     type SimulatorDispatchAction,
     type SimulatorPhoneIncomingCallExtraRenderProps,
     type SimulatorSessionContact,
@@ -39,6 +42,7 @@ type ManagedSimulatorWithSessionProps =
 
 export interface SimulatorPhoneDeviceProps
     extends Omit<SimulatorWithSessionProps, ManagedSimulatorWithSessionProps> {
+    datasource?: SimulatorDatasource;
     /**
      * Lower-level escape hatch for fully custom contact detail UI.
      * Takes precedence over {@link contactDetail} when both are set.
@@ -65,8 +69,11 @@ function shouldClearHostContactSelection(action: SimulatorDispatchAction): boole
 
 /** Full reusable phone device UI: shell, nav, runtime, and default incoming-call history. */
 export default function SimulatorPhoneDevice({
-    state,
-    dispatch,
+    state: hostState,
+    datasource,
+    dispatch: rawDispatch,
+    onNavigation,
+    onNavigationEvent,
     renderContactDetail,
     contactDetail,
     renderIncomingCallExtra = renderPhoneIncomingCallHistoryExtra,
@@ -74,21 +81,28 @@ export default function SimulatorPhoneDevice({
     screenClassNames: extraScreenClassNames = [],
     ...sessionProps
 }: Readonly<SimulatorPhoneDeviceProps>) {
+    const state = useMemo(() => datasource ? updateSimulatorDatasource(hostState, datasource) : hostState, [hostState, datasource]);
     const screenRef = useRef<HTMLDivElement>(null);
+    const stateRef = useRef(state);
+    stateRef.current = state;
     const hostContactEnabled = renderContactDetail != null || contactDetail != null;
     const { hostMode, contact, clearSelection, onPhoneContactOpen } =
         useSimulatorPhoneDeviceContactHost(state, hostContactEnabled);
     const hideNav = shouldHideHostPhoneNav(state);
 
-    const dispatchWithHostClear = useCallback(
+    const dispatchAndClear = useCallback(
         (action: SimulatorDispatchAction) => {
             if (hostContactEnabled && shouldClearHostContactSelection(action)) {
                 clearSelection();
             }
-            dispatch(action);
+            rawDispatch(action);
         },
-        [dispatch, clearSelection, hostContactEnabled],
+        [rawDispatch, clearSelection, hostContactEnabled],
     );
+
+    const dispatchWithHostClear = useMemo(() => createSimulatorNavigationDispatch({
+        getState: () => stateRef.current, dispatch: dispatchAndClear, onNavigation, onNavigationEvent,
+    }), [dispatchAndClear, onNavigation, onNavigationEvent]);
 
     const screenClassNames = [
         ...resolveSimulatorPhoneShellScreenClasses(state, hostMode),

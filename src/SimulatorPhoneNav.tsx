@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import type { SimulatorDispatchAction, SimulatorSessionState } from '@signalsafe/simulator-react';
+import { useMemo, useRef } from 'react';
+import { createSimulatorNavigationDispatch, type SimulatorNavigationOptions, type SimulatorDispatchAction, type SimulatorSessionState } from '@signalsafe/simulator-react';
 import SimulatorPhoneNavItem from './SimulatorPhoneNavItem.js';
 import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from './simulatorDeviceClasses.js';
 import {
@@ -13,6 +13,8 @@ export { shouldHideHostPhoneNav };
 
 export interface SimulatorPhoneNavProps {
     state: SimulatorSessionState;
+    onNavigation?: SimulatorNavigationOptions['onNavigation'];
+    onNavigationEvent?: SimulatorNavigationOptions['onNavigationEvent'];
     dispatch: (action: SimulatorDispatchAction) => void;
 }
 
@@ -26,7 +28,12 @@ function isActiveItem(model: SimulatorPhoneNavModel, itemId: string): boolean {
     return false;
 }
 
-export default function SimulatorPhoneNav({ state, dispatch }: Readonly<SimulatorPhoneNavProps>) {
+export default function SimulatorPhoneNav({ state, dispatch: rawDispatch, onNavigation, onNavigationEvent }: Readonly<SimulatorPhoneNavProps>) {
+    const stateRef = useRef(state);
+    stateRef.current = state;
+    const dispatch = useMemo(() => onNavigation === undefined && onNavigationEvent === undefined ? rawDispatch : createSimulatorNavigationDispatch({
+        getState: () => stateRef.current, dispatch: rawDispatch, onNavigation, onNavigationEvent,
+    }), [rawDispatch, onNavigation, onNavigationEvent]);
     const model = useMemo(() => resolveSimulatorPhoneNav(state), [state]);
 
     if (model.mode === 'hidden') {
