@@ -45,6 +45,9 @@ export function renderPackageContactDetail({
                     ? (current) => contactDetail.onDelete!(current, context)
                     : undefined
             }
+            key={contactId}
+            renderIdentityImage={contactDetail.renderIdentityImage}
+            renderPhoneAction={contactDetail.renderPhoneAction}
             renderExtraFields={contactDetail.renderExtraFields}
             renderActions={contactDetail.renderActions}
             context={context}

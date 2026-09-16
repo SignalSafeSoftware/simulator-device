@@ -61,9 +61,9 @@ describe('SimulatorPhoneNav', () => {
         expect(dispatch).toHaveBeenCalledWith(switchChannelAction('email'));
     });
 
-    it('returns null when nav should be hidden', () => {
+    it('renders email tertiary actions and dispatches Back', () => {
         const dispatch = vi.fn();
-        const { queryByTestId } = render(
+        const { queryByTestId, getByRole, queryByRole } = render(
             <SimulatorPhoneNav
                 state={buildState({
                     activeApp: 'email',
@@ -74,6 +74,24 @@ describe('SimulatorPhoneNav', () => {
             />,
         );
 
-        expect(queryByTestId('simulator-device-nav')).toBeNull();
+        expect(queryByTestId('simulator-device-nav')?.getAttribute('data-nav-mode')).toBe('tertiary');
+        expect(queryByRole('button', { name: 'Cancel' })).toBeNull();
+        fireEvent.click(getByRole('button', { name: 'Reply' }));
+        expect(dispatch).toHaveBeenLastCalledWith({ type: 'SIMULATOR_ACTION', action: { type: 'send_reply' } });
+        fireEvent.click(getByRole('button', { name: 'Back' }));
+        expect(dispatch).toHaveBeenLastCalledWith({ type: 'BACK' });
     });
+});
+
+it('uses provider menu labels without changing navigation actions', async () => {
+    const { SimulatorLocaleProvider } = await import('@signalsafe/simulator-react');
+    const dispatch = vi.fn();
+    const { getByRole } = render(
+        <SimulatorLocaleProvider messages={{ 'nav.phone': 'Calls and contacts', 'nav.simulatorChannels': 'Choose an app' }}>
+            <SimulatorPhoneNav state={buildState()} dispatch={dispatch} />
+        </SimulatorLocaleProvider>,
+    );
+    expect(getByRole('navigation', { name: 'Choose an app' })).toBeTruthy();
+    fireEvent.click(getByRole('button', { name: 'Calls and contacts' }));
+    expect(dispatch).toHaveBeenCalledWith(switchChannelAction('contacts'));
 });

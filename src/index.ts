@@ -79,3 +79,5 @@ export { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
 export type { SimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
 
 export type { SimulatorDevicePayload } from './types/simulatorDevicePayload.js';
+export { default as SimulatorAppearanceSettings, appearanceTextColor } from './appearance/SimulatorAppearanceSettings.js';
+export type { SimulatorAppearance, SimulatorAppearancePreset } from './appearance/SimulatorAppearanceSettings.js';

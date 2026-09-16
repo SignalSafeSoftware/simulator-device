@@ -36,8 +36,8 @@ describe('source package consumer navigation compatibility', () => {
         const {container} = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} onNavigationEvent={events}/>);
         const nav = within(container).getByTestId('simulator-device-nav');
         fireEvent.click(within(nav).getByRole('button',{name:'Back'}));
-        expect(dispatch).toHaveBeenCalledExactlyOnceWith({type:'BACK_TO_PRIMARY'});
-        expect(events).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({kind:'primary', disposition:'delegated'}));
+        expect(dispatch).toHaveBeenCalledExactlyOnceWith({type:'BACK'});
+        expect(events).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({kind:'back', disposition:'delegated'}));
     });
     for (const Component of [SimulatorWithSession, SimulatorPhoneDevice, SimulatorPhoneNav]) {
         it(`${Component.name} intercepts secondary menu navigation without dispatch`, () => {

@@ -111,7 +111,7 @@ describe('shouldHideHostPhoneNav', () => {
                     messages: { screen: 'thread_detail', stack: [], visibleCount: 0 },
                 }),
             ),
-        ).toBe(true);
+        ).toBe(false);
 
         expect(
             shouldHideHostPhoneNav(
@@ -120,7 +120,7 @@ describe('shouldHideHostPhoneNav', () => {
                     email: { screen: 'detail', stack: ['list'], selectedMessageId: 'm1' },
                 }),
             ),
-        ).toBe(true);
+        ).toBe(false);
     });
 });
 
@@ -152,4 +152,12 @@ describe('dispatchSimulatorPhoneNavItem', () => {
         dispatchSimulatorPhoneNavItem(dispatch, model, outbox);
         expect(dispatch).toHaveBeenCalledWith({ type: 'NAV_LOCAL', app: 'email', screen: 'outbox' });
     });
+});
+
+it('uses Send and Back for email compose, with sending unavailable', () => {
+    const model = resolveSimulatorPhoneNav(buildState({ activeApp: 'email', showPrimaryMenu: false, email: { screen: 'compose', stack: ['list'], selectedMessageId: null } }));
+    expect(model.mode).toBe('tertiary');
+    if (model.mode !== 'tertiary') throw new Error('Expected compose menu');
+    expect(model.items.map(item => item.label)).toEqual(['Send', 'Back']);
+    expect(model.items[0]?.disabled).toBe(true);
 });

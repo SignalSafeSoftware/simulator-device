@@ -1,4 +1,5 @@
 import type { ReactNode, Ref } from 'react';
+import { SimulatorPage } from '@signalsafe/simulator-react';
 import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from './simulatorDeviceClasses.js';
 
 export interface SimulatorPhoneShellProps {
@@ -29,11 +30,10 @@ export default function SimulatorPhoneShell({
         .join(' ');
 
     return (
-        <div className={shellClassName} data-testid="simulator-device-shell">
+        <SimulatorPage className={shellClassName} data-testid="simulator-device-shell" footer={nav}>
             <div className={cls.shellScreen} ref={screenRef}>
                 <div className={cls.shellSessionColumn}>{children}</div>
             </div>
-            {nav}
-        </div>
+        </SimulatorPage>
     );
 }

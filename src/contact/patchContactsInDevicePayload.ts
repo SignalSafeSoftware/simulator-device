@@ -2,11 +2,19 @@ import type { SimulatorDevicePayload } from '../types/simulatorDevicePayload.js'
 import type { SimulatorPhoneContactDetailValues } from './contactDetailTypes.js';
 
 function toDeviceContact(contact: SimulatorPhoneContactDetailValues) {
+    const hasPhones = contact.phoneNumbers !== undefined;
+    const hasNumber = Object.hasOwn(contact, 'number');
+    const hasEmails = contact.emailAddresses !== undefined;
+    const hasEmail = Object.hasOwn(contact, 'email');
     return {
         id: contact.id,
         display_name: contact.displayName,
-        ...(contact.number != null && contact.number !== '' ? { number: contact.number } : {}),
-        ...(contact.email != null && contact.email !== '' ? { email: contact.email } : {}),
+        ...(hasPhones
+            ? { phone_numbers: contact.phoneNumbers, number: contact.phoneNumbers?.[0]?.number }
+            : hasNumber ? { phone_numbers: undefined, number: contact.number } : {}),
+        ...(hasEmails
+            ? { email_addresses: contact.emailAddresses, email: contact.emailAddresses?.[0]?.value }
+            : hasEmail ? { email_addresses: undefined, email: contact.email } : {}),
     };
 }
 

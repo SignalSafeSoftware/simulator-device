@@ -1,3 +1,4 @@
+import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react';
 /**
  * Host phone navigation model derived from @signalsafe/simulator-react session state.
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
@@ -9,8 +10,9 @@ export interface SimulatorPhoneNavItemModel {
     id: string;
     label: string;
     icon?: string;
-    action: 'channel' | 'local' | 'back';
+    action: 'channel' | 'local' | 'back' | 'submit' | 'reply';
     channel?: SimulatorChannel;
+    disabled?: boolean;
 }
 
 export type SimulatorPhoneNavModel =
@@ -21,11 +23,13 @@ export type SimulatorPhoneNavModel =
           activeChannel: SimulatorChannel;
       }
     | {
-          mode: 'secondary';
-          app: 'phone' | 'email' | 'home';
+          mode: 'secondary' | 'tertiary';
+          app: 'phone' | 'email' | 'home' | 'messages';
           items: SimulatorPhoneNavItemModel[];
           activeId: string;
       };
+
+const defaultLocale = createTranslator(simulatorEnglish);
 
 /** Primary bottom tabs — aligned with package PhoneSimulatorShell PRIMARY_CHANNELS. */
 export const SIMULATOR_PRIMARY_NAV_ITEMS: ReadonlyArray<{
@@ -33,26 +37,29 @@ export const SIMULATOR_PRIMARY_NAV_ITEMS: ReadonlyArray<{
     label: string;
     icon: string;
 }> = [
-    { channel: 'contacts', label: 'Phone', icon: '📞' },
-    { channel: 'email', label: 'Email', icon: '📧' },
-    { channel: 'browser', label: 'Internet', icon: '🌐' },
-    { channel: 'sms', label: 'Messages', icon: '💬' },
-    { channel: 'home', label: 'Home', icon: '🏠' },
+    { channel: 'contacts', label: defaultLocale.t('nav.phone'), icon: '📞' },
+    { channel: 'email', label: defaultLocale.t('nav.email'), icon: '📧' },
+    { channel: 'browser', label: defaultLocale.t('nav.internet'), icon: '🌐' },
+    { channel: 'sms', label: defaultLocale.t('nav.messages'), icon: '💬' },
+    { channel: 'home', label: defaultLocale.t('nav.home'), icon: '🏠' },
 ];
 
 const EMAIL_SECONDARY_ITEMS = [
-    { id: 'list', label: 'Inbox', icon: '📥' },
-    { id: 'outbox', label: 'Outbox', icon: '📤' },
-    { id: 'trash', label: 'Trash', icon: '🗑️' },
-    { id: 'back', label: 'Back', icon: '↩' },
+    { id: 'list', label: defaultLocale.t('nav.inbox'), icon: '📥' },
+    { id: 'outbox', label: defaultLocale.t('nav.outbox'), icon: '📤' },
+    { id: 'trash', label: defaultLocale.t('nav.trash'), icon: '🗑️' },
+    { id: 'back', label: defaultLocale.t('nav.back'), icon: '↩' },
 ] as const;
 
 const PHONE_SECONDARY_ITEMS = [
-    { id: 'history', label: 'History', icon: '🕐' },
-    { id: 'contacts', label: 'Contacts', icon: '👤' },
-    { id: 'dial', label: 'Dial', icon: '📞' },
-    { id: 'back', label: 'Back', icon: '↩' },
+    { id: 'history', label: defaultLocale.t('nav.history'), icon: '🕐' },
+    { id: 'contacts', label: defaultLocale.t('nav.contacts'), icon: '👤' },
+    { id: 'dial', label: defaultLocale.t('nav.dial'), icon: '📞' },
+    { id: 'back', label: defaultLocale.t('nav.back'), icon: '↩' },
 ] as const;
+
+const navKeys = { history: 'nav.history', contacts: 'nav.contacts', dial: 'nav.dial', back: 'nav.back', list: 'nav.inbox', outbox: 'nav.outbox', trash: 'nav.trash' } as const;
+const primaryKeys = { phone: 'nav.phone', contacts: 'nav.phone', email: 'nav.email', browser: 'nav.internet', sms: 'nav.messages', home: 'nav.home' } as const;
 
 function getPhoneSecondaryActiveId(screen: string): string {
     if (screen === 'add_contact' || screen === 'directory') {
@@ -103,12 +110,11 @@ export function shouldHideHostPhoneNav(state: SimulatorSessionState): boolean {
         return true;
     }
     return (
-        (view.activeApp === 'messages' && (screen === 'thread_detail' || screen === 'new_thread')) ||
-        (view.activeApp === 'email' && screen === 'detail')
+        false
     );
 }
 
-export function resolveSimulatorPhoneNav(state: SimulatorSessionState): SimulatorPhoneNavModel {
+export function resolveSimulatorPhoneNav(state: SimulatorSessionState, locale = createTranslator(simulatorEnglish)): SimulatorPhoneNavModel {
     const view = state.view;
     if (view == null) {
         return { mode: 'hidden' };
@@ -119,14 +125,45 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState): Simulato
     }
 
     const activeApp = view.activeApp;
+    if (activeApp === 'email' && view.email.screen === 'compose') {
+        return {
+            mode: 'tertiary', app: 'email', activeId: '',
+            items: [
+                { id: 'send', label: locale.t('nav.send'), icon: '➤', action: 'submit', disabled: true },
+                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+            ],
+        };
+    }
+    if (activeApp === 'email' && view.email.screen === 'detail') {
+        return {
+            mode: 'tertiary', app: 'email', activeId: '',
+            items: [
+                { id: 'reply', label: locale.t('nav.reply'), icon: '↪', action: 'reply' },
+                { id: 'forward', label: locale.t('nav.forward'), icon: '➜', action: 'back' },
+                { id: 'dispose', label: locale.t('nav.dispose'), icon: '🗑', action: 'back' },
+                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+            ],
+        };
+    }
+
+    if (activeApp === 'messages' && (view.messages.screen === 'thread_detail' || view.messages.screen === 'new_thread')) {
+        return {
+            mode: 'secondary', app: 'messages', activeId: 'thread_detail',
+            items: [
+                { id: 'send', label: locale.t('nav.send'), icon: '➤', action: 'submit', disabled: view.messages.screen === 'new_thread' },
+                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+            ],
+        };
+    }
+
     if (activeApp === 'home' && view.home.screen === 'settings') {
         return {
             mode: 'secondary',
             app: 'home',
             activeId: 'settings',
             items: [
-                { id: 'settings', label: 'Settings', icon: '⚙', action: 'local' },
-                { id: 'back', label: 'Back', icon: '↩', action: 'back' },
+                { id: 'settings', label: locale.t('nav.settings'), icon: '⚙', action: 'local' },
+                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
             ],
         };
     }
@@ -140,7 +177,7 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState): Simulato
             activeId: getPhoneSecondaryActiveId(view.phone.screen),
             items: PHONE_SECONDARY_ITEMS.map((item) => ({
                 id: item.id,
-                label: item.label,
+                label: locale.t(navKeys[item.id]),
                 icon: item.icon,
                 action: item.id === 'back' ? 'back' : 'local',
             })),
@@ -154,7 +191,7 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState): Simulato
             activeId: getEmailSecondaryActiveId(view.email.screen, view.email.stack),
             items: EMAIL_SECONDARY_ITEMS.map((item) => ({
                 id: item.id,
-                label: item.label,
+                label: locale.t(navKeys[item.id]),
                 icon: item.icon,
                 action: item.id === 'back' ? 'back' : 'local',
             })),
@@ -167,7 +204,7 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState): Simulato
         activeChannel,
         items: SIMULATOR_PRIMARY_NAV_ITEMS.map((item) => ({
             id: item.channel,
-            label: item.label,
+            label: locale.t(primaryKeys[item.channel]),
             icon: item.icon,
             action: 'channel',
             channel: item.channel,
@@ -181,8 +218,12 @@ export function dispatchSimulatorPhoneNavItem(
     item: SimulatorPhoneNavItemModel,
     _state?: SimulatorSessionState,
 ): void {
+    if (item.action === 'reply') {
+        dispatch({ type: 'SIMULATOR_ACTION', action: { type: 'send_reply' } });
+        return;
+    }
     if (item.action === 'back') {
-        dispatch({ type: model.mode === 'secondary' && model.app === 'home' ? 'BACK' : 'BACK_TO_PRIMARY' });
+        dispatch({ type: 'BACK' });
         return;
     }
 

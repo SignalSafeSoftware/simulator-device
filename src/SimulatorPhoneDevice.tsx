@@ -1,7 +1,19 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import {
     SimulatorWithSession,
+    EmailComposeContext,
+    MessageComposeContext,
+    PhoneDialDraftContext,
+    SimulatorCapabilitiesContext,
+    useEmailComposeOptions,
+    useMessageComposeOptions,
+    usePhoneDialDraft,
+    useSimulatorCapabilities,
+    type MessageComposeOptions,
+    type PhoneDialDraft,
+    type SimulatorActionCapabilities,
+    type EmailComposeOptions,
     simulatorDatasourceToPayload,
     updateSimulatorPayload,
     type SimulatorDatasource,
@@ -44,6 +56,10 @@ type ManagedSimulatorWithSessionProps =
 export interface SimulatorPhoneDeviceProps
     extends Omit<SimulatorWithSessionProps, ManagedSimulatorWithSessionProps> {
     datasource?: SimulatorDatasource;
+    emailCompose?: EmailComposeOptions;
+    messageCompose?: MessageComposeOptions;
+    dialDraft?: PhoneDialDraft;
+    capabilities?: Partial<SimulatorActionCapabilities>;
     /**
      * Lower-level escape hatch for fully custom contact detail UI.
      * Takes precedence over {@link contactDetail} when both are set.
@@ -72,6 +88,10 @@ function shouldClearHostContactSelection(action: SimulatorDispatchAction): boole
 export default function SimulatorPhoneDevice({
     state: hostState,
     datasource,
+    emailCompose,
+    messageCompose,
+    dialDraft,
+    capabilities,
     dispatch: rawDispatch,
     onNavigation,
     onNavigationEvent,
@@ -82,6 +102,11 @@ export default function SimulatorPhoneDevice({
     screenClassNames: extraScreenClassNames = [],
     ...sessionProps
 }: Readonly<SimulatorPhoneDeviceProps>) {
+    const inheritedEmail = useEmailComposeOptions();
+    const returnContactId = useRef<string | null>(null);
+    const inheritedMessages = useMessageComposeOptions();
+    const inheritedDial = usePhoneDialDraft();
+    const inheritedCapabilities = useSimulatorCapabilities();
     const payload = useMemo(() => datasource ? simulatorDatasourceToPayload(datasource) : null, [datasource]);
     const state = useMemo(() => payload ? updateSimulatorPayload(hostState, payload) : hostState, [hostState, payload]);
     const screenRef = useRef<HTMLDivElement>(null);
@@ -94,12 +119,16 @@ export default function SimulatorPhoneDevice({
 
     const dispatchAndClear = useCallback(
         (action: SimulatorDispatchAction) => {
+            if (action.type === 'BACK' && contact) {
+                clearSelection();
+                return;
+            }
             if (hostContactEnabled && shouldClearHostContactSelection(action)) {
                 clearSelection();
             }
             rawDispatch(action);
         },
-        [rawDispatch, clearSelection, hostContactEnabled],
+        [rawDispatch, clearSelection, hostContactEnabled, contact],
     );
 
     const dispatchWithHostClear = useMemo(() => createSimulatorNavigationDispatch({
@@ -113,6 +142,21 @@ export default function SimulatorPhoneDevice({
 
     const showHostContactDetail =
         hostContactEnabled && hostMode.kind === 'phone-contact-edit' && contact != null;
+
+    useLayoutEffect(() => {
+        if (showHostContactDetail && contact) {
+            returnContactId.current = contact.id;
+            screenRef.current?.querySelector<HTMLElement>('input:not([type="hidden"]), [tabindex="-1"], button')?.focus();
+        } else if (returnContactId.current) {
+            if (state.view.activeApp === 'phone' && state.view.phone.screen === 'contacts') {
+                const rows = Array.from(screenRef.current?.querySelectorAll<HTMLElement>('[data-simulator-contact-id]') ?? []);
+                const row = rows.find(item => item.dataset.simulatorContactId === returnContactId.current);
+                const button = row?.matches('button') ? row : row?.querySelector<HTMLButtonElement>('button');
+                (button ?? screenRef.current?.querySelector<HTMLInputElement>('input[type="search"]'))?.focus();
+            }
+            returnContactId.current = null;
+        }
+    }, [showHostContactDetail, contact?.id, state.view.activeApp, state.view.phone.screen]);
 
     const resolvedRenderContactDetail = useMemo(() => {
         if (renderContactDetail != null) {
@@ -151,6 +195,10 @@ export default function SimulatorPhoneDevice({
             : runtime;
 
     const shell = (
+        <SimulatorCapabilitiesContext.Provider value={{...inheritedCapabilities,...capabilities}}>
+        <PhoneDialDraftContext.Provider value={dialDraft ?? inheritedDial}>
+        <MessageComposeContext.Provider value={messageCompose ?? inheritedMessages}>
+        <EmailComposeContext.Provider value={emailCompose ?? inheritedEmail}>
         <SimulatorPhoneShell
             useHostNav
             screenClassNames={screenClassNames}
@@ -163,6 +211,10 @@ export default function SimulatorPhoneDevice({
         >
             {screenContent}
         </SimulatorPhoneShell>
+        </EmailComposeContext.Provider>
+        </MessageComposeContext.Provider>
+        </PhoneDialDraftContext.Provider>
+        </SimulatorCapabilitiesContext.Provider>
     );
 
     if (className) {

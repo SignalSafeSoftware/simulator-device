@@ -173,6 +173,22 @@ describe('SimulatorPhoneDevice', () => {
         expect(container.querySelector('[data-simulator-app]')).toBeNull();
     });
 
+    it('secondary Back closes contact details without leaving Contacts', () => {
+        const dispatch = vi.fn();
+        const state = buildContactsScreenState();
+        state.view.showPrimaryMenu = false;
+        const { container, getAllByRole, queryByTestId } = render(
+            <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{ mode: 'read-only' }} />,
+        );
+        clickContactRow(container, 'IT Helpdesk');
+        dispatch.mockClear();
+        const back = getAllByRole('button', { name: 'Back', exact: true }).at(-1)!;
+        fireEvent.click(back);
+        expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
+        expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
+        expect(dispatch).not.toHaveBeenCalled();
+    });
+
     it('onBack clears selected contact and returns to runtime', () => {
         const state = buildContactsScreenState();
         const dispatch = vi.fn();

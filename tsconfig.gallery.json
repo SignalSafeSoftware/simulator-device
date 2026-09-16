@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vite/client"
+    ]
+  },
+  "include": [
+    "gallery/main.tsx",
+    "gallery/fixtures.ts"
+  ],
+  "exclude": []
+}

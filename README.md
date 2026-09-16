@@ -399,7 +399,7 @@ yarn smoke:package
 
 MIT
 
-## Navigation interception (unreleased)
+## Navigation interception
 
 `SimulatorDevice`, `SimulatorPhoneDevice`, and standalone `SimulatorPhoneNav`
 accept the additive synchronous `onNavigation` callback and observational
@@ -413,20 +413,18 @@ simulator-react, without artificial history/contacts screen hops.
 The full contract and release sequence are in simulator-react's
 `docs/navigation-contract.md`. Release simulator-react first and raise this
 package's dependency minimum to that new version before releasing device.
-Current package versions and dependency floors have deliberately not been
-published or changed. No host-specific Settings implementation is included.
+This release requires simulator-react 0.16.2 and simulator-core 0.3.1. No host-specific Settings implementation is included.
 
-### Host screen content (source contract; release pending)
+### Host screen content
 
 `SimulatorPhoneDevice` inherits `screenOverrides` from `SimulatorWithSession`.
 For example, `{ home: { settings: HostSettings } }` replaces Settings content
 inside the existing shell and navigation, without intercepting action variants.
 Stable component types receive typed session/location, intercepted dispatch,
 Back and lazy default rendering. See sibling simulator-react
-[`docs/screen-overrides.md`](../simulator-react/docs/screen-overrides.md) for
+[`docs/screen-overrides.md`](https://github.com/SignalSafeSoftware/simulator-react/blob/main/docs/screen-overrides.md) for
 fallback, lifecycle, accessibility and ordered release/adoption requirements.
-Existing contact-detail slots retain their precedence. No release or consumer
-upgrade has been performed; APP-01 integration remains separate.
+Existing contact-detail slots retain their precedence; host integration remains application-owned.
 
 ## Datasource entry point (0.4)
 
@@ -444,3 +442,62 @@ Supply exactly one source. Both properties are a type error and throw at runtime
 ### Datasource conversion ownership (0.5)
 
 `SimulatorDevice` and `SimulatorPhoneDevice` memoize the mutable session copy by datasource identity. Keep that identity stable while navigating and replace it when content changes. Controlled hosts that already compose `state.payload` should pass `state` without an additional datasource overlay. JSON-only consumers retain their existing normalization and replacement/reset behavior. Datasource snapshots now use simulator-react 0.4 deeply readonly types; edit a mutable session copy or create a replacement snapshot.
+
+### Labeled contact values
+
+Session contacts accept `phoneNumbers` and `emailAddresses` arrays of
+`{ label, value, number? }`. `value` is display/original text; `number` is an
+optional canonical dialing value supplied by the host. Empty labels display as
+“Unlabeled”. Existing `number` and `email` fields remain supported when arrays
+are absent. Editable contact details support adding, editing, and removing rows;
+changing a phone value clears its canonical number until the host normalizes it.
+`contactDetail.renderPhoneAction(phone, contact)` supplies an optional action for
+each phone row. The simulator does not place external calls itself.
+Full-device payloads use `phone_numbers` and `email_addresses`; adapters preserve
+these arrays when saving and reopening a contact.
+
+### Appearance settings
+
+`SimulatorAppearanceSettings` provides a controlled appearance editor with presets,
+background/accent pickers, and an isolated preview. Hosts supply `value`, `presets`,
+`onApply`, and `onReset`, and own persistence and token mapping. Draft changes do
+not apply until the user presses Apply. Color inputs use opaque six-digit hex
+values; `appearanceTextColor` chooses a contrasting black/white foreground.
+
+Appearance also accepts optional `backgroundImage` (a raster image data URL).
+The image picker reads local PNG/JPEG/WebP files up to 2 MiB, previews them,
+and supports removal. The host persists the image alongside colors and maps it
+to `--simulator-background-image`; the theme centers and covers the screen.
+
+## Controlled workflows and availability
+
+`SimulatorPhoneDevice` accepts `emailCompose`, `messageCompose`, `dialDraft`, and
+`capabilities`. Drafts remain host-owned when supplied. Email and new-message
+callbacks may return a promise: rejection preserves the draft, successful acceptance
+clears it, and duplicate submission is blocked while pending. These callbacks do
+not configure an external provider.
+
+`capabilities` uses `SimulatorActionCapabilities` from simulator-react. Each action
+is either `{ state: 'enabled' }` or `{ state: 'unsupported' | 'unavailable', reason }`.
+Reasons are visible in the screen/navigation. Contact save/delete callbacks also
+support promises and preserve the draft on rejection. Closing contact details
+restores keyboard focus to the originating row when it is still present.
+
+## Synthetic UI gallery
+
+Run `npm run preview:gallery`, then open `http://127.0.0.1:5176`.
+`npm run build:gallery` produces a static gallery; `tsc -p tsconfig.gallery.json`
+checks its fixtures. The gallery uses the installed shared React package and theme, without
+PhoneMe APIs or external providers. It covers populated, empty, loading, unavailable,
+and error states; light/dark/high-contrast tokens; 320–520 pixel widths; and 100–200%
+text size. Screen controls cover contacts, contact editing, history, dialing,
+messages, and email compose. Error-mode email submission deliberately rejects.
+These fixtures supplement real host, browser, device and live-provider acceptance.
+
+The npm archive includes `gallery-dist/`, a self-contained static build that can be served without sibling repositories. Gallery development commands above run from this source repository.
+
+## Release records
+
+See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). Current runtime dependencies are simulator-core 0.3.1 and simulator-react 0.16.2, with React 18 peers. The gallery and release smoke tests use declared registry dependencies; no sibling source checkout is required.
+
+Development tooling requires Node 22.22.2+ or Node 24.15+ (jsdom 30); CI selects current Node 22/24. The published runtime retains its Node >=22.12.0 contract and React 18 peers. TypeScript 7, Vite 8 and Vitest 5 are build/test tools, not runtime dependencies.

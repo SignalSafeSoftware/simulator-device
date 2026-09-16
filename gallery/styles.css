@@ -1,0 +1,9 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; }
+main { padding: 1rem; min-height: 100vh; background: var(--bs-body-bg, #f5f5f5); color: var(--bs-body-color, #222); }
+.gallery-controls { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem; }
+.gallery-controls label { display: grid; gap: .25rem; }
+.gallery-controls button, .gallery-controls select { font: inherit; padding: .5em; }
+main[data-theme='dark'] { --bs-body-bg:#121820; --bs-body-color:#f2f4f8; --bs-tertiary-bg:#253040; --bs-secondary-color:#c1cad8; --bs-border-color:#65738a; --bs-primary:#85b9ff; }
+main[data-theme='high contrast'] { --bs-body-bg:#000; --bs-body-color:#fff; --bs-tertiary-bg:#111; --bs-secondary-color:#fff; --bs-border-color:#fff; --bs-primary:#ffff00; }
+.simulator-host-device { margin-top: 1rem; }

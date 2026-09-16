@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+    resolve: { dedupe: ['react', 'react-dom'] },
     test: {
+        server: { deps: { inline: [/@signalsafe\//] } },
         environment: 'jsdom',
         setupFiles: ['./tests/setup.ts'],
         include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
