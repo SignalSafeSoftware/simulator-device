@@ -42,7 +42,7 @@
     "RELEASING.md"
   ],
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=19.0.0"
   },
   "packageManager": "yarn@1.22.22",
   "publishConfig": {

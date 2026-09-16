@@ -500,4 +500,15 @@ The npm archive includes `gallery-dist/`, a self-contained static build that can
 
 See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). Current runtime dependencies are simulator-core 0.3.1 and simulator-react 0.16.2, with React 18 peers. The gallery and release smoke tests use declared registry dependencies; no sibling source checkout is required.
 
-Development tooling requires Node 22.22.2+ or Node 24.15+ (jsdom 30); CI selects current Node 22/24. The published runtime retains its Node >=22.12.0 contract and React 18 peers. TypeScript 7, Vite 8 and Vitest 5 are build/test tools, not runtime dependencies.
+Development tooling requires Node 22.22.2+ or Node 24.15+ (jsdom 30); CI selects current Node 22/24. The published runtime retains its Node >=19.0.0 contract and React 18 peers. TypeScript 7, Vite 8 and Vitest 5 are build/test tools, not runtime dependencies.
+
+## Node runtime compatibility
+
+The runtime requirement is Node >=19.0.0. Build, unit-test and coverage tools use
+Node 22/24 (use Node 24.16+ locally). A separate CI job installs packed artifacts
+with strict engine checks and tests runtime behavior on Node 19.0.0 and 19–24.
+
+This experiment tests updated simulator dependencies built from the pinned CI
+revisions in the workflow. Before publishing, release core, then React, then
+device, updating dependency versions and lockfiles to those Node 19 releases.
+The existing registry releases of core/React still require Node 22.12.

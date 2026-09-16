@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { normalizePhoneNumber, SimulatorPhoneNavItem } from '@signalsafe/simulator-device';
+assert.equal(normalizePhoneNumber('+1 (202) 555-0123'), '12025550123');
+assert.equal(normalizePhoneNumber(null), '');
+const html = renderToStaticMarkup(React.createElement(SimulatorPhoneNavItem, { label: 'Contacts', active: true, onClick() {} }));
+assert.match(html, /Contacts/);
+assert.match(html, /aria-current="page"/);
+assert.match(html, /<button/);
+console.log(`Runtime compatibility passed on ${process.version}`);
