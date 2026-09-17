@@ -287,7 +287,7 @@ function runTypeChecks(consumerDir, packageName, subpaths) {
 }
 
 function verifyTarballContents(tgzPath, pkg) {
-    const listing = execFileSync(process.platform === 'win32' ? 'C:\\Windows\\System32\\tar.exe' : '/usr/bin/tar', ['-tf', tgzPath], { encoding: 'utf8' })
+    const listing = execFileSync(process.platform === 'win32' ? String.raw`C:\Windows\System32\tar.exe` : '/usr/bin/tar', ['-tf', tgzPath], { encoding: 'utf8' })
         .trim()
         .split('\n')
         .filter(Boolean);

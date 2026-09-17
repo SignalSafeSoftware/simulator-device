@@ -99,7 +99,7 @@ function Gallery() {
       </p>
       <div className="gallery-controls">
         <label>
-          State
+          State{" "}
           <select
             value={mode}
             onChange={(event) => {
@@ -117,7 +117,7 @@ function Gallery() {
           </select>
         </label>
         <label>
-          Theme
+          Theme{" "}
           <select
             value={theme}
             onChange={(event) => setTheme(event.target.value)}
@@ -128,7 +128,7 @@ function Gallery() {
           </select>
         </label>
         <label>
-          Width
+          Width{" "}
           <select
             value={width}
             onChange={(event) => setWidth(event.target.value)}
@@ -139,7 +139,7 @@ function Gallery() {
           </select>
         </label>
         <label>
-          Text size
+          Text size{" "}
           <select
             value={scale}
             onChange={(event) => setScale(event.target.value)}
