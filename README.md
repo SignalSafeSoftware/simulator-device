@@ -512,3 +512,15 @@ This experiment tests updated simulator dependencies built from the pinned CI
 revisions in the workflow. Before publishing, release core, then React, then
 device, updating dependency versions and lockfiles to those Node 19 releases.
 The existing registry releases of core/React still require Node 22.12.
+
+### Dependency revisions and coverage
+
+The compatibility job currently builds simulator-core at `f46aa6567758d23eef97b72927e139e2d91354e9`
+and simulator-react at `82b30353b3f21eda1161cba27404bfb5bc503083`, the merged Node 19
+updates. Registry dependency versions remain core `0.3.1` and React `0.16.2`;
+no newer registry release is available to adopt in the manifest or lockfile.
+The packed-runtime matrix validates these GitHub artifacts together with tree-spec
+`0.4.1`; it does not establish Node 19 support for the older registry artifacts.
+
+Run `yarn test:coverage` to check the unit suite. CI requires 100% statements,
+branches, functions, and lines across the existing source coverage scope.

@@ -315,3 +315,51 @@ describe('SimulatorPhoneDevice', () => {
         expect(getByTestId('simulator-device-shell')).toBeTruthy();
     });
 });
+
+it('passes the original contact context to package delete handlers', () => {
+    const state = buildContactsScreenState();
+    const dispatch = vi.fn();
+    const onDelete = vi.fn();
+    const { container, getByRole } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{ mode: 'editable', onDelete }} />);
+    clickContactRow(container, 'HR');
+    fireEvent.click(getByRole('button', { name: 'Delete' }));
+    expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ displayName: 'HR' }), { state, dispatch: expect.any(Function), originalContact: expect.objectContaining({ displayName: 'HR' }) });
+});
+
+it('closes host contact details when switching phone tabs', () => {
+    const dispatch = vi.fn();
+    const state = buildContactsScreenState();
+    state.view.showPrimaryMenu = false;
+    const { container, getByRole, queryByTestId } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />);
+    clickContactRow(container, 'HR');
+    fireEvent.click(getByRole('button', { name: 'History', exact: true }));
+    expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
+    expect(dispatch).toHaveBeenCalledWith({ type: 'NAV_LOCAL', app: 'phone', screen: 'history' });
+});
+
+it('hides navigation when there is no active app', () => {
+    const state = buildContactsScreenState();
+    state.view.activeApp = null;
+    const view = render(<SimulatorPhoneDevice state={state} dispatch={vi.fn()} />);
+    expect(view.queryByRole('navigation')).toBeNull();
+});
+
+it('returns focus to search when the previously selected contact is removed', () => {
+    const state = buildContactsScreenState();
+    const dispatch = vi.fn();
+    const view = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />);
+    clickContactRow(view.container, 'HR');
+    const changed = { ...state, payload: { ...state.payload, contacts: [] } };
+    view.rerender(<SimulatorPhoneDevice state={changed} dispatch={dispatch} contactDetail={{}} />);
+    expect(view.queryByTestId('simulator-phone-contact-detail')).toBeNull();
+    expect(document.activeElement).toBe(view.getByRole('searchbox'));
+});
+
+it('closes details when the host changes the active phone screen', () => {
+    const state = buildContactsScreenState();
+    const dispatch = vi.fn();
+    const view = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />);
+    clickContactRow(view.container, 'HR');
+    view.rerender(<SimulatorPhoneDevice state={{ ...state, view: { ...state.view, phone: { ...state.view.phone, screen: 'dial' } } }} dispatch={dispatch} contactDetail={{}} />);
+    expect(view.queryByTestId('simulator-phone-contact-detail')).toBeNull();
+});

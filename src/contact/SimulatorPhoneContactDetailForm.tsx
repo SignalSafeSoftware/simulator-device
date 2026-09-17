@@ -50,6 +50,8 @@ export default function SimulatorPhoneContactDetailForm({
   const conflict =
     mode === "editable" && !sameSource && !pristine && state.source.id === initialContact.id;
   const editable = mode === "editable";
+  const scalarNumber = draft.number ?? "";
+  const scalarEmail = draft.email ?? "";
 
   const updateField = useCallback((patch: Partial<SimulatorPhoneContactDetailValues>) => {
     setState((prev) => ({ ...prev, draft: { ...prev.draft, ...patch } }));
@@ -202,7 +204,7 @@ export default function SimulatorPhoneContactDetailForm({
                 renderPhoneAction ? (phone) => renderPhoneAction(phone, draft) : undefined
               }
             />
-          ) : editable || draft.number?.trim() ? (
+          ) : editable || scalarNumber.trim() ? (
             <>
               <div className="simulator-phone-contact-detail__field">
                 <label
@@ -216,12 +218,12 @@ export default function SimulatorPhoneContactDetailForm({
                     id={fieldId("number", draft.id)}
                     className="simulator-phone-contact-detail__input"
                     type="tel"
-                    value={draft.number ?? ""}
+                    value={scalarNumber}
                     onChange={(event) => updateField({ number: event.target.value })}
                   />
                 ) : (
                   <span className="simulator-phone-contact-detail__value">
-                    {formatNumber(draft.number ?? "")}
+                    {formatNumber(scalarNumber)}
                   </span>
                 )}
               </div>
@@ -255,7 +257,7 @@ export default function SimulatorPhoneContactDetailForm({
                 updateField({ emailAddresses, email: emailAddresses[0]?.value })
               }
             />
-          ) : editable || draft.email?.trim() ? (
+          ) : editable || scalarEmail.trim() ? (
             <>
               <div className="simulator-phone-contact-detail__field">
                 <label
@@ -269,11 +271,11 @@ export default function SimulatorPhoneContactDetailForm({
                     id={fieldId("email", draft.id)}
                     className="simulator-phone-contact-detail__input"
                     type="email"
-                    value={draft.email ?? ""}
+                    value={scalarEmail}
                     onChange={(event) => updateField({ email: event.target.value })}
                   />
                 ) : (
-                  <span className="simulator-phone-contact-detail__value">{draft.email ?? ""}</span>
+                  <span className="simulator-phone-contact-detail__value">{scalarEmail}</span>
                 )}
               </div>
               {editable && (

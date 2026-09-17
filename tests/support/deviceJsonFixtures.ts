@@ -1,4 +1,4 @@
-import type { SimulatorDevicePayload } from '../src/types/simulatorDevicePayload.js';
+import type { SimulatorDevicePayload } from '../../src/types/simulatorDevicePayload.js';
 import { TEST_CONTACTS } from './contactFixtures.js';
 
 export function buildHomeDeviceJson(): SimulatorDevicePayload {
@@ -16,9 +16,7 @@ export function buildHomeDeviceJson(): SimulatorDevicePayload {
             display_name: contact.displayName,
             number: contact.number,
         })),
-        home: {
-            widgets: [{ id: 'clock', type: 'clock', title: 'Clock' }],
-        },
+        home: {},
     };
 }
 
@@ -37,7 +35,7 @@ export function buildContactsDeviceJson(): SimulatorDevicePayload {
             number: contact.number,
         })),
         phone: {
-            call_history: [],
+            history: [],
         },
     };
 }

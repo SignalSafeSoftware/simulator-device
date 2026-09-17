@@ -247,3 +247,10 @@ describe('SimulatorDevice', () => {
         expect(queryByTestId('mock-simulator-phone-device')).toBeNull();
     });
 });
+
+it('initializes a device when an unsupported value is replaced', async () => {
+    const { rerender, queryByTestId, getByTestId } = render(<SimulatorDevice value={Object.assign(buildHomeDeviceJson(), { type: "desktop" })} />);
+    expect(queryByTestId('mock-simulator-phone-device')).toBeNull();
+    rerender(<SimulatorDevice value={buildHomeDeviceJson()} />);
+    await waitFor(() => expect(getByTestId('mock-simulator-phone-device')).toBeTruthy());
+});

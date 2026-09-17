@@ -27,14 +27,11 @@ export interface SimulatorPhoneNavProps {
   dispatch: (action: SimulatorDispatchAction) => void;
 }
 
-function isActiveItem(model: SimulatorPhoneNavModel, itemId: string): boolean {
+function isActiveItem(model: Exclude<SimulatorPhoneNavModel, { mode: "hidden" }>, itemId: string): boolean {
   if (model.mode === "primary") {
     return model.activeChannel === itemId;
   }
-  if (model.mode === "secondary" || model.mode === "tertiary") {
-    return model.activeId === itemId;
-  }
-  return false;
+  return model.activeId === itemId;
 }
 
 export default function SimulatorPhoneNav({

@@ -4,6 +4,10 @@
 
 ### Changed
 
+- Refresh Node 19 CI dependency artifacts to the merged core and React revisions.
+- Expand device behavior and edge-case coverage and enforce 100% statements, branches, functions, and lines.
+- Simplify redundant internal fallbacks and resolve selected contacts before deriving their host mode.
+
 - Lower the runtime requirement to Node >=19.0.0 and refresh the TreeSpec lockfile to 0.4.1.
 - Add isolated packed-consumer tests on Node 19.0.0 and Node 19–24; retain modern tooling checks on Node 22/24.
 

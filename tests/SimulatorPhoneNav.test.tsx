@@ -95,3 +95,8 @@ it('uses provider menu labels without changing navigation actions', async () => 
     fireEvent.click(getByRole('button', { name: 'Calls and contacts' }));
     expect(dispatch).toHaveBeenCalledWith(switchChannelAction('contacts'));
 });
+
+it('renders no navigation when no app is selected', () => {
+    const { queryByRole } = render(<SimulatorPhoneNav state={buildState({ activeApp: null })} dispatch={vi.fn()} />);
+    expect(queryByRole('navigation')).toBeNull();
+});

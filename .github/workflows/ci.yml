@@ -105,12 +105,12 @@ jobs:
             - uses: actions/checkout@v7
               with:
                   repository: SignalSafeSoftware/simulator-core
-                  ref: c867b47b7ab2b78d459635b1c0e6a0dc27a4603b # Node 19 compatibility experiment
+                  ref: f46aa6567758d23eef97b72927e139e2d91354e9 # Node 19 compatibility experiment
                   path: simulator-core
             - uses: actions/checkout@v7
               with:
                   repository: SignalSafeSoftware/simulator-react
-                  ref: 5735097decb13559431b58307e0fd4ba2dfdb474 # Node 19 compatibility experiment
+                  ref: 82b30353b3f21eda1161cba27404bfb5bc503083 # Node 19 compatibility experiment
                   path: simulator-react
             - uses: actions/setup-node@v7
               with:

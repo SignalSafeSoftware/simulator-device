@@ -265,3 +265,36 @@ it("keeps phone and email input kinds when visible labels are overridden", () =>
   expect(getByLabelText("Telephone 1")).toHaveProperty("type", "tel");
   expect(getByLabelText("Mail address 1")).toHaveProperty("type", "email");
 });
+
+it.each([true, false])("converts scalar fields to editable lists (existing values: %s)", (existing) => {
+  const onSave = vi.fn();
+  const { getByLabelText, getByRole } = render(
+    <SimulatorPhoneContactDetailForm
+      contact={{ id: "convert", displayName: "Contact", ...(existing ? { number: "111", email: "old@example.com" } : {}) }}
+      mode="editable" onBack={vi.fn()} onSave={onSave} context={context}
+    />,
+  );
+  if (existing) fireEvent.change(getByLabelText("Phone number"), { target: { value: "222" } });
+  fireEvent.click(getByRole("button", { name: "Add phone number" }));
+  fireEvent.click(getByRole("button", { name: "Add email" }));
+  const index = existing ? 2 : 1;
+  fireEvent.change(getByLabelText(`Phone number ${index}`), { target: { value: "333" } });
+  fireEvent.change(getByLabelText(`Email ${index}`), { target: { value: "new@example.com" } });
+  fireEvent.click(getByRole("button", { name: "Save" }));
+  expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
+    phoneNumbers: [...(existing ? [{ label: "", value: "222", number: "222" }] : []), { label: "", value: "333" }],
+    emailAddresses: [...(existing ? [{ label: "", value: "old@example.com" }] : []), { label: "", value: "new@example.com" }],
+  }));
+});
+
+it("removes the last email and phone without keeping stale scalar values", () => {
+  const onSave = vi.fn();
+  const { getByRole } = render(<SimulatorPhoneContactDetailForm
+    contact={{ id: "remove", displayName: "Contact", number: "111", email: "old@example.com", phoneNumbers: [{ label: "", value: "111" }], emailAddresses: [{ label: "", value: "old@example.com" }] }}
+    mode="editable" onBack={vi.fn()} onSave={onSave} context={context}
+  />);
+  fireEvent.click(getByRole("button", { name: "Remove phone number 1" }));
+  fireEvent.click(getByRole("button", { name: "Remove email 1" }));
+  fireEvent.click(getByRole("button", { name: "Save" }));
+  expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ phoneNumbers: [], emailAddresses: [], number: undefined, email: undefined }));
+});

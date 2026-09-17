@@ -40,18 +40,14 @@ export function useSimulatorPhoneDeviceContactHost(
         [enabled],
     );
 
-    const hostMode = resolveSimulatorPhoneShellHostMode(
-        state,
-        enabled ? selectedContactId : null,
-    );
-
     const contact = useMemo((): SimulatorSessionContact | null => {
-        if (hostMode.kind !== 'phone-contact-edit') {
+        if (!enabled || !onContactsScreen || selectedContactId == null) {
             return null;
         }
+        return state.payload.contacts?.find((entry) => entry.id === selectedContactId) ?? null;
+    }, [enabled, onContactsScreen, selectedContactId, state.payload.contacts]);
 
-        return state.payload.contacts?.find((entry) => entry.id === hostMode.contactId) ?? null;
-    }, [hostMode, state.payload.contacts]);
+    const hostMode = resolveSimulatorPhoneShellHostMode(state, contact?.id ?? null);
 
     const clearSelection = useCallback(() => {
         setSelectedContactId(null);
