@@ -1,10 +1,8 @@
-import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react';
+import { createTranslator, simulatorEnglish, switchChannelAction, viewStateToActiveChannel, type SimulatorChannel, type SimulatorDispatchAction, type SimulatorSessionState, type SimulatorViewState } from '@signalsafe/simulator-react';
 /**
  * Host phone navigation model derived from @signalsafe/simulator-react session state.
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
  */
-import type { SimulatorChannel, SimulatorDispatchAction, SimulatorSessionState, SimulatorViewState } from '@signalsafe/simulator-react';
-import { switchChannelAction, viewStateToActiveChannel } from '@signalsafe/simulator-react';
 
 export interface SimulatorPhoneNavItemModel {
     id: string;

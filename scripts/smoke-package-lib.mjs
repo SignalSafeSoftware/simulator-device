@@ -145,8 +145,7 @@ export function runSmokePackage(config) {
         .trim()
         .split('\n')
         .map((line) => line.trim())
-        .filter(Boolean)
-        .pop();
+        .findLast(Boolean);
     if (!tgzName) {
         throw new Error('npm pack did not return a tarball name');
     }
@@ -189,7 +188,7 @@ export function runSmokePackage(config) {
             )}\n`,
         );
 
-        run(['install', '--no-fund', '--no-audit'], { cwd: consumerDir });
+        run(['install', '--ignore-scripts', '--no-fund', '--no-audit'], { cwd: consumerDir });
 
         if (config.runtimeChecks?.length) {
             runRuntimeChecks(consumerDir, pkg.name, config.runtimeChecks);
@@ -238,8 +237,9 @@ function runRuntimeChecks(consumerDir, packageName, runtimeChecks) {
         const alias = `mod${index}`;
         lines.push(`const ${alias} = await import(${JSON.stringify(spec)});`);
         for (const exportName of check.exports) {
+            const message = JSON.stringify(`missing export ${exportName} from ${spec}`);
             lines.push(
-                `assert.ok(typeof ${alias}.${exportName} !== "undefined", ${JSON.stringify(`missing export ${exportName} from ${spec}`)});`,
+                `assert.ok(typeof ${alias}.${exportName} !== "undefined", ${message});`,
             );
         }
         lines.push('');
@@ -279,7 +279,7 @@ function runTypeChecks(consumerDir, packageName, subpaths) {
         )}\n`,
     );
 
-    execFileSync('npx', ['tsc', '-p', 'tsconfig.json'], {
+    execFileSync(process.execPath, [path.join(consumerDir, 'node_modules/typescript/bin/tsc'), '-p', 'tsconfig.json'], {
         cwd: consumerDir,
         stdio: 'inherit',
     });
@@ -287,7 +287,7 @@ function runTypeChecks(consumerDir, packageName, subpaths) {
 }
 
 function verifyTarballContents(tgzPath, pkg) {
-    const listing = execFileSync('tar', ['-tf', tgzPath], { encoding: 'utf8' })
+    const listing = execFileSync(process.platform === 'win32' ? 'C:\\Windows\\System32\\tar.exe' : '/usr/bin/tar', ['-tf', tgzPath], { encoding: 'utf8' })
         .trim()
         .split('\n')
         .filter(Boolean);

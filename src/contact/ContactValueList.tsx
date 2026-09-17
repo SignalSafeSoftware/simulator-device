@@ -1,7 +1,9 @@
-import { useSimulatorLocale } from "@signalsafe/simulator-react";
-import type { ReactNode } from "react";
-import { usePhoneNumberFormatter } from "@signalsafe/simulator-react";
-import type { SimulatorSessionContact } from "@signalsafe/simulator-react";
+import {
+  useSimulatorLocale,
+  usePhoneNumberFormatter,
+  type SimulatorSessionContact,
+} from "@signalsafe/simulator-react";
+import { useRef, type ReactNode } from "react";
 
 type Value = NonNullable<SimulatorSessionContact["phoneNumbers"]>[number];
 
@@ -12,17 +14,30 @@ export default function ContactValueList({
   editable,
   onChange,
   renderAction,
-}: {
+}: Readonly<{
   title: string;
   kind: "phone" | "email";
   values: Value[];
   editable: boolean;
   onChange: (values: Value[]) => void;
   renderAction?: (value: Value) => ReactNode;
-}) {
+}>) {
   const screenLocale = useSimulatorLocale();
 
   const formatNumber = usePhoneNumberFormatter();
+  const rowKeys = useRef(new WeakMap<Value, string>());
+  const nextKey = useRef(0);
+  const rowKey = (value: Value): string => {
+    const existing = rowKeys.current.get(value);
+    if (existing !== undefined) return existing;
+    const key = `contact-value-${nextKey.current++}`;
+    rowKeys.current.set(value, key);
+    return key;
+  };
+  const replaceValue = (original: Value, replacement: Value): Value => {
+    rowKeys.current.set(replacement, rowKey(original));
+    return replacement;
+  };
   if (!editable && !values.some((item) => item.value.trim())) return null;
   return (
     <fieldset className="simulator-phone-contact-detail__values">
@@ -32,7 +47,10 @@ export default function ContactValueList({
           : screenLocale.t("screen.contactValueList.phone.numbers")}
       </legend>
       {values.map((item, index) => (
-        <div className="simulator-phone-contact-detail__field" key={index}>
+        <div
+          className="simulator-phone-contact-detail__field"
+          key={rowKey(item)}
+        >
           {editable ? (
             <>
               <label>
@@ -44,7 +62,12 @@ export default function ContactValueList({
                   onChange={(event) =>
                     onChange(
                       values.map((entry, position) =>
-                        position === index ? { ...entry, label: event.target.value } : entry,
+                        position === index
+                          ? replaceValue(entry, {
+                              ...entry,
+                              label: event.target.value,
+                            })
+                          : entry,
                       ),
                     )
                   }
@@ -59,7 +82,10 @@ export default function ContactValueList({
                     onChange(
                       values.map((entry, position) =>
                         position === index
-                          ? { label: entry.label, value: event.target.value }
+                          ? replaceValue(entry, {
+                              label: entry.label,
+                              value: event.target.value,
+                            })
                           : entry,
                       ),
                     )
@@ -68,7 +94,9 @@ export default function ContactValueList({
               </label>
               <button
                 type="button"
-                onClick={() => onChange(values.filter((_, position) => position !== index))}
+                onClick={() =>
+                  onChange(values.filter((_, position) => position !== index))
+                }
               >
                 {screenLocale.t("screen.contactValueList.remove")}
                 {title.toLowerCase()} {index + 1}
@@ -77,7 +105,8 @@ export default function ContactValueList({
           ) : (
             <>
               <span className="simulator-phone-contact-detail__label">
-                {item.label.trim() || screenLocale.t("screen.contactValueList.unlabeled")}
+                {item.label.trim() ||
+                  screenLocale.t("screen.contactValueList.unlabeled")}
               </span>
               <span className="simulator-phone-contact-detail__value">
                 {kind === "phone" ? formatNumber(item.value) : item.value}
@@ -88,7 +117,10 @@ export default function ContactValueList({
         </div>
       ))}
       {editable && (
-        <button type="button" onClick={() => onChange([...values, { label: "", value: "" }])}>
+        <button
+          type="button"
+          onClick={() => onChange([...values, { label: "", value: "" }])}
+        >
           {screenLocale.t("screen.contactValueList.add")}
           {title.toLowerCase()}
         </button>

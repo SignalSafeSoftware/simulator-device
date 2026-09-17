@@ -12,6 +12,6 @@ export function splitContactDisplayName(displayName: string): { firstName: strin
 
     return {
         firstName: parts.slice(0, -1).join(' '),
-        lastName: parts[parts.length - 1],
+        lastName: parts.slice(-1).join(''),
     };
 }

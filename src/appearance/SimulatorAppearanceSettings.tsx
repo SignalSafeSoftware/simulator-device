@@ -18,12 +18,12 @@ export default function SimulatorAppearanceSettings({
   presets,
   onApply,
   onReset,
-}: {
+}: Readonly<{
   value: SimulatorAppearance;
   presets: readonly SimulatorAppearancePreset[];
   onApply: (value: SimulatorAppearance) => void;
   onReset: () => void;
-}) {
+}>) {
   const screenLocale = useSimulatorLocale();
 
   const [draft, setDraft] = useState<SimulatorAppearance>(() => ({

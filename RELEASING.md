@@ -39,3 +39,12 @@ install, typecheck, coverage, build, and packed-consumer smoke test before taggi
 The runtime matrix must pass on Node 19.0.0 and Node 19–24 with strict engine
 checks against registry dependencies. Never substitute an unpublished tarball
 URL or invent registry integrity values in a release lockfile.
+
+## CI installation and package verification
+
+CI uses the pinned Yarn Classic version with `yarn install --frozen-lockfile --ignore-scripts`.
+Build the library and run `check:gallery` and `build:gallery` explicitly; install no
+longer invokes the package prepare hook. The smoke consumer also installs with
+scripts disabled and invokes its installed TypeScript compiler directly. Tarball
+inspection uses `/usr/bin/tar` on Unix or `C:\Windows\System32\tar.exe` on Windows,
+without searching the caller's PATH.

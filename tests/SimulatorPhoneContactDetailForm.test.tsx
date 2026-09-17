@@ -298,3 +298,37 @@ it("removes the last email and phone without keeping stale scalar values", () =>
   fireEvent.click(getByRole("button", { name: "Save" }));
   expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ phoneNumbers: [], emailAddresses: [], number: undefined, email: undefined }));
 });
+
+it("preserves a contact row's input and focus through edits and removal of an earlier duplicate", () => {
+  const { getByLabelText, getByRole } = render(
+    <SimulatorPhoneContactDetailForm
+      contact={{
+        id: "stable-rows",
+        displayName: "Contact",
+        phoneNumbers: [
+          { label: "Mobile", value: "111" },
+          { label: "Mobile", value: "111" },
+        ],
+      }}
+      mode="editable"
+      onBack={vi.fn()}
+      context={context}
+    />,
+  );
+  const input = getByLabelText("Phone number 2");
+  input.focus();
+  fireEvent.change(input, { target: { value: "222" } });
+  expect(getByLabelText("Phone number 2")).toBe(input);
+  expect(document.activeElement).toBe(input);
+  fireEvent.change(getByLabelText("Phone number label 2"), {
+    target: { value: "Work" },
+  });
+  fireEvent.click(getByRole("button", { name: "Remove phone number 1" }));
+  expect(getByLabelText("Phone number 1")).toBe(input);
+  expect(input).toHaveProperty("value", "222");
+  expect(getByLabelText("Phone number label 1")).toHaveProperty(
+    "value",
+    "Work",
+  );
+  expect(document.activeElement).toBe(input);
+});

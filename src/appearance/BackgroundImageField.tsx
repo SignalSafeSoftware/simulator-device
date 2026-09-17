@@ -7,10 +7,10 @@ const IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 export default function BackgroundImageField({
   value,
   onChange,
-}: {
+}: Readonly<{
   value?: string;
   onChange: (value: string | undefined) => void;
-}) {
+}>) {
   const screenLocale = useSimulatorLocale();
 
   const [message, setMessage] = useState("");

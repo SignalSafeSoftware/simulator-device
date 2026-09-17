@@ -48,9 +48,9 @@ export interface SimulatorPhoneContactDetailFormProps {
   onBack: () => void;
   onSave?: (contact: SimulatorPhoneContactDetailValues) => void | Promise<void>;
   onDelete?: (contact: SimulatorPhoneContactDetailValues) => void | Promise<void>;
-  renderIdentityImage?: SimulatorPhoneDeviceContactDetailOptions["renderIdentityImage"];
-  renderPhoneAction?: SimulatorPhoneDeviceContactDetailOptions["renderPhoneAction"];
-  renderExtraFields?: SimulatorPhoneDeviceContactDetailOptions["renderExtraFields"];
-  renderActions?: SimulatorPhoneDeviceContactDetailOptions["renderActions"];
+  renderIdentityImage?: NonNullable<SimulatorPhoneDeviceContactDetailOptions["renderIdentityImage"]>;
+  renderPhoneAction?: NonNullable<SimulatorPhoneDeviceContactDetailOptions["renderPhoneAction"]>;
+  renderExtraFields?: NonNullable<SimulatorPhoneDeviceContactDetailOptions["renderExtraFields"]>;
+  renderActions?: NonNullable<SimulatorPhoneDeviceContactDetailOptions["renderActions"]>;
   context: SimulatorPhoneContactDetailContext;
 }

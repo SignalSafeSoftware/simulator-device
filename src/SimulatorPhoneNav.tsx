@@ -14,11 +14,10 @@ import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from "./simulatorDeviceClasses.js
 import {
   dispatchSimulatorPhoneNavItem,
   resolveSimulatorPhoneNav,
-  shouldHideHostPhoneNav,
   type SimulatorPhoneNavModel,
 } from "./simulatorPhoneNavMapper.js";
 
-export { shouldHideHostPhoneNav };
+export { shouldHideHostPhoneNav } from "./simulatorPhoneNavMapper.js";
 
 export interface SimulatorPhoneNavProps {
   state: SimulatorSessionState;
@@ -27,11 +26,39 @@ export interface SimulatorPhoneNavProps {
   dispatch: (action: SimulatorDispatchAction) => void;
 }
 
-function isActiveItem(model: Exclude<SimulatorPhoneNavModel, { mode: "hidden" }>, itemId: string): boolean {
+function isActiveItem(
+  model: Exclude<SimulatorPhoneNavModel, { mode: "hidden" }>,
+  itemId: string,
+): boolean {
   if (model.mode === "primary") {
     return model.activeChannel === itemId;
   }
   return model.activeId === itemId;
+}
+
+function useSendAvailability(state: SimulatorSessionState) {
+  const { t } = useSimulatorLocale();
+  const capabilities = useSimulatorCapabilities();
+  const messageCompose = useMessageComposeOptions();
+  const emailCompose = useEmailComposeOptions();
+  const composingEmail =
+    state.view.activeApp === "email" && state.view.email.screen === "compose";
+  const newMessage =
+    state.view.activeApp === "messages" &&
+    state.view.messages.screen === "new_thread";
+  const sendCapability = composingEmail
+    ? capabilities.sendEmail
+    : capabilities.sendMessage;
+  if (sendCapability && sendCapability.state !== "enabled") {
+    return { composingEmail, sendReason: sendCapability.reason };
+  }
+  if (composingEmail && !emailCompose?.onSend) {
+    return { composingEmail, sendReason: t("email.unconfigured") };
+  }
+  if (newMessage && !messageCompose?.onSend) {
+    return { composingEmail, sendReason: t("messages.unconfigured") };
+  }
+  return { composingEmail, sendReason: "" };
 }
 
 export default function SimulatorPhoneNav({
@@ -42,22 +69,8 @@ export default function SimulatorPhoneNav({
 }: Readonly<SimulatorPhoneNavProps>) {
   const locale = useSimulatorLocale();
   const { t } = locale;
-  const capabilities = useSimulatorCapabilities();
-  const messageCompose = useMessageComposeOptions();
   const reasonId = useId();
-  const emailCompose = useEmailComposeOptions();
-  const composingEmail = state.view.activeApp === "email" && state.view.email.screen === "compose";
-  const newMessage =
-    state.view.activeApp === "messages" && state.view.messages.screen === "new_thread";
-  const sendCapability = composingEmail ? capabilities.sendEmail : capabilities.sendMessage;
-  const sendReason =
-    sendCapability && sendCapability.state !== "enabled"
-      ? sendCapability.reason
-      : composingEmail && !emailCompose?.onSend
-        ? t("email.unconfigured")
-        : newMessage && !messageCompose?.onSend
-          ? t("messages.unconfigured")
-          : "";
+  const { composingEmail, sendReason } = useSendAvailability(state);
   const stateRef = useRef(state);
   stateRef.current = state;
   const dispatch = useMemo(
@@ -72,18 +85,21 @@ export default function SimulatorPhoneNav({
           }),
     [rawDispatch, onNavigation, onNavigationEvent],
   );
-  const model = useMemo(() => resolveSimulatorPhoneNav(state, locale), [state, locale]);
+  const model = useMemo(
+    () => resolveSimulatorPhoneNav(state, locale),
+    [state, locale],
+  );
 
   if (model.mode === "hidden") {
     return null;
   }
 
-  const ariaLabel =
-    model.mode === "primary"
-      ? t("nav.simulatorChannels")
-      : model.mode === "tertiary"
-        ? t("nav.appTertiaryMenu")
-        : t("nav.appSecondaryMenu");
+  const menuLabels = {
+    primary: "nav.simulatorChannels",
+    secondary: "nav.appSecondaryMenu",
+    tertiary: "nav.appTertiaryMenu",
+  } as const;
+  const ariaLabel = t(menuLabels[model.mode]);
 
   return (
     <nav
@@ -97,8 +113,12 @@ export default function SimulatorPhoneNav({
           <li key={item.id} className={cls.navItem}>
             <SimulatorPhoneNavItem
               label={item.label}
-              disabled={item.action === "submit" ? Boolean(sendReason) : item.disabled}
-              describedBy={item.action === "submit" && sendReason ? reasonId : undefined}
+              disabled={
+                item.action === "submit" ? Boolean(sendReason) : item.disabled
+              }
+              describedBy={
+                item.action === "submit" && sendReason ? reasonId : undefined
+              }
               icon={item.icon}
               active={isActiveItem(model, item.id)}
               ariaLabel={item.label}
@@ -112,7 +132,8 @@ export default function SimulatorPhoneNav({
                         : "form.simulator-messages__composer",
                     );
                   form?.requestSubmit();
-                } else dispatchSimulatorPhoneNavItem(dispatch, model, item, state);
+                } else
+                  dispatchSimulatorPhoneNavItem(dispatch, model, item, state);
               }}
             />
           </li>

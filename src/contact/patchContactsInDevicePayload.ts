@@ -6,15 +6,23 @@ function toDeviceContact(contact: SimulatorPhoneContactDetailValues) {
     const hasNumber = Object.hasOwn(contact, 'number');
     const hasEmails = contact.emailAddresses !== undefined;
     const hasEmail = Object.hasOwn(contact, 'email');
+    let phones: Partial<NonNullable<SimulatorDevicePayload['contacts']>[number]> = {};
+    if (hasPhones) {
+        phones = { phone_numbers: contact.phoneNumbers, number: contact.phoneNumbers?.[0]?.number };
+    } else if (hasNumber) {
+        phones = { phone_numbers: undefined, number: contact.number };
+    }
+    let emails: Partial<NonNullable<SimulatorDevicePayload['contacts']>[number]> = {};
+    if (hasEmails) {
+        emails = { email_addresses: contact.emailAddresses, email: contact.emailAddresses?.[0]?.value };
+    } else if (hasEmail) {
+        emails = { email_addresses: undefined, email: contact.email };
+    }
     return {
         id: contact.id,
         display_name: contact.displayName,
-        ...(hasPhones
-            ? { phone_numbers: contact.phoneNumbers, number: contact.phoneNumbers?.[0]?.number }
-            : hasNumber ? { phone_numbers: undefined, number: contact.number } : {}),
-        ...(hasEmails
-            ? { email_addresses: contact.emailAddresses, email: contact.emailAddresses?.[0]?.value }
-            : hasEmail ? { email_addresses: undefined, email: contact.email } : {}),
+        ...phones,
+        ...emails,
     };
 }
 

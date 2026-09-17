@@ -107,6 +107,7 @@ export default function SimulatorPhoneDevice({
     const inheritedMessages = useMessageComposeOptions();
     const inheritedDial = usePhoneDialDraft();
     const inheritedCapabilities = useSimulatorCapabilities();
+    const resolvedCapabilities = useMemo(() => ({ ...inheritedCapabilities, ...capabilities }), [inheritedCapabilities, capabilities]);
     const payload = useMemo(() => datasource ? simulatorDatasourceToPayload(datasource) : null, [datasource]);
     const state = useMemo(() => payload ? updateSimulatorPayload(hostState, payload) : hostState, [hostState, payload]);
     const screenRef = useRef<HTMLDivElement>(null);
@@ -195,7 +196,7 @@ export default function SimulatorPhoneDevice({
             : runtime;
 
     const shell = (
-        <SimulatorCapabilitiesContext.Provider value={{...inheritedCapabilities,...capabilities}}>
+        <SimulatorCapabilitiesContext.Provider value={resolvedCapabilities}>
         <PhoneDialDraftContext.Provider value={dialDraft ?? inheritedDial}>
         <MessageComposeContext.Provider value={messageCompose ?? inheritedMessages}>
         <EmailComposeContext.Provider value={emailCompose ?? inheritedEmail}>

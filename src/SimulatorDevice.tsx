@@ -30,11 +30,11 @@ export type { SimulatorDeviceRuntimePassthroughProps } from './simulatorDeviceRu
 export type { SimulatorDeviceManagedPhoneDeviceProps } from './simulatorDeviceRuntimeProps.js';
 
 export interface SimulatorDevicePhoneOptions {
-    renderContactDetail?: SimulatorPhoneDeviceProps['renderContactDetail'];
-    contactDetail?: SimulatorPhoneDeviceProps['contactDetail'];
-    renderIncomingCallExtra?: SimulatorPhoneDeviceProps['renderIncomingCallExtra'];
-    className?: SimulatorPhoneDeviceProps['className'];
-    screenClassNames?: SimulatorPhoneDeviceProps['screenClassNames'];
+    renderContactDetail?: NonNullable<SimulatorPhoneDeviceProps['renderContactDetail']>;
+    contactDetail?: NonNullable<SimulatorPhoneDeviceProps['contactDetail']>;
+    renderIncomingCallExtra?: NonNullable<SimulatorPhoneDeviceProps['renderIncomingCallExtra']>;
+    className?: NonNullable<SimulatorPhoneDeviceProps['className']>;
+    screenClassNames?: NonNullable<SimulatorPhoneDeviceProps['screenClassNames']>;
 }
 
 export interface SimulatorDeviceUnsupportedRenderProps {

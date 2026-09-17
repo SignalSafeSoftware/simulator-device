@@ -4,6 +4,10 @@
 
 ### Changed
 
+- Address supplied SonarCloud findings in navigation, contact editing, gallery contexts, accessibility, and package verification.
+- Disable install-time lifecycle scripts in CI; build the gallery explicitly before packing.
+- Preserve contact row identity and focus while editing or removing earlier rows.
+
 - Require a matching GitHub version tag for npm publication; branch workflow runs only validate.
 
 ## [0.16.3] - 2026-09-16
