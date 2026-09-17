@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## [0.16.3] - 2026-09-16
 
 ### Changed
 
-- Refresh Node 19 CI dependency artifacts to the merged core and React revisions.
+- Require simulator-core 0.3.2 and simulator-react 0.16.3; validate published dependencies in the Node runtime matrix.
 - Expand device behavior and edge-case coverage and enforce 100% statements, branches, functions, and lines.
 - Simplify redundant internal fallbacks and resolve selected contacts before deriving their host mode.
 
@@ -18,7 +18,6 @@
 - Compose controlled drafts and action capabilities; support labeled contact values and asynchronous contact edits.
 - Add controlled appearance settings with local raster preview and host-owned persistence.
 - Ship a rebuilt synthetic gallery covering contact, call, message and email states, built from declared registry dependencies without sibling source aliases.
-
 
 ## 0.5.0 — 2026-09-11
 
