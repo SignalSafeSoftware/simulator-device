@@ -1,5 +1,8 @@
 /** Split a display name into first/last tokens for optional host formatting. */
-export function splitContactDisplayName(displayName: string): { firstName: string; lastName: string } {
+export function splitContactDisplayName(displayName: string): {
+    firstName: string;
+    lastName: string;
+} {
     const trimmed = displayName.trim();
     if (trimmed === '') {
         return { firstName: '', lastName: '' };

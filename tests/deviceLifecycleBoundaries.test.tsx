@@ -5,20 +5,39 @@ import SimulatorDevice from '../src/SimulatorDevice.js';
 import { buildContactsDeviceJson } from './support/deviceJsonFixtures.js';
 import { expect, it, vi } from 'vitest';
 
-const capture = vi.hoisted(() => ({ dispatch: undefined as SimulatorPhoneDeviceProps['dispatch'] | undefined }));
-vi.mock('../src/SimulatorPhoneDevice.js', () => ({ default: (props: SimulatorPhoneDeviceProps) => {
-    capture.dispatch = props.dispatch;
-    const contact = props.state.payload.contacts?.[0];
-    if (!contact) return null;
-    const context = { state: props.state, dispatch: props.dispatch, originalContact: contact };
-    return <><button onClick={() => props.contactDetail?.onSave?.(contact, context)}>Save</button><button onClick={() => props.contactDetail?.onDelete?.(contact, context)}>Delete</button></>;
-} }));
+const capture = vi.hoisted(() => ({
+    dispatch: undefined as SimulatorPhoneDeviceProps['dispatch'] | undefined,
+}));
+vi.mock('../src/SimulatorPhoneDevice.js', () => ({
+    default: (props: SimulatorPhoneDeviceProps) => {
+        capture.dispatch = props.dispatch;
+        const contact = props.state.payload.contacts?.[0];
+        if (!contact) return null;
+        const context = { state: props.state, dispatch: props.dispatch, originalContact: contact };
+        return (
+            <>
+                <button onClick={() => props.contactDetail?.onSave?.(contact, context)}>
+                    Save
+                </button>
+                <button onClick={() => props.contactDetail?.onDelete?.(contact, context)}>
+                    Delete
+                </button>
+            </>
+        );
+    },
+}));
 
 it('does not mutate JSON for datasource-backed contact changes', () => {
     const onChange = vi.fn();
     const onSave = vi.fn();
     const onDelete = vi.fn();
-    const view = render(<SimulatorDevice datasource={createSimulatorDatasource(buildContactsDeviceJson())} onChange={onChange} phone={{ contactDetail: { onSave, onDelete } }} />);
+    const view = render(
+        <SimulatorDevice
+            datasource={createSimulatorDatasource(buildContactsDeviceJson())}
+            onChange={onChange}
+            phone={{ contactDetail: { onSave, onDelete } }}
+        />,
+    );
     fireEvent.click(view.getByRole('button', { name: 'Save' }));
     fireEvent.click(view.getByRole('button', { name: 'Delete' }));
     expect(onChange).not.toHaveBeenCalled();
@@ -27,7 +46,9 @@ it('does not mutate JSON for datasource-backed contact changes', () => {
 });
 
 it('leaves save unwired when no persistence callback exists', () => {
-    const view = render(<SimulatorDevice value={buildContactsDeviceJson()} phone={{ contactDetail: {} }} />);
+    const view = render(
+        <SimulatorDevice value={buildContactsDeviceJson()} phone={{ contactDetail: {} }} />,
+    );
     fireEvent.click(view.getByRole('button', { name: 'Save' }));
     expect(view.getByRole('button', { name: 'Save' })).toBeTruthy();
 });
@@ -47,5 +68,7 @@ it('rejects simultaneous JSON and datasource at the runtime boundary', () => {
     const invalid = Object.assign({ value }, { datasource: createSimulatorDatasource(value) });
     // JavaScript consumers can bypass the mutually exclusive TypeScript props.
     // @ts-expect-error Deliberately invalid input exercises the public runtime guard.
-    expect(() => render(<SimulatorDevice {...invalid} />)).toThrow('Supply either value or datasource');
+    expect(() => render(<SimulatorDevice {...invalid} />)).toThrow(
+        'Supply either value or datasource',
+    );
 });

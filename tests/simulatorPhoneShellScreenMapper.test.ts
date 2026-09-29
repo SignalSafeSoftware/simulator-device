@@ -8,9 +8,7 @@ import {
 } from '../src/simulatorPhoneShellScreenMapper.js';
 import { buildState } from './support/sessionFixtures.js';
 
-function pairedScreenClasses(
-    key: keyof typeof SIMULATOR_DEVICE_SCREEN_CLASS_NAMES,
-): string[] {
+function pairedScreenClasses(key: keyof typeof SIMULATOR_DEVICE_SCREEN_CLASS_NAMES): string[] {
     return [
         SIMULATOR_DEVICE_SCREEN_CLASS_NAMES[key],
         SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES[key],
@@ -204,7 +202,9 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
 });
 
 describe('resolveSimulatorPhoneShellHostMode', () => {
-    function contactsStateWithPayload(contacts: Array<{ id: string; displayName: string; number?: string }>) {
+    function contactsStateWithPayload(
+        contacts: Array<{ id: string; displayName: string; number?: string }>,
+    ) {
         return {
             ...buildState({
                 activeApp: 'phone',

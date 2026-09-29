@@ -1,4 +1,19 @@
-import { createTranslator, simulatorEnglish, switchChannelAction, viewStateToActiveChannel, type SimulatorChannel, type SimulatorDispatchAction, type SimulatorSessionState, type SimulatorViewState } from '@signalsafe/simulator-react';
+import {
+    getPhoneSecondaryItems,
+    getEmailSecondaryItems,
+    getPhoneSecondaryActiveId,
+    getEmailSecondaryActiveId,
+    shouldHideSimulatorNavigation,
+} from '@signalsafe/simulator-react';
+import {
+    createTranslator,
+    simulatorEnglish,
+    switchChannelAction,
+    viewStateToActiveChannel,
+    type SimulatorChannel,
+    type SimulatorDispatchAction,
+    type SimulatorSessionState,
+} from '@signalsafe/simulator-react';
 /**
  * Host phone navigation model derived from @signalsafe/simulator-react session state.
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
@@ -8,7 +23,7 @@ export interface SimulatorPhoneNavItemModel {
     id: string;
     label: string;
     icon?: string;
-    action: 'channel' | 'local' | 'back' | 'submit' | 'reply';
+    action: 'channel' | 'local' | 'back' | 'submit' | 'reply' | 'forward' | 'dispose';
     channel?: SimulatorChannel;
     disabled?: boolean;
 }
@@ -42,77 +57,24 @@ export const SIMULATOR_PRIMARY_NAV_ITEMS: ReadonlyArray<{
     { channel: 'home', label: defaultLocale.t('nav.home'), icon: '🏠' },
 ];
 
-const EMAIL_SECONDARY_ITEMS = [
-    { id: 'list', label: defaultLocale.t('nav.inbox'), icon: '📥' },
-    { id: 'outbox', label: defaultLocale.t('nav.outbox'), icon: '📤' },
-    { id: 'trash', label: defaultLocale.t('nav.trash'), icon: '🗑️' },
-    { id: 'back', label: defaultLocale.t('nav.back'), icon: '↩' },
-] as const;
+const primaryKeys = {
+    phone: 'nav.phone',
+    contacts: 'nav.phone',
+    email: 'nav.email',
+    browser: 'nav.internet',
+    sms: 'nav.messages',
+    home: 'nav.home',
+} as const;
 
-const PHONE_SECONDARY_ITEMS = [
-    { id: 'history', label: defaultLocale.t('nav.history'), icon: '🕐' },
-    { id: 'contacts', label: defaultLocale.t('nav.contacts'), icon: '👤' },
-    { id: 'dial', label: defaultLocale.t('nav.dial'), icon: '📞' },
-    { id: 'back', label: defaultLocale.t('nav.back'), icon: '↩' },
-] as const;
-
-const navKeys = { history: 'nav.history', contacts: 'nav.contacts', dial: 'nav.dial', back: 'nav.back', list: 'nav.inbox', outbox: 'nav.outbox', trash: 'nav.trash' } as const;
-const primaryKeys = { phone: 'nav.phone', contacts: 'nav.phone', email: 'nav.email', browser: 'nav.internet', sms: 'nav.messages', home: 'nav.home' } as const;
-
-function getPhoneSecondaryActiveId(screen: string): string {
-    if (screen === 'add_contact' || screen === 'directory') {
-        return 'contacts';
-    }
-    if (screen === 'incoming_call' || screen === 'voicemail') {
-        return 'history';
-    }
-    return screen;
-}
-
-function getEmailSecondaryActiveId(screen: string, stack: string[]): string {
-    if (screen === 'list' || screen === 'outbox' || screen === 'trash') {
-        return screen;
-    }
-    return stack.at(-1) ?? 'list';
-}
-
-function getScreenForNavHideCheck(view: SimulatorViewState): string | null {
-    const app = view.activeApp;
-    if (app == null) {
-        return null;
-    }
-    switch (app) {
-        case 'phone':
-            return view.phone?.screen ?? null;
-        case 'email':
-            return view.email?.screen ?? null;
-        case 'messages':
-            return view.messages?.screen ?? null;
-        case 'internet':
-            return view.internet?.screen ?? null;
-        case 'home':
-            return view.home?.screen ?? null;
-        default:
-            return null;
-    }
-}
-
-/** Same hide rules as SimulatorWithSession → PhoneSimulatorShell hideBottomNav. */
+/** Host detail/composer navigation remains visible; scenarios use inline controls. */
 export function shouldHideHostPhoneNav(state: SimulatorSessionState): boolean {
-    const view = state.view;
-    if (view == null) {
-        return true;
-    }
-    const screen = getScreenForNavHideCheck(view);
-    if (screen == null) {
-        return true;
-    }
-    return (
-        false
-    );
+    return shouldHideSimulatorNavigation(state.view, 'host');
 }
 
-export function resolveSimulatorPhoneNav(state: SimulatorSessionState, locale = createTranslator(simulatorEnglish)): SimulatorPhoneNavModel {
+export function resolveSimulatorPhoneNav(
+    state: SimulatorSessionState,
+    locale = createTranslator(simulatorEnglish),
+): SimulatorPhoneNavModel {
     const view = state.view;
     if (view == null) {
         return { mode: 'hidden' };
@@ -125,30 +87,51 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState, locale = 
     const activeApp = view.activeApp;
     if (activeApp === 'email' && view.email.screen === 'compose') {
         return {
-            mode: 'tertiary', app: 'email', activeId: '',
+            mode: 'tertiary',
+            app: 'email',
+            activeId: '',
             items: [
-                { id: 'send', label: locale.t('nav.send'), icon: '➤', action: 'submit', disabled: true },
+                {
+                    id: 'send',
+                    label: locale.t('nav.send'),
+                    icon: '➤',
+                    action: 'submit',
+                    disabled: true,
+                },
                 { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
             ],
         };
     }
     if (activeApp === 'email' && view.email.screen === 'detail') {
         return {
-            mode: 'tertiary', app: 'email', activeId: '',
+            mode: 'tertiary',
+            app: 'email',
+            activeId: '',
             items: [
                 { id: 'reply', label: locale.t('nav.reply'), icon: '↪', action: 'reply' },
-                { id: 'forward', label: locale.t('nav.forward'), icon: '➜', action: 'back' },
-                { id: 'dispose', label: locale.t('nav.dispose'), icon: '🗑', action: 'back' },
+                { id: 'forward', label: locale.t('nav.forward'), icon: '➜', action: 'forward' },
+                { id: 'dispose', label: locale.t('nav.dispose'), icon: '🗑', action: 'dispose' },
                 { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
             ],
         };
     }
 
-    if (activeApp === 'messages' && (view.messages.screen === 'thread_detail' || view.messages.screen === 'new_thread')) {
+    if (
+        activeApp === 'messages' &&
+        (view.messages.screen === 'thread_detail' || view.messages.screen === 'new_thread')
+    ) {
         return {
-            mode: 'secondary', app: 'messages', activeId: 'thread_detail',
+            mode: 'secondary',
+            app: 'messages',
+            activeId: 'thread_detail',
             items: [
-                { id: 'send', label: locale.t('nav.send'), icon: '➤', action: 'submit', disabled: view.messages.screen === 'new_thread' },
+                {
+                    id: 'send',
+                    label: locale.t('nav.send'),
+                    icon: '➤',
+                    action: 'submit',
+                    disabled: view.messages.screen === 'new_thread',
+                },
                 { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
             ],
         };
@@ -166,16 +149,17 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState, locale = 
         };
     }
 
-    const showSecondaryMenu = !view.showPrimaryMenu && (activeApp === 'phone' || activeApp === 'email');
+    const showSecondaryMenu =
+        !view.showPrimaryMenu && (activeApp === 'phone' || activeApp === 'email');
 
     if (showSecondaryMenu && activeApp === 'phone') {
         return {
             mode: 'secondary',
             app: 'phone',
             activeId: getPhoneSecondaryActiveId(view.phone.screen),
-            items: PHONE_SECONDARY_ITEMS.map((item) => ({
+            items: getPhoneSecondaryItems(locale).map((item) => ({
                 id: item.id,
-                label: locale.t(navKeys[item.id]),
+                label: item.label,
                 icon: item.icon,
                 action: item.id === 'back' ? 'back' : 'local',
             })),
@@ -187,9 +171,9 @@ export function resolveSimulatorPhoneNav(state: SimulatorSessionState, locale = 
             mode: 'secondary',
             app: 'email',
             activeId: getEmailSecondaryActiveId(view.email.screen, view.email.stack),
-            items: EMAIL_SECONDARY_ITEMS.map((item) => ({
+            items: getEmailSecondaryItems(locale).map((item) => ({
                 id: item.id,
-                label: locale.t(navKeys[item.id]),
+                label: item.label,
                 icon: item.icon,
                 action: item.id === 'back' ? 'back' : 'local',
             })),

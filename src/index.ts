@@ -39,9 +39,7 @@ export type {
     PhoneIncomingCallHistoryRow,
 } from './incomingCall/phoneIncomingCallHistoryHelpers.js';
 
-export {
-    SimulatorPhoneIncomingCallHistory,
-} from './incomingCall/SimulatorPhoneIncomingCallHistory.js';
+export { SimulatorPhoneIncomingCallHistory } from './incomingCall/SimulatorPhoneIncomingCallHistory.js';
 export type { SimulatorPhoneIncomingCallHistoryProps } from './incomingCall/SimulatorPhoneIncomingCallHistory.js';
 
 export { renderPhoneIncomingCallHistoryExtra } from './incomingCall/renderPhoneIncomingCallHistoryExtra.js';
@@ -79,5 +77,17 @@ export { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
 export type { SimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
 
 export type { SimulatorDevicePayload } from './types/simulatorDevicePayload.js';
-export { default as SimulatorAppearanceSettings, appearanceTextColor } from './appearance/SimulatorAppearanceSettings.js';
-export type { SimulatorAppearance, SimulatorAppearancePreset } from './appearance/SimulatorAppearanceSettings.js';
+export {
+    default as SimulatorAppearanceSettings,
+    appearanceTextColor,
+} from './appearance/SimulatorAppearanceSettings.js';
+export type {
+    SimulatorAppearance,
+    SimulatorAppearancePreset,
+} from './appearance/SimulatorAppearanceSettings.js';
+
+export * from './SimulatorDeviceAppsProvider.js';
+
+export * from './SimulatorCallBoundary.js';
+
+export * from './SimulatorDeviceApps.js';

@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import SimulatorDevice from '../src/SimulatorDevice.js';
-import { buildContactsDeviceJson, buildDesktopDiscriminatedJson, buildHomeDeviceJson } from './support/deviceJsonFixtures.js';
+import {
+    buildContactsDeviceJson,
+    buildDesktopDiscriminatedJson,
+    buildHomeDeviceJson,
+} from './support/deviceJsonFixtures.js';
 
 const capturedPhoneDeviceProps = vi.hoisted(() => ({
     current: null as Record<string, unknown> | null,
@@ -32,7 +36,8 @@ describe('SimulatorDevice', () => {
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
         expect(
-            (capturedPhoneDeviceProps.current?.state as { view?: { activeApp?: string } })?.view?.activeApp,
+            (capturedPhoneDeviceProps.current?.state as { view?: { activeApp?: string } })?.view
+                ?.activeApp,
         ).toBe('home');
     });
 
@@ -43,14 +48,15 @@ describe('SimulatorDevice', () => {
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
-        (capturedPhoneDeviceProps.current?.dispatch as (action: unknown) => void)({
+        (capturedPhoneDeviceProps.current!.dispatch as (action: unknown) => void)({
             type: 'SWITCH_APP',
             app: 'email',
         });
 
         await waitFor(() =>
             expect(
-                (capturedPhoneDeviceProps.current?.state as { view?: { activeApp?: string } })?.view?.activeApp,
+                (capturedPhoneDeviceProps.current?.state as { view?: { activeApp?: string } })?.view
+                    ?.activeApp,
             ).toBe('email'),
         );
     });
@@ -59,19 +65,14 @@ describe('SimulatorDevice', () => {
         capturedPhoneDeviceProps.current = null;
         const contactDetail = { mode: 'editable' as const, onSave: vi.fn() };
 
-        render(
-            <SimulatorDevice
-                value={buildContactsDeviceJson()}
-                phone={{ contactDetail }}
-            />,
-        );
+        render(<SimulatorDevice value={buildContactsDeviceJson()} phone={{ contactDetail }} />);
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
         expect(capturedPhoneDeviceProps.current?.contactDetail).toMatchObject({ mode: 'editable' });
         expect(capturedPhoneDeviceProps.current?.contactDetail).toHaveProperty('onSave');
     });
 
-    it('contact save patches value.contacts and calls onChange before host onSave', async () => {
+    it('contact save patches value.contacts and calls onChange after host onSave succeeds', async () => {
         capturedPhoneDeviceProps.current = null;
         const onChange = vi.fn();
         const onSave = vi.fn();
@@ -88,7 +89,9 @@ describe('SimulatorDevice', () => {
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
         const wrappedOnSave = (
-            capturedPhoneDeviceProps.current?.contactDetail as { onSave?: (contact: unknown) => void }
+            capturedPhoneDeviceProps.current?.contactDetail as {
+                onSave?: (contact: unknown) => void;
+            }
         )?.onSave;
 
         wrappedOnSave?.({
@@ -101,10 +104,12 @@ describe('SimulatorDevice', () => {
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0]?.[0]?.contacts?.[0]?.display_name).toBe('Updated Helpdesk');
         expect(onSave).toHaveBeenCalledTimes(1);
-        expect(onChange.mock.invocationCallOrder[0]).toBeLessThan(onSave.mock.invocationCallOrder[0]!);
+        expect(onChange.mock.invocationCallOrder[0]).toBeGreaterThan(
+            onSave.mock.invocationCallOrder[0]!,
+        );
     });
 
-    it('contact delete removes contact and calls onChange before host onDelete', async () => {
+    it('contact delete removes contact and calls onChange after host onDelete succeeds', async () => {
         capturedPhoneDeviceProps.current = null;
         const onChange = vi.fn();
         const onDelete = vi.fn();
@@ -121,7 +126,9 @@ describe('SimulatorDevice', () => {
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
         const wrappedOnDelete = (
-            capturedPhoneDeviceProps.current?.contactDetail as { onDelete?: (contact: unknown) => void }
+            capturedPhoneDeviceProps.current?.contactDetail as {
+                onDelete?: (contact: unknown) => void;
+            }
         )?.onDelete;
 
         wrappedOnDelete?.({
@@ -134,7 +141,9 @@ describe('SimulatorDevice', () => {
         expect(onChange.mock.calls[0]?.[0]?.contacts).toHaveLength(1);
         expect(onChange.mock.calls[0]?.[0]?.contacts?.[0]?.id).toBe('c2');
         expect(onDelete).toHaveBeenCalledTimes(1);
-        expect(onChange.mock.invocationCallOrder[0]).toBeLessThan(onDelete.mock.invocationCallOrder[0]!);
+        expect(onChange.mock.invocationCallOrder[0]).toBeGreaterThan(
+            onDelete.mock.invocationCallOrder[0]!,
+        );
     });
 
     it('passes phone.renderContactDetail through to SimulatorPhoneDevice', async () => {
@@ -142,10 +151,7 @@ describe('SimulatorDevice', () => {
         const renderContactDetail = vi.fn(() => <div data-testid="host-contact-detail" />);
 
         render(
-            <SimulatorDevice
-                value={buildContactsDeviceJson()}
-                phone={{ renderContactDetail }}
-            />,
+            <SimulatorDevice value={buildContactsDeviceJson()} phone={{ renderContactDetail }} />,
         );
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
@@ -157,21 +163,22 @@ describe('SimulatorDevice', () => {
         const renderIncomingCallExtra = vi.fn(() => <div data-testid="host-incoming-extra" />);
 
         render(
-            <SimulatorDevice
-                value={buildHomeDeviceJson()}
-                phone={{ renderIncomingCallExtra }}
-            />,
+            <SimulatorDevice value={buildHomeDeviceJson()} phone={{ renderIncomingCallExtra }} />,
         );
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
-        expect(capturedPhoneDeviceProps.current?.renderIncomingCallExtra).toBe(renderIncomingCallExtra);
+        expect(capturedPhoneDeviceProps.current?.renderIncomingCallExtra).toBe(
+            renderIncomingCallExtra,
+        );
     });
 
     it('forwards runtime passthrough props to SimulatorPhoneDevice', async () => {
         capturedPhoneDeviceProps.current = null;
         const onSimulatorEvent = vi.fn();
         const developerTools = { enabled: true, sections: { timeline: true } };
-        const developerToolsTimelineEntries = [{ kind: 'session_started' as const, timestamp: 't', app: 'home', screen: 'home' }];
+        const developerToolsTimelineEntries = [
+            { kind: 'session_started' as const, timestamp: 't', app: 'home', screen: 'home' },
+        ];
         const developerToolsRuntimeIssues = [{ id: 'w1', message: 'warn' }];
         const renderChoice = vi.fn();
         const renderFeedback = vi.fn();
@@ -249,7 +256,9 @@ describe('SimulatorDevice', () => {
 });
 
 it('initializes a device when an unsupported value is replaced', async () => {
-    const { rerender, queryByTestId, getByTestId } = render(<SimulatorDevice value={Object.assign(buildHomeDeviceJson(), { type: "desktop" })} />);
+    const { rerender, queryByTestId, getByTestId } = render(
+        <SimulatorDevice value={Object.assign(buildHomeDeviceJson(), { type: 'desktop' })} />,
+    );
     expect(queryByTestId('mock-simulator-phone-device')).toBeNull();
     rerender(<SimulatorDevice value={buildHomeDeviceJson()} />);
     await waitFor(() => expect(getByTestId('mock-simulator-phone-device')).toBeTruthy());

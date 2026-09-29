@@ -21,11 +21,7 @@ export default function SimulatorPhoneShell({
     screenClassNames = [],
     screenRef,
 }: Readonly<SimulatorPhoneShellProps>) {
-    const shellClassName = [
-        cls.shell,
-        useHostNav ? cls.shellHostNav : '',
-        ...screenClassNames,
-    ]
+    const shellClassName = [cls.shell, useHostNav ? cls.shellHostNav : '', ...screenClassNames]
         .filter(Boolean)
         .join(' ');
 

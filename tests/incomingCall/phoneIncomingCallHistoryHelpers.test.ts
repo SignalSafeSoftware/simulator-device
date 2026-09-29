@@ -158,10 +158,34 @@ describe('phoneIncomingCallHistoryHelpers', () => {
     it('limits results to three entries by default', () => {
         const state = buildIncomingCallState({
             callHistory: [
-                { id: 'a1', number: '+1-555-100-2000', name: 'Alice Chen', kind: 'incoming', timestamp: '1' },
-                { id: 'a2', number: '+1-555-100-2000', name: 'Alice Chen', kind: 'incoming', timestamp: '2' },
-                { id: 'a3', number: '+1-555-100-2000', name: 'Alice Chen', kind: 'incoming', timestamp: '3' },
-                { id: 'a4', number: '+1-555-100-2000', name: 'Alice Chen', kind: 'incoming', timestamp: '4' },
+                {
+                    id: 'a1',
+                    number: '+1-555-100-2000',
+                    name: 'Alice Chen',
+                    kind: 'incoming',
+                    timestamp: '1',
+                },
+                {
+                    id: 'a2',
+                    number: '+1-555-100-2000',
+                    name: 'Alice Chen',
+                    kind: 'incoming',
+                    timestamp: '2',
+                },
+                {
+                    id: 'a3',
+                    number: '+1-555-100-2000',
+                    name: 'Alice Chen',
+                    kind: 'incoming',
+                    timestamp: '3',
+                },
+                {
+                    id: 'a4',
+                    number: '+1-555-100-2000',
+                    name: 'Alice Chen',
+                    kind: 'incoming',
+                    timestamp: '4',
+                },
             ],
         });
 
@@ -172,8 +196,20 @@ describe('phoneIncomingCallHistoryHelpers', () => {
     it('respects custom limit', () => {
         const state = buildIncomingCallState({
             callHistory: [
-                { id: 'a1', number: '+1-555-100-2000', name: 'Alice Chen', kind: 'incoming', timestamp: '1' },
-                { id: 'a2', number: '+1-555-100-2000', name: 'Alice Chen', kind: 'incoming', timestamp: '2' },
+                {
+                    id: 'a1',
+                    number: '+1-555-100-2000',
+                    name: 'Alice Chen',
+                    kind: 'incoming',
+                    timestamp: '1',
+                },
+                {
+                    id: 'a2',
+                    number: '+1-555-100-2000',
+                    name: 'Alice Chen',
+                    kind: 'incoming',
+                    timestamp: '2',
+                },
             ],
         });
 

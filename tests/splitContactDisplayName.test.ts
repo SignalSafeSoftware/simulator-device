@@ -3,7 +3,10 @@ import { splitContactDisplayName } from '../src/contact/splitContactDisplayName.
 
 describe('splitContactDisplayName', () => {
     it('splits multi-token names', () => {
-        expect(splitContactDisplayName('Alice Chen')).toEqual({ firstName: 'Alice', lastName: 'Chen' });
+        expect(splitContactDisplayName('Alice Chen')).toEqual({
+            firstName: 'Alice',
+            lastName: 'Chen',
+        });
     });
 
     it('returns empty parts for blank input', () => {

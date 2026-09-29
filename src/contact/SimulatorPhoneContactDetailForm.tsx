@@ -1,476 +1,440 @@
 import {
-  SimulatorPage,
-  useSimulatorLocale,
-  useSimulatorCapabilities,
-  usePhoneNumberFormatter,
-} from "@signalsafe/simulator-react";
-import ContactValueList from "./ContactValueList.js";
-import { useCallback, useRef, useState } from "react";
+    SimulatorPage,
+    useSimulatorLocale,
+    useSimulatorCapabilities,
+    usePhoneNumberFormatter,
+} from '@signalsafe/simulator-react';
+import ContactValueList from './ContactValueList.js';
+import { useCallback, useId, useRef, useState } from 'react';
 import type {
-  SimulatorPhoneContactDetailFormProps,
-  SimulatorPhoneContactDetailValues,
-} from "./contactDetailTypes.js";
+    SimulatorPhoneContactDetailFormProps,
+    SimulatorPhoneContactDetailValues,
+} from './contactDetailTypes.js';
 
 function fieldId(suffix: string, contactId: string): string {
-  return `simulator-phone-contact-detail-${suffix}-${contactId}`;
+    return `simulator-phone-contact-detail-${suffix}-${contactId}`;
 }
 
 type FieldProps = {
-  draft: SimulatorPhoneContactDetailValues;
-  editable: boolean;
-  updateField: (patch: Partial<SimulatorPhoneContactDetailValues>) => void;
+    draft: SimulatorPhoneContactDetailValues;
+    editable: boolean;
+    updateField: (patch: Partial<SimulatorPhoneContactDetailValues>) => void;
 };
 
 function useContactFormState({
-  contact: initialContact,
-  mode,
-  onBack,
-  onSave,
-  onDelete,
-}: Pick<
-  SimulatorPhoneContactDetailFormProps,
-  "contact" | "mode" | "onBack" | "onSave" | "onDelete"
->) {
-  const capability = useSimulatorCapabilities().editContact;
-  const unavailable =
-    capability && capability.state !== "enabled" ? capability.reason : "";
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState("");
-  const inFlight = useRef(false);
-  const [state, setState] = useState({
-    source: initialContact,
-    draft: initialContact,
-  });
-  const sameSource =
-    JSON.stringify(state.source) === JSON.stringify(initialContact);
-  const pristine = JSON.stringify(state.draft) === JSON.stringify(state.source);
-  if (
-    !sameSource &&
-    (pristine ||
-      JSON.stringify(state.draft) === JSON.stringify(initialContact) ||
-      state.source.id !== initialContact.id)
-  ) {
-    setState({ source: initialContact, draft: initialContact });
-  }
-  const draft = mode === "read-only" ? initialContact : state.draft;
-  const conflict =
-    mode === "editable" &&
-    !sameSource &&
-    !pristine &&
-    state.source.id === initialContact.id;
-  const editable = mode === "editable";
-
-  const updateField = useCallback(
-    (patch: Partial<SimulatorPhoneContactDetailValues>) => {
-      setState((prev) => ({ ...prev, draft: { ...prev.draft, ...patch } }));
-    },
-    [],
-  );
-
-  const run = async (callback: typeof onSave) => {
-    if (!callback || inFlight.current || conflict || unavailable || !editable)
-      return;
-    inFlight.current = true;
-    setPending(true);
-    setError("");
-    try {
-      await callback(draft);
-    } catch (error_) {
-      setError(
-        error_ instanceof Error
-          ? error_.message
-          : "Contact could not be saved. Your draft is preserved.",
-      );
-    } finally {
-      inFlight.current = false;
-      setPending(false);
-    }
-  };
-  const handleSave = () => {
-    void run(onSave);
-  };
-  const handleDelete = () => {
-    void run(onDelete);
-  };
-  const back = () => {
-    if (!inFlight.current) onBack();
-  };
-
-  return {
-    draft,
-    editable,
-    conflict,
-    pending,
-    error,
-    unavailable,
-    updateField,
-    handleSave,
-    handleDelete,
-    back,
-    reload: () => setState({ source: initialContact, draft: initialContact }),
-  };
-}
-
-function ContactActions({
-  editable,
-  pending,
-  conflict,
-  unavailable,
-  onSave,
-  onDelete,
-  handleSave,
-  handleDelete,
-  back,
-}: Readonly<
-  Pick<
-    ReturnType<typeof useContactFormState>,
-    | "editable"
-    | "pending"
-    | "conflict"
-    | "unavailable"
-    | "handleSave"
-    | "handleDelete"
-    | "back"
-  > &
-    Pick<SimulatorPhoneContactDetailFormProps, "onSave" | "onDelete">
->) {
-  const screenLocale = useSimulatorLocale();
-  return (
-    <div className="simulator-phone-contact-detail__actions">
-      <button
-        type="button"
-        className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--back"
-        aria-label={screenLocale.t(
-          "screen.simulatorPhoneContactDetailForm.back.to.contacts.list",
-        )}
-        onClick={back}
-        disabled={pending}
-      >
-        {screenLocale.t("screen.simulatorPhoneContactDetailForm.back")}
-      </button>
-      {editable && onSave != null && (
-        <button
-          type="button"
-          className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--save"
-          onClick={handleSave}
-          disabled={conflict || pending || Boolean(unavailable)}
-        >
-          {screenLocale.t("screen.simulatorPhoneContactDetailForm.save")}
-        </button>
-      )}
-      {onDelete != null && (
-        <button
-          type="button"
-          className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--delete"
-          onClick={handleDelete}
-          disabled={!editable || conflict || pending || Boolean(unavailable)}
-          aria-disabled={
-            !editable || conflict || pending || Boolean(unavailable)
-          }
-        >
-          {screenLocale.t("screen.simulatorPhoneContactDetailForm.delete")}
-        </button>
-      )}
-    </div>
-  );
-}
-
-function ContactPhoneFields({
-  draft,
-  editable,
-  updateField,
-  renderPhoneAction,
-}: Readonly<
-  FieldProps & Pick<SimulatorPhoneContactDetailFormProps, "renderPhoneAction">
->) {
-  const screenLocale = useSimulatorLocale();
-  const scalarNumber = draft.number ?? "";
-  const formatNumber = usePhoneNumberFormatter();
-  if (draft.phoneNumbers) {
-    return (
-      <ContactValueList
-        kind="phone"
-        title={screenLocale.t(
-          "screen.simulatorPhoneContactDetailForm.phone.number",
-        )}
-        values={draft.phoneNumbers}
-        editable={editable}
-        onChange={(phoneNumbers) =>
-          updateField({ phoneNumbers, number: phoneNumbers[0]?.number })
-        }
-        renderAction={
-          renderPhoneAction
-            ? (phone) => renderPhoneAction(phone, draft)
-            : undefined
-        }
-      />
-    );
-  }
-  if (!editable && !scalarNumber.trim()) return null;
-  return (
-    <>
-      <div className="simulator-phone-contact-detail__field">
-        <label
-          className="simulator-phone-contact-detail__label"
-          htmlFor={fieldId("number", draft.id)}
-        >
-          {screenLocale.t(
-            "screen.simulatorPhoneContactDetailForm.phone.number",
-          )}
-        </label>
-        {editable ? (
-          <input
-            id={fieldId("number", draft.id)}
-            className="simulator-phone-contact-detail__input"
-            type="tel"
-            value={scalarNumber}
-            onChange={(event) => updateField({ number: event.target.value })}
-          />
-        ) : (
-          <span className="simulator-phone-contact-detail__value">
-            {formatNumber(scalarNumber)}
-          </span>
-        )}
-      </div>
-      {editable && (
-        <button
-          type="button"
-          onClick={() =>
-            updateField({
-              phoneNumbers: [
-                ...(draft.number
-                  ? [{ label: "", value: draft.number, number: draft.number }]
-                  : []),
-                { label: "", value: "" },
-              ],
-            })
-          }
-        >
-          {screenLocale.t(
-            "screen.simulatorPhoneContactDetailForm.add.phone.number",
-          )}
-        </button>
-      )}
-    </>
-  );
-}
-
-function ContactEmailFields({
-  draft,
-  editable,
-  updateField,
-}: Readonly<FieldProps>) {
-  const screenLocale = useSimulatorLocale();
-  const scalarEmail = draft.email ?? "";
-  if (draft.emailAddresses) {
-    return (
-      <ContactValueList
-        kind="email"
-        title={screenLocale.t("screen.simulatorPhoneContactDetailForm.email")}
-        values={draft.emailAddresses}
-        editable={editable}
-        onChange={(emailAddresses) =>
-          updateField({ emailAddresses, email: emailAddresses[0]?.value })
-        }
-      />
-    );
-  }
-  if (!editable && !scalarEmail.trim()) return null;
-  return (
-    <>
-      <div className="simulator-phone-contact-detail__field">
-        <label
-          className="simulator-phone-contact-detail__label"
-          htmlFor={fieldId("email", draft.id)}
-        >
-          {screenLocale.t("screen.simulatorPhoneContactDetailForm.email")}
-        </label>
-        {editable ? (
-          <input
-            id={fieldId("email", draft.id)}
-            className="simulator-phone-contact-detail__input"
-            type="email"
-            value={scalarEmail}
-            onChange={(event) => updateField({ email: event.target.value })}
-          />
-        ) : (
-          <span className="simulator-phone-contact-detail__value">
-            {scalarEmail}
-          </span>
-        )}
-      </div>
-      {editable && (
-        <button
-          type="button"
-          onClick={() =>
-            updateField({
-              emailAddresses: [
-                ...(draft.email ? [{ label: "", value: draft.email }] : []),
-                { label: "", value: "" },
-              ],
-            })
-          }
-        >
-          {screenLocale.t("screen.simulatorPhoneContactDetailForm.add.email")}
-        </button>
-      )}
-    </>
-  );
-}
-
-export default function SimulatorPhoneContactDetailForm({
-  contact: initialContact,
-  mode,
-  onBack,
-  onSave,
-  onDelete,
-  renderIdentityImage,
-  renderPhoneAction,
-  renderExtraFields,
-  renderActions,
-  context,
-}: Readonly<SimulatorPhoneContactDetailFormProps>) {
-  const screenLocale = useSimulatorLocale();
-
-  const {
-    draft,
-    editable,
-    conflict,
-    pending,
-    error,
-    unavailable,
-    updateField,
-    handleSave,
-    handleDelete,
-    back,
-    reload,
-  } = useContactFormState({
     contact: initialContact,
     mode,
     onBack,
     onSave,
     onDelete,
-  });
+}: Pick<
+    SimulatorPhoneContactDetailFormProps,
+    'contact' | 'mode' | 'onBack' | 'onSave' | 'onDelete'
+>) {
+    const capability = useSimulatorCapabilities().editContact;
+    const unavailable = capability && capability.state !== 'enabled' ? capability.reason : '';
+    const [pending, setPending] = useState(false);
+    const [error, setError] = useState('');
+    const inFlight = useRef(false);
+    const [state, setState] = useState({
+        source: initialContact,
+        draft: initialContact,
+    });
+    const sameSource = JSON.stringify(state.source) === JSON.stringify(initialContact);
+    const pristine = JSON.stringify(state.draft) === JSON.stringify(state.source);
+    if (
+        !sameSource &&
+        (pristine ||
+            JSON.stringify(state.draft) === JSON.stringify(initialContact) ||
+            state.source.id !== initialContact.id)
+    ) {
+        setState({ source: initialContact, draft: initialContact });
+    }
+    const draft = mode === 'read-only' ? initialContact : state.draft;
+    const conflict =
+        mode === 'editable' && !sameSource && !pristine && state.source.id === initialContact.id;
+    const editable = mode === 'editable';
 
-  return (
-    <SimulatorPage
-      className="simulator-phone-contact-detail"
-      data-testid="simulator-phone-contact-detail"
-      header={
-        <div className="simulator-phone-contact-detail__header">
-          <span tabIndex={-1} className="simulator-phone-contact-detail__title">
-            {editable
-              ? screenLocale.t(
-                  "screen.simulatorPhoneContactDetailForm.edit.contact",
-                )
-              : screenLocale.t(
-                  "screen.simulatorPhoneContactDetailForm.contact",
+    const updateField = useCallback((patch: Partial<SimulatorPhoneContactDetailValues>) => {
+        setState((prev) => ({ ...prev, draft: { ...prev.draft, ...patch } }));
+    }, []);
+
+    const run = async (callback: typeof onSave) => {
+        if (!callback || inFlight.current || conflict || unavailable || !editable) return;
+        inFlight.current = true;
+        setPending(true);
+        setError('');
+        try {
+            await callback(draft);
+        } catch (error_) {
+            setError(
+                error_ instanceof Error
+                    ? error_.message
+                    : 'Contact could not be saved. Your draft is preserved.',
+            );
+        } finally {
+            inFlight.current = false;
+            setPending(false);
+        }
+    };
+    const handleSave = () => {
+        void run(onSave);
+    };
+    const handleDelete = () => {
+        void run(onDelete);
+    };
+    const back = () => {
+        if (!inFlight.current) onBack();
+    };
+
+    return {
+        draft,
+        editable,
+        conflict,
+        pending,
+        error,
+        unavailable,
+        updateField,
+        handleSave,
+        handleDelete,
+        back,
+        reload: () => setState({ source: initialContact, draft: initialContact }),
+    };
+}
+
+function ContactActions({
+    editable,
+    pending,
+    conflict,
+    unavailable,
+    onSave,
+    onDelete,
+    handleSave,
+    handleDelete,
+    back,
+}: Readonly<
+    Pick<
+        ReturnType<typeof useContactFormState>,
+        'editable' | 'pending' | 'conflict' | 'unavailable' | 'handleSave' | 'handleDelete' | 'back'
+    > &
+        Pick<SimulatorPhoneContactDetailFormProps, 'onSave' | 'onDelete'>
+>) {
+    const screenLocale = useSimulatorLocale();
+    return (
+        <div className="simulator-phone-contact-detail__actions">
+            <button
+                type="button"
+                className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--back"
+                aria-label={screenLocale.t(
+                    'screen.simulatorPhoneContactDetailForm.back.to.contacts.list',
                 )}
-          </span>
-        </div>
-      }
-    >
-      {pending && (
-        <output>
-          {screenLocale.t(
-            "screen.simulatorPhoneContactDetailForm.saving.contact",
-          )}
-        </output>
-      )}
-      {error && <p role="alert">{error}</p>}
-      {unavailable && <output>{unavailable}</output>}
-      {onDelete && !editable && (
-        <p>
-          {screenLocale.t(
-            "screen.simulatorPhoneContactDetailForm.open.editing.mode.to.delete.this.contact",
-          )}
-        </p>
-      )}
-      {conflict && (
-        <output>
-          {screenLocale.t(
-            "screen.simulatorPhoneContactDetailForm.this.contact.changed.while.you.were.editing.your.d",
-          )}
-          <button type="button" disabled={pending} onClick={reload}>
-            {screenLocale.t(
-              "screen.simulatorPhoneContactDetailForm.discard.draft.and.reload.contact",
+                onClick={back}
+                disabled={pending}
+            >
+                {screenLocale.t('screen.simulatorPhoneContactDetailForm.back')}
+            </button>
+            {editable && onSave != null && (
+                <button
+                    type="button"
+                    className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--save"
+                    onClick={handleSave}
+                    disabled={conflict || pending || Boolean(unavailable)}
+                >
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.save')}
+                </button>
             )}
-          </button>
-        </output>
-      )}
-      <div className="simulator-phone-contact-detail__panel">
-        <fieldset
-          className="simulator-phone-contact-detail__form"
-          disabled={editable && (pending || Boolean(unavailable))}
-        >
-          <div className="simulator-phone-contact-detail__identity">
-            {renderIdentityImage?.(draft)}
+            {onDelete != null && (
+                <button
+                    type="button"
+                    className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--delete"
+                    onClick={handleDelete}
+                    disabled={!editable || conflict || pending || Boolean(unavailable)}
+                    aria-disabled={!editable || conflict || pending || Boolean(unavailable)}
+                >
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.delete')}
+                </button>
+            )}
+        </div>
+    );
+}
+
+function ContactPhoneFields({
+    draft,
+    editable,
+    updateField,
+    renderPhoneAction,
+}: Readonly<FieldProps & Pick<SimulatorPhoneContactDetailFormProps, 'renderPhoneAction'>>) {
+    const screenLocale = useSimulatorLocale();
+    const instanceId = useId();
+    const scalarNumber = draft.number ?? '';
+    const formatNumber = usePhoneNumberFormatter();
+    if (draft.phoneNumbers) {
+        return (
+            <ContactValueList
+                kind="phone"
+                title={screenLocale.t('screen.simulatorPhoneContactDetailForm.phone.number')}
+                values={draft.phoneNumbers}
+                editable={editable}
+                onChange={(phoneNumbers) =>
+                    updateField({ phoneNumbers, number: phoneNumbers[0]?.number })
+                }
+                renderAction={
+                    renderPhoneAction ? (phone) => renderPhoneAction(phone, draft) : undefined
+                }
+            />
+        );
+    }
+    if (!editable && !scalarNumber.trim()) return null;
+    return (
+        <>
             <div className="simulator-phone-contact-detail__field">
-              <label
-                className="simulator-phone-contact-detail__label"
-                htmlFor={fieldId("display-name", draft.id)}
-              >
-                {screenLocale.t(
-                  "screen.simulatorPhoneContactDetailForm.display.name",
+                <label
+                    className="simulator-phone-contact-detail__label"
+                    htmlFor={fieldId('number', instanceId)}
+                >
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.phone.number')}
+                </label>
+                {editable ? (
+                    <input
+                        id={fieldId('number', instanceId)}
+                        className="simulator-phone-contact-detail__input"
+                        type="tel"
+                        value={scalarNumber}
+                        onChange={(event) => updateField({ number: event.target.value })}
+                    />
+                ) : (
+                    <span className="simulator-phone-contact-detail__value">
+                        {formatNumber(scalarNumber)}
+                    </span>
                 )}
-              </label>
-              {editable ? (
-                <input
-                  id={fieldId("display-name", draft.id)}
-                  className="simulator-phone-contact-detail__input"
-                  type="text"
-                  value={draft.displayName}
-                  onChange={(event) =>
-                    updateField({ displayName: event.target.value })
-                  }
-                />
-              ) : (
-                <span className="simulator-phone-contact-detail__value">
-                  {draft.displayName}
-                </span>
-              )}
             </div>
-          </div>
-          <ContactPhoneFields
-            draft={draft}
-            editable={editable}
-            updateField={updateField}
-            renderPhoneAction={renderPhoneAction}
-          />
+            {editable && (
+                <button
+                    type="button"
+                    onClick={() =>
+                        updateField({
+                            phoneNumbers: [
+                                ...(draft.number
+                                    ? [{ label: '', value: draft.number, number: draft.number }]
+                                    : []),
+                                { label: '', value: '' },
+                            ],
+                        })
+                    }
+                >
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.add.phone.number')}
+                </button>
+            )}
+        </>
+    );
+}
 
-          <ContactEmailFields
-            draft={draft}
-            editable={editable}
-            updateField={updateField}
-          />
+function ContactEmailFields({ draft, editable, updateField }: Readonly<FieldProps>) {
+    const screenLocale = useSimulatorLocale();
+    const instanceId = useId();
+    const scalarEmail = draft.email ?? '';
+    if (draft.emailAddresses) {
+        return (
+            <ContactValueList
+                kind="email"
+                title={screenLocale.t('screen.simulatorPhoneContactDetailForm.email')}
+                values={draft.emailAddresses}
+                editable={editable}
+                onChange={(emailAddresses) =>
+                    updateField({ emailAddresses, email: emailAddresses[0]?.value })
+                }
+            />
+        );
+    }
+    if (!editable && !scalarEmail.trim()) return null;
+    return (
+        <>
+            <div className="simulator-phone-contact-detail__field">
+                <label
+                    className="simulator-phone-contact-detail__label"
+                    htmlFor={fieldId('email', instanceId)}
+                >
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.email')}
+                </label>
+                {editable ? (
+                    <input
+                        id={fieldId('email', instanceId)}
+                        className="simulator-phone-contact-detail__input"
+                        type="email"
+                        value={scalarEmail}
+                        onChange={(event) => updateField({ email: event.target.value })}
+                    />
+                ) : (
+                    <span className="simulator-phone-contact-detail__value">{scalarEmail}</span>
+                )}
+            </div>
+            {editable && (
+                <button
+                    type="button"
+                    onClick={() =>
+                        updateField({
+                            emailAddresses: [
+                                ...(draft.email ? [{ label: '', value: draft.email }] : []),
+                                { label: '', value: '' },
+                            ],
+                        })
+                    }
+                >
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.add.email')}
+                </button>
+            )}
+        </>
+    );
+}
 
-          {renderExtraFields?.({
-            contact: draft,
-            updateContact: updateField,
-            context,
-          })}
-        </fieldset>
+export default function SimulatorPhoneContactDetailForm({
+    contact: initialContact,
+    mode,
+    onBack,
+    onSave,
+    onDelete,
+    renderIdentityImage,
+    renderPhoneAction,
+    renderExtraFields,
+    renderActions,
+    context,
+}: Readonly<SimulatorPhoneContactDetailFormProps>) {
+    const screenLocale = useSimulatorLocale();
+    const instanceId = useId();
 
-        {renderActions?.({
-          contact: draft,
-          onBack: back,
-          onSave: onSave != null ? handleSave : undefined,
-          onDelete: onDelete != null ? handleDelete : undefined,
-          context,
-        }) ?? (
-          <ContactActions
-            editable={editable}
-            pending={pending}
-            conflict={conflict}
-            unavailable={unavailable}
-            onSave={onSave}
-            onDelete={onDelete}
-            handleSave={handleSave}
-            handleDelete={handleDelete}
-            back={back}
-          />
-        )}
-      </div>
-    </SimulatorPage>
-  );
+    const {
+        draft,
+        editable,
+        conflict,
+        pending,
+        error,
+        unavailable,
+        updateField,
+        handleSave,
+        handleDelete,
+        back,
+        reload,
+    } = useContactFormState({
+        contact: initialContact,
+        mode,
+        onBack,
+        onSave,
+        onDelete,
+    });
+
+    return (
+        <SimulatorPage
+            className="simulator-phone-contact-detail"
+            data-testid="simulator-phone-contact-detail"
+            header={
+                <div className="simulator-phone-contact-detail__header">
+                    <span tabIndex={-1} className="simulator-phone-contact-detail__title">
+                        {editable
+                            ? screenLocale.t('screen.simulatorPhoneContactDetailForm.edit.contact')
+                            : screenLocale.t('screen.simulatorPhoneContactDetailForm.contact')}
+                    </span>
+                </div>
+            }
+        >
+            {pending && (
+                <output>
+                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.saving.contact')}
+                </output>
+            )}
+            {error && <p role="alert">{error}</p>}
+            {unavailable && <output>{unavailable}</output>}
+            {onDelete && !editable && (
+                <p>
+                    {screenLocale.t(
+                        'screen.simulatorPhoneContactDetailForm.open.editing.mode.to.delete.this.contact',
+                    )}
+                </p>
+            )}
+            {conflict && (
+                <output>
+                    {screenLocale.t(
+                        'screen.simulatorPhoneContactDetailForm.this.contact.changed.while.you.were.editing.your.d',
+                    )}
+                    <button type="button" disabled={pending} onClick={reload}>
+                        {screenLocale.t(
+                            'screen.simulatorPhoneContactDetailForm.discard.draft.and.reload.contact',
+                        )}
+                    </button>
+                </output>
+            )}
+            <div className="simulator-phone-contact-detail__panel">
+                <fieldset
+                    className="simulator-phone-contact-detail__form"
+                    disabled={editable && (pending || Boolean(unavailable))}
+                >
+                    <div className="simulator-phone-contact-detail__identity">
+                        {renderIdentityImage?.(draft)}
+                        <div className="simulator-phone-contact-detail__field">
+                            <label
+                                className="simulator-phone-contact-detail__label"
+                                htmlFor={fieldId('display-name', instanceId)}
+                            >
+                                {screenLocale.t(
+                                    'screen.simulatorPhoneContactDetailForm.display.name',
+                                )}
+                            </label>
+                            {editable ? (
+                                <input
+                                    id={fieldId('display-name', instanceId)}
+                                    className="simulator-phone-contact-detail__input"
+                                    type="text"
+                                    value={draft.displayName}
+                                    onChange={(event) =>
+                                        updateField({ displayName: event.target.value })
+                                    }
+                                />
+                            ) : (
+                                <span className="simulator-phone-contact-detail__value">
+                                    {draft.displayName}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <ContactPhoneFields
+                        draft={draft}
+                        editable={editable}
+                        updateField={updateField}
+                        renderPhoneAction={renderPhoneAction}
+                    />
+
+                    <ContactEmailFields
+                        draft={draft}
+                        editable={editable}
+                        updateField={updateField}
+                    />
+
+                    {renderExtraFields?.({
+                        contact: draft,
+                        updateContact: updateField,
+                        context,
+                    })}
+                </fieldset>
+
+                {renderActions?.({
+                    contact: draft,
+                    onBack: back,
+                    onSave: onSave != null ? handleSave : undefined,
+                    onDelete: onDelete != null ? handleDelete : undefined,
+                    context,
+                }) ?? (
+                    <ContactActions
+                        editable={editable}
+                        pending={pending}
+                        conflict={conflict}
+                        unavailable={unavailable}
+                        onSave={onSave}
+                        onDelete={onDelete}
+                        handleSave={handleSave}
+                        handleDelete={handleDelete}
+                        back={back}
+                    />
+                )}
+            </div>
+        </SimulatorPage>
+    );
 }

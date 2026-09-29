@@ -55,9 +55,7 @@ describe('SimulatorPhoneDevice', () => {
         const state = buildContactsScreenState();
         const dispatch = vi.fn();
 
-        const { getByTestId } = render(
-            <SimulatorPhoneDevice state={state} dispatch={dispatch} />,
-        );
+        const { getByTestId } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
         expect(getByTestId('simulator-device-shell')).toBeTruthy();
         expect(getByTestId('simulator-device-nav')).toBeTruthy();
@@ -67,9 +65,7 @@ describe('SimulatorPhoneDevice', () => {
         const state = buildContactsScreenState();
         const dispatch = vi.fn();
 
-        const { container } = render(
-            <SimulatorPhoneDevice state={state} dispatch={dispatch} />,
-        );
+        const { container } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
         expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
         expect(within(container).getByText('IT Helpdesk')).toBeTruthy();
@@ -90,9 +86,7 @@ describe('SimulatorPhoneDevice', () => {
         });
         const dispatch = vi.fn();
 
-        const { getByText } = render(
-            <SimulatorPhoneDevice state={state} dispatch={dispatch} />,
-        );
+        const { getByText } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
         expect(getByText('Previous calls')).toBeTruthy();
         expect(getByText('Today 9:15 AM')).toBeTruthy();
@@ -119,9 +113,7 @@ describe('SimulatorPhoneDevice', () => {
         const state = buildContactsScreenState();
         const dispatch = vi.fn();
 
-        const { container } = render(
-            <SimulatorPhoneDevice state={state} dispatch={dispatch} />,
-        );
+        const { container } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
         clickContactRow(container, 'IT Helpdesk');
 
@@ -178,7 +170,11 @@ describe('SimulatorPhoneDevice', () => {
         const state = buildContactsScreenState();
         state.view.showPrimaryMenu = false;
         const { container, getAllByRole, queryByTestId } = render(
-            <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{ mode: 'read-only' }} />,
+            <SimulatorPhoneDevice
+                state={state}
+                dispatch={dispatch}
+                contactDetail={{ mode: 'read-only' }}
+            />,
         );
         clickContactRow(container, 'IT Helpdesk');
         dispatch.mockClear();
@@ -254,7 +250,9 @@ describe('SimulatorPhoneDevice', () => {
             />,
         );
 
-        expect(getByTestId('simulator-device-shell').className).toContain('host-simulator-root--preview');
+        expect(getByTestId('simulator-device-shell').className).toContain(
+            'host-simulator-root--preview',
+        );
         expect(getByTestId('simulator-device-shell').closest('.host-simulator-root')).toBeTruthy();
     });
 
@@ -308,9 +306,7 @@ describe('SimulatorPhoneDevice', () => {
         state.view.showPrimaryMenu = true;
         const dispatch = vi.fn();
 
-        const { getByTestId } = render(
-            <SimulatorPhoneDevice state={state} dispatch={dispatch} />,
-        );
+        const { getByTestId } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
         expect(getByTestId('simulator-device-shell')).toBeTruthy();
     });
@@ -320,17 +316,29 @@ it('passes the original contact context to package delete handlers', () => {
     const state = buildContactsScreenState();
     const dispatch = vi.fn();
     const onDelete = vi.fn();
-    const { container, getByRole } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{ mode: 'editable', onDelete }} />);
+    const { container, getByRole } = render(
+        <SimulatorPhoneDevice
+            state={state}
+            dispatch={dispatch}
+            contactDetail={{ mode: 'editable', onDelete }}
+        />,
+    );
     clickContactRow(container, 'HR');
     fireEvent.click(getByRole('button', { name: 'Delete' }));
-    expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ displayName: 'HR' }), { state, dispatch: expect.any(Function), originalContact: expect.objectContaining({ displayName: 'HR' }) });
+    expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ displayName: 'HR' }), {
+        state,
+        dispatch: expect.any(Function),
+        originalContact: expect.objectContaining({ displayName: 'HR' }),
+    });
 });
 
 it('closes host contact details when switching phone tabs', () => {
     const dispatch = vi.fn();
     const state = buildContactsScreenState();
     state.view.showPrimaryMenu = false;
-    const { container, getByRole, queryByTestId } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />);
+    const { container, getByRole, queryByTestId } = render(
+        <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />,
+    );
     clickContactRow(container, 'HR');
     fireEvent.click(getByRole('button', { name: 'History', exact: true }));
     expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
@@ -347,7 +355,9 @@ it('hides navigation when there is no active app', () => {
 it('returns focus to search when the previously selected contact is removed', () => {
     const state = buildContactsScreenState();
     const dispatch = vi.fn();
-    const view = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />);
+    const view = render(
+        <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />,
+    );
     clickContactRow(view.container, 'HR');
     const changed = { ...state, payload: { ...state.payload, contacts: [] } };
     view.rerender(<SimulatorPhoneDevice state={changed} dispatch={dispatch} contactDetail={{}} />);
@@ -358,8 +368,52 @@ it('returns focus to search when the previously selected contact is removed', ()
 it('closes details when the host changes the active phone screen', () => {
     const state = buildContactsScreenState();
     const dispatch = vi.fn();
-    const view = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />);
+    const view = render(
+        <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />,
+    );
     clickContactRow(view.container, 'HR');
-    view.rerender(<SimulatorPhoneDevice state={{ ...state, view: { ...state.view, phone: { ...state.view.phone, screen: 'dial' } } }} dispatch={dispatch} contactDetail={{}} />);
+    view.rerender(
+        <SimulatorPhoneDevice
+            state={{
+                ...state,
+                view: { ...state.view, phone: { ...state.view.phone, screen: 'dial' } },
+            }}
+            dispatch={dispatch}
+            contactDetail={{}}
+        />,
+    );
     expect(view.queryByTestId('simulator-phone-contact-detail')).toBeNull();
+});
+
+it('exposes isolated scroll roots and releases host refs on unmount', () => {
+    const first = vi.fn();
+    const second = vi.fn();
+    const state = getInitialSessionState(minimalPhonePayload());
+    const a = render(<SimulatorPhoneDevice state={state} dispatch={() => {}} screenRef={first} />);
+    const b = render(<SimulatorPhoneDevice state={state} dispatch={() => {}} screenRef={second} />);
+    const firstRoot = first.mock.calls[0]?.[0];
+    const secondRoot = second.mock.calls[0]?.[0];
+    expect(firstRoot).toBeInstanceOf(HTMLDivElement);
+    expect(a.container.contains(firstRoot)).toBe(true);
+    expect(b.container.contains(secondRoot)).toBe(true);
+    expect(firstRoot).not.toBe(secondRoot);
+    a.unmount();
+    expect(first).toHaveBeenLastCalledWith(null);
+    expect(second).not.toHaveBeenLastCalledWith(null);
+    b.unmount();
+    expect(second).toHaveBeenLastCalledWith(null);
+});
+
+it('sets and releases a mutable host screen ref', () => {
+    const screenRef: { current: HTMLDivElement | null } = { current: null };
+    const view = render(
+        <SimulatorPhoneDevice
+            state={getInitialSessionState(minimalPhonePayload())}
+            dispatch={() => {}}
+            screenRef={screenRef}
+        />,
+    );
+    expect(screenRef.current).toBeInstanceOf(HTMLDivElement);
+    view.unmount();
+    expect(screenRef.current).toBeNull();
 });

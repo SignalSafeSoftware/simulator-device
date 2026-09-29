@@ -14,7 +14,10 @@ function toDeviceContact(contact: SimulatorPhoneContactDetailValues) {
     }
     let emails: Partial<NonNullable<SimulatorDevicePayload['contacts']>[number]> = {};
     if (hasEmails) {
-        emails = { email_addresses: contact.emailAddresses, email: contact.emailAddresses?.[0]?.value };
+        emails = {
+            email_addresses: contact.emailAddresses,
+            email: contact.emailAddresses?.[0]?.value,
+        };
     } else if (hasEmail) {
         emails = { email_addresses: undefined, email: contact.email };
     }
@@ -42,7 +45,9 @@ export function patchContactInDevicePayload(
         };
     }
 
-    const nextContacts = contacts.map((entry, i) => (i === index ? { ...entry, ...nextContact } : entry));
+    const nextContacts = contacts.map((entry, i) =>
+        i === index ? { ...entry, ...nextContact } : entry,
+    );
     return {
         ...value,
         contacts: nextContacts,

@@ -413,7 +413,7 @@ simulator-react, without artificial history/contacts screen hops.
 The full contract and release sequence are in simulator-react's
 `docs/navigation-contract.md`. Release simulator-react first and raise this
 package's dependency minimum to that new version before releasing device.
-This release requires simulator-react 0.16.3 and simulator-core 0.3.2. No host-specific Settings implementation is included.
+The current release candidate requires simulator-react 0.17.0 and simulator-core 0.4.1. No host-specific Settings implementation is included.
 
 ### Host screen content
 
@@ -498,7 +498,7 @@ The npm archive includes `gallery-dist/`, a self-contained static build that can
 
 ## Release records
 
-See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). Current runtime dependencies are simulator-core 0.3.2 and simulator-react 0.16.3, with React 18 peers. The gallery and release smoke tests use declared registry dependencies; no sibling source checkout is required.
+See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). The prepared runtime dependencies are simulator-core 0.4.1 and simulator-react 0.17.0, with React 18 peers. The gallery and release smoke tests use declared registry dependencies; no sibling source checkout is required.
 
 Development tooling requires Node 22.22.2+ or Node 24.15+ (jsdom 30); CI selects current Node 22/24. The published runtime retains its Node >=19.0.0 contract and React 18 peers. TypeScript 7, Vite 8 and Vitest 5 are build/test tools, not runtime dependencies.
 
@@ -509,15 +509,27 @@ Node 22/24 (use Node 24.16+ locally). A separate CI job installs packed artifact
 with strict engine checks and tests runtime behavior on Node 19.0.0 and 19–24.
 
 The compatibility job builds this package and installs its declared dependencies
-from npm with strict engine checks. Release core 0.3.2 first, then React 0.16.3,
-then device 0.16.3; regenerate each downstream lockfile after its upstream release
-is available. No sibling source overrides are used in the runtime matrix.
+from npm with strict engine checks. Release core 0.4.1, then React 0.17.0,
+then device 0.17.0; publish theme 0.10.0 before validating the device gallery.
+Regenerate each downstream lockfile after its upstream releases are available.
+No sibling source overrides are used in the runtime matrix.
 
 ### Dependency revisions and coverage
 
-This release requires simulator-core `0.3.2` and simulator-react `0.16.3`.
+The prepared migration requires simulator-core `0.4.1` and simulator-react `0.17.0`.
 The runtime matrix installs these registry releases through the packed device
 manifest, including their TreeSpec dependency.
 
 Run `yarn test:coverage` to check the unit suite. CI requires 100% statements,
 branches, functions, and lines across the existing source coverage scope.
+
+## Local app migration (0.17.0, release candidate)
+
+- Export `SimulatorDeviceApps`, `SimulatorDeviceAppsProvider` and `SimulatorCallBoundary` for Home, local apps, locking and call overlays that preserve mounted drafts.
+- Delegate app navigation items to the shared React primitive while preserving existing device CSS hooks.
+- Include a strict React 18 example with an in-memory host adapter and browser workflow test, importing only public package APIs.
+- Require core 0.4.1 and React 0.17.0; retain React 18 peers. Theme 0.10.0 is used by the gallery/example.
+
+Use the matching registry version after its release workflow completes. See
+[RELEASING.md](RELEASING.md) for the coordinated release order and consumer
+validation. Installed package files are never patched.

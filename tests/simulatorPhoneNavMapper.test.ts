@@ -50,7 +50,9 @@ function buildState(view: Partial<SimulatorViewState> = {}): SimulatorSessionSta
 
 describe('resolveSimulatorPhoneNav', () => {
     it('returns primary nav for home-level screens', () => {
-        const model = resolveSimulatorPhoneNav(buildState({ activeApp: 'home', showPrimaryMenu: true }));
+        const model = resolveSimulatorPhoneNav(
+            buildState({ activeApp: 'home', showPrimaryMenu: true }),
+        );
 
         expect(model.mode).toBe('primary');
         if (model.mode !== 'primary') {
@@ -79,7 +81,12 @@ describe('resolveSimulatorPhoneNav', () => {
 
         expect(model.app).toBe('phone');
         expect(model.activeId).toBe('history');
-        expect(model.items.map((item) => item.label)).toEqual(['History', 'Contacts', 'Dial', 'Back']);
+        expect(model.items.map((item) => item.label)).toEqual([
+            'History',
+            'Contacts',
+            'Dial',
+            'Back',
+        ]);
     });
 
     it('returns email secondary nav for email screens', () => {
@@ -150,26 +157,56 @@ describe('dispatchSimulatorPhoneNavItem', () => {
 
         const outbox = model.items.find((item) => item.id === 'outbox')!;
         dispatchSimulatorPhoneNavItem(dispatch, model, outbox);
-        expect(dispatch).toHaveBeenCalledWith({ type: 'NAV_LOCAL', app: 'email', screen: 'outbox' });
+        expect(dispatch).toHaveBeenCalledWith({
+            type: 'NAV_LOCAL',
+            app: 'email',
+            screen: 'outbox',
+        });
     });
 });
 
 it('uses Send and Back for email compose, with sending unavailable', () => {
-    const model = resolveSimulatorPhoneNav(buildState({ activeApp: 'email', showPrimaryMenu: false, email: { screen: 'compose', stack: ['list'], selectedMessageId: null } }));
+    const model = resolveSimulatorPhoneNav(
+        buildState({
+            activeApp: 'email',
+            showPrimaryMenu: false,
+            email: { screen: 'compose', stack: ['list'], selectedMessageId: null },
+        }),
+    );
     expect(model.mode).toBe('tertiary');
     if (model.mode !== 'tertiary') throw new Error('Expected compose menu');
-    expect(model.items.map(item => item.label)).toEqual(['Send', 'Back']);
+    expect(model.items.map((item) => item.label)).toEqual(['Send', 'Back']);
     expect(model.items[0]?.disabled).toBe(true);
 });
 
-it.each(['add_contact', 'directory', 'incoming_call', 'voicemail'] as const)('maps the %s phone screen to its parent tab', (screen) => {
-    expect(resolveSimulatorPhoneNav(buildState({ activeApp: 'phone', showPrimaryMenu: false, phone: { screen, stack: [], chosenIndex: null } }))).toMatchObject({
-        mode: 'secondary', activeId: ['add_contact', 'directory'].includes(screen) ? 'contacts' : 'history',
-    });
-});
+it.each(['add_contact', 'directory', 'incoming_call', 'voicemail'] as const)(
+    'maps the %s phone screen to its parent tab',
+    (screen) => {
+        expect(
+            resolveSimulatorPhoneNav(
+                buildState({
+                    activeApp: 'phone',
+                    showPrimaryMenu: false,
+                    phone: { screen, stack: [], chosenIndex: null },
+                }),
+            ),
+        ).toMatchObject({
+            mode: 'secondary',
+            activeId: ['add_contact', 'directory'].includes(screen) ? 'contacts' : 'history',
+        });
+    },
+);
 
 it.each(['outbox', 'trash'] as const)('selects the %s email tab', (screen) => {
-    expect(resolveSimulatorPhoneNav(buildState({ activeApp: 'email', showPrimaryMenu: false, email: { screen, stack: [], selectedMessageId: null } }))).toMatchObject({ mode: 'secondary', activeId: screen });
+    expect(
+        resolveSimulatorPhoneNav(
+            buildState({
+                activeApp: 'email',
+                showPrimaryMenu: false,
+                email: { screen, stack: [], selectedMessageId: null },
+            }),
+        ),
+    ).toMatchObject({ mode: 'secondary', activeId: screen });
 });
 
 it('hides navigation when no app is selected', () => {
@@ -179,16 +216,31 @@ it('hides navigation when no app is selected', () => {
 });
 
 it('uses the internet primary menu', () => {
-    expect(resolveSimulatorPhoneNav(buildState({ activeApp: 'internet' }))).toMatchObject({ mode: 'primary', activeChannel: 'browser' });
+    expect(resolveSimulatorPhoneNav(buildState({ activeApp: 'internet' }))).toMatchObject({
+        mode: 'primary',
+        activeChannel: 'browser',
+    });
 });
 
-it.each(['thread_detail', 'new_thread'] as const)('provides message actions for %s', screen => {
-    expect(resolveSimulatorPhoneNav(buildState({ activeApp: 'messages', messages: { screen, stack: [], visibleCount: 0 } }))).toMatchObject({ mode: 'secondary', app: 'messages', items: [{ id: 'send', disabled: screen === 'new_thread' }, { id: 'back' }] });
+it.each(['thread_detail', 'new_thread'] as const)('provides message actions for %s', (screen) => {
+    expect(
+        resolveSimulatorPhoneNav(
+            buildState({ activeApp: 'messages', messages: { screen, stack: [], visibleCount: 0 } }),
+        ),
+    ).toMatchObject({
+        mode: 'secondary',
+        app: 'messages',
+        items: [{ id: 'send', disabled: screen === 'new_thread' }, { id: 'back' }],
+    });
 });
 
 it('ignores a local action outside the secondary menu', () => {
     const dispatch = vi.fn();
-    dispatchSimulatorPhoneNavItem(dispatch, { mode: 'primary', activeChannel: 'home', items: [] }, { id: 'settings', label: 'Settings', action: 'local' });
+    dispatchSimulatorPhoneNavItem(
+        dispatch,
+        { mode: 'primary', activeChannel: 'home', items: [] },
+        { id: 'settings', label: 'Settings', action: 'local' },
+    );
     expect(dispatch).not.toHaveBeenCalled();
 });
 
@@ -206,8 +258,14 @@ it('defensively hides navigation for missing or unknown runtime view data', () =
     }
 });
 
-it.each([{ stack: [] }, { stack: ['outbox'] }])('falls back to the email stack for an unknown screen: %j', ({ stack }) => {
-    const state = buildState({ activeApp: 'email', showPrimaryMenu: false });
-    Object.assign(state.view.email, { screen: 'future-screen', stack });
-    expect(resolveSimulatorPhoneNav(state)).toMatchObject({ mode: 'secondary', activeId: stack.at(-1) ?? 'list' });
-});
+it.each([{ stack: [] }, { stack: ['outbox'] }])(
+    'falls back to the email stack for an unknown screen: %j',
+    ({ stack }) => {
+        const state = buildState({ activeApp: 'email', showPrimaryMenu: false });
+        Object.assign(state.view.email, { screen: 'future-screen', stack });
+        expect(resolveSimulatorPhoneNav(state)).toMatchObject({
+            mode: 'secondary',
+            activeId: stack.at(-1) ?? 'list',
+        });
+    },
+);

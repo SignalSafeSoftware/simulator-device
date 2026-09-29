@@ -17,15 +17,31 @@ it('disables message sending until a host callback is configured', () => {
     const state = buildState({ activeApp: 'messages' });
     state.view.messages.screen = 'new_thread';
     const view = render(<SimulatorPhoneNav state={state} dispatch={vi.fn()} />);
-    for (const button of view.getAllByRole('button', { name: 'Send' })) expect(button).toHaveProperty('disabled', true);
+    for (const button of view.getAllByRole('button', { name: 'Send' }))
+        expect(button).toHaveProperty('disabled', true);
 });
 
 it('submits the message form from the navigation menu and tolerates a missing shell', () => {
     const state = buildState({ activeApp: 'messages' });
     state.view.messages.screen = 'new_thread';
-    const submit = vi.fn(event => event.preventDefault());
-    const nav = <MessageComposeContext.Provider value={{ draft: { phoneNumber: "", messageBody: "" }, onChange: vi.fn(), onSend: vi.fn() }}><SimulatorPhoneNav state={state} dispatch={vi.fn()} /></MessageComposeContext.Provider>;
-    const view = render(<div className="simulator-device-shell"><form className="simulator-messages__composer" onSubmit={submit} />{nav}</div>);
+    const submit = vi.fn((event) => event.preventDefault());
+    const nav = (
+        <MessageComposeContext.Provider
+            value={{
+                draft: { phoneNumber: '', messageBody: '' },
+                onChange: vi.fn(),
+                onSend: vi.fn(),
+            }}
+        >
+            <SimulatorPhoneNav state={state} dispatch={vi.fn()} />
+        </MessageComposeContext.Provider>
+    );
+    const view = render(
+        <div className="simulator-device-shell">
+            <form className="simulator-messages__composer" onSubmit={submit} />
+            {nav}
+        </div>,
+    );
     fireEvent.click(view.getByRole('button', { name: 'Send' }));
     expect(submit).toHaveBeenCalledOnce();
     view.rerender(nav);
@@ -36,9 +52,16 @@ it('submits the message form from the navigation menu and tolerates a missing sh
 it('uses the host capability reason when message sending is disabled', () => {
     const state = buildState({ activeApp: 'messages' });
     state.view.messages.screen = 'new_thread';
-    const view = render(<SimulatorPhoneDevice state={state} dispatch={vi.fn()} capabilities={{ sendMessage: { state: 'unavailable', reason: 'Sending paused' } }} />);
+    const view = render(
+        <SimulatorPhoneDevice
+            state={state}
+            dispatch={vi.fn()}
+            capabilities={{ sendMessage: { state: 'unavailable', reason: 'Sending paused' } }}
+        />,
+    );
     expect(view.getAllByText('Sending paused').length).toBeGreaterThan(0);
-    for (const button of view.getAllByRole('button', { name: 'Send' })) expect(button).toHaveProperty('disabled', true);
+    for (const button of view.getAllByRole('button', { name: 'Send' }))
+        expect(button).toHaveProperty('disabled', true);
 });
 
 it('disables email sending until a host callback is configured', () => {

@@ -122,7 +122,11 @@ export function resolveIncomingCallCaller(state: SimulatorSessionState): PhoneIn
             return true;
         }
         const contactNumber = normalizePhoneNumber(contact.number);
-        return normalizedIncoming !== '' && contactNumber !== '' && contactNumber === normalizedIncoming;
+        return (
+            normalizedIncoming !== '' &&
+            contactNumber !== '' &&
+            contactNumber === normalizedIncoming
+        );
     });
 
     return {

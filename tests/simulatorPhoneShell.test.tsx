@@ -12,7 +12,9 @@ describe('SimulatorPhoneShell', () => {
             </SimulatorPhoneShell>,
         );
 
-        const sessionColumn = container.querySelector(`.${SIMULATOR_DEVICE_CLASS_NAMES.shellSessionColumn}`);
+        const sessionColumn = container.querySelector(
+            `.${SIMULATOR_DEVICE_CLASS_NAMES.shellSessionColumn}`,
+        );
         expect(sessionColumn).toBeTruthy();
         expect(sessionColumn?.querySelector('[data-testid="session-content"]')).toBeTruthy();
     });

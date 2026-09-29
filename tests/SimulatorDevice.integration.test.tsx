@@ -5,7 +5,9 @@ import { buildContactsDeviceJson } from './support/deviceJsonFixtures.js';
 
 describe('SimulatorDevice integration', () => {
     it('renders phone shell from JSON without mocking SimulatorPhoneDevice', async () => {
-        const { getByTestId, getByRole } = render(<SimulatorDevice value={buildContactsDeviceJson()} />);
+        const { getByTestId, getByRole } = render(
+            <SimulatorDevice value={buildContactsDeviceJson()} />,
+        );
 
         await waitFor(() => expect(getByTestId('simulator-device-shell')).toBeTruthy());
         expect(getByRole('button', { name: /IT Helpdesk/ })).toBeTruthy();
@@ -22,10 +24,7 @@ describe('SimulatorDevice integration', () => {
         ));
 
         const { getByRole, getByTestId } = render(
-            <SimulatorDevice
-                value={buildContactsDeviceJson()}
-                phone={{ renderContactDetail }}
-            />,
+            <SimulatorDevice value={buildContactsDeviceJson()} phone={{ renderContactDetail }} />,
         );
 
         await waitFor(() => expect(getByRole('button', { name: /IT Helpdesk/ })).toBeTruthy());

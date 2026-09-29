@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.17.0 — September 29, 2026
+
+- Export `SimulatorDeviceApps`, `SimulatorDeviceAppsProvider` and `SimulatorCallBoundary` for Home, local apps, locking and call overlays that preserve mounted drafts.
+- Delegate app navigation items to the shared React primitive while preserving existing device CSS hooks.
+- Include a strict React 18 example with an in-memory host adapter and browser workflow test, importing only public package APIs.
+- Require core 0.4.1 and React 0.17.0; retain React 18 peers. Theme 0.10.0 is used by the gallery/example.
+
 ## [Unreleased]
 
 ### Changed

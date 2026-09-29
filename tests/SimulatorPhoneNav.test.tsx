@@ -47,7 +47,9 @@ function buildState(view: Partial<SimulatorViewState> = {}): SimulatorSessionSta
 describe('SimulatorPhoneNav', () => {
     it('renders buttons with active state on the current primary channel', () => {
         const dispatch = vi.fn();
-        const { getByRole } = render(<SimulatorPhoneNav state={buildState()} dispatch={dispatch} />);
+        const { getByRole } = render(
+            <SimulatorPhoneNav state={buildState()} dispatch={dispatch} />,
+        );
 
         expect(getByRole('button', { name: 'Home' }).getAttribute('aria-current')).toBe('page');
         expect(getByRole('button', { name: 'Email' }).getAttribute('aria-current')).toBeNull();
@@ -55,7 +57,9 @@ describe('SimulatorPhoneNav', () => {
 
     it('clicking a nav button dispatches the expected simulator action', () => {
         const dispatch = vi.fn();
-        const { getByRole } = render(<SimulatorPhoneNav state={buildState()} dispatch={dispatch} />);
+        const { getByRole } = render(
+            <SimulatorPhoneNav state={buildState()} dispatch={dispatch} />,
+        );
 
         fireEvent.click(getByRole('button', { name: 'Email' }));
         expect(dispatch).toHaveBeenCalledWith(switchChannelAction('email'));
@@ -74,10 +78,15 @@ describe('SimulatorPhoneNav', () => {
             />,
         );
 
-        expect(queryByTestId('simulator-device-nav')?.getAttribute('data-nav-mode')).toBe('tertiary');
+        expect(queryByTestId('simulator-device-nav')?.getAttribute('data-nav-mode')).toBe(
+            'tertiary',
+        );
         expect(queryByRole('button', { name: 'Cancel' })).toBeNull();
         fireEvent.click(getByRole('button', { name: 'Reply' }));
-        expect(dispatch).toHaveBeenLastCalledWith({ type: 'SIMULATOR_ACTION', action: { type: 'send_reply' } });
+        expect(dispatch).toHaveBeenLastCalledWith({
+            type: 'SIMULATOR_ACTION',
+            action: { type: 'send_reply' },
+        });
         fireEvent.click(getByRole('button', { name: 'Back' }));
         expect(dispatch).toHaveBeenLastCalledWith({ type: 'BACK' });
     });
@@ -87,7 +96,12 @@ it('uses provider menu labels without changing navigation actions', async () => 
     const { SimulatorLocaleProvider } = await import('@signalsafe/simulator-react');
     const dispatch = vi.fn();
     const { getByRole } = render(
-        <SimulatorLocaleProvider messages={{ 'nav.phone': 'Calls and contacts', 'nav.simulatorChannels': 'Choose an app' }}>
+        <SimulatorLocaleProvider
+            messages={{
+                'nav.phone': 'Calls and contacts',
+                'nav.simulatorChannels': 'Choose an app',
+            }}
+        >
             <SimulatorPhoneNav state={buildState()} dispatch={dispatch} />
         </SimulatorLocaleProvider>,
     );
@@ -97,6 +111,53 @@ it('uses provider menu labels without changing navigation actions', async () => 
 });
 
 it('renders no navigation when no app is selected', () => {
-    const { queryByRole } = render(<SimulatorPhoneNav state={buildState({ activeApp: null })} dispatch={vi.fn()} />);
+    const { queryByRole } = render(
+        <SimulatorPhoneNav state={buildState({ activeApp: null })} dispatch={vi.fn()} />,
+    );
     expect(queryByRole('navigation')).toBeNull();
+});
+
+it('emits forward and dispose intent once, and disables unconfigured actions', () => {
+    const dispatch = vi.fn();
+    const onEmailAction = vi.fn();
+    const state = buildState({
+        activeApp: 'email',
+        showPrimaryMenu: false,
+        email: { screen: 'detail', stack: ['list'], selectedMessageId: 'm1' },
+    });
+    const view = render(<SimulatorPhoneNav state={state} dispatch={dispatch} />);
+    fireEvent.click(view.getByRole('button', { name: 'Forward' }));
+    fireEvent.click(view.getByRole('button', { name: 'Dispose' }));
+    expect(dispatch).not.toHaveBeenCalled();
+    expect(view.getByRole('button', { name: 'Forward' }).hasAttribute('disabled')).toBe(true);
+    view.rerender(
+        <SimulatorPhoneNav state={state} dispatch={dispatch} onEmailAction={onEmailAction} />,
+    );
+    fireEvent.click(view.getByRole('button', { name: 'Forward' }));
+    fireEvent.click(view.getByRole('button', { name: 'Dispose' }));
+    expect(onEmailAction.mock.calls).toEqual([
+        ['forward', 'm1'],
+        ['dispose', 'm1'],
+    ]);
+    expect(dispatch).not.toHaveBeenCalled();
+});
+
+it('falls back to the payload selection or null for host mail actions', () => {
+    const state = buildState({
+        activeApp: 'email',
+        showPrimaryMenu: false,
+        email: { screen: 'detail', stack: ['list'], selectedMessageId: null },
+    });
+    const onEmailAction = vi.fn();
+    const view = render(
+        <SimulatorPhoneNav state={state} dispatch={() => {}} onEmailAction={onEmailAction} />,
+    );
+    fireEvent.click(view.getByRole('button', { name: 'Forward' }));
+    expect(onEmailAction).toHaveBeenLastCalledWith('forward', null);
+    state.payload.email = { inbox: [], selectedMessage: null, selectedMessageId: 'payload-mail' };
+    view.rerender(
+        <SimulatorPhoneNav state={state} dispatch={() => {}} onEmailAction={onEmailAction} />,
+    );
+    fireEvent.click(view.getByRole('button', { name: 'Dispose' }));
+    expect(onEmailAction).toHaveBeenLastCalledWith('dispose', 'payload-mail');
 });
