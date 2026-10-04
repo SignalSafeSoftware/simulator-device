@@ -56,7 +56,6 @@ function StoreLoading({ store }: Readonly<{ store: DeviceStore }>) {
 }
 
 function StoreNotice({ store }: Readonly<{ store: DeviceStore }>) {
-    const { t } = useSimulatorLocale();
     if (!store.error) return null;
     return (
         <div className="device-notice" role="alert">
