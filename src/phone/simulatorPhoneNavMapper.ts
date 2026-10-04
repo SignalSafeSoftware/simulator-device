@@ -3,7 +3,11 @@ import {
     SimulatorHomeScreenId,
     SimulatorMessagesScreenId,
 } from '@signalsafe/simulator-core/devicePayload';
-import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import {
+    SimulatorDispatchActionType,
+    switchChannelAction,
+    type SimulatorDispatchAction,
+} from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { getPhoneSecondaryItems } from '@signalsafe/simulator-react/utils/navigation/phoneLocalNavItems';
 import {
@@ -13,36 +17,53 @@ import {
 } from '@signalsafe/simulator-react/utils/navigation/simulatorSecondaryMenuHelpers';
 import { shouldHideSimulatorNavigation } from '@signalsafe/simulator-react/utils/navigation/simulatorNavigationPolicy';
 import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react/i18n/catalog';
-import { switchChannelAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
-import { viewStateToActiveChannel } from '@signalsafe/simulator-react/types/session';
-import type {
+import {
     SimulatorChannel,
-    SimulatorSessionState,
+    viewStateToActiveChannel,
+    type SimulatorSessionState,
 } from '@signalsafe/simulator-react/types/session';
-import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 /**
  * Host phone navigation model derived from @signalsafe/simulator-react session state.
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
  */
 
+export const SimulatorPhoneNavAction = Object.freeze({
+    Channel: 'channel',
+    Local: 'local',
+    Back: 'back',
+    Submit: 'submit',
+    Reply: 'reply',
+    Forward: 'forward',
+    Dispose: 'dispose',
+} as const);
+export type SimulatorPhoneNavAction =
+    (typeof SimulatorPhoneNavAction)[keyof typeof SimulatorPhoneNavAction];
+
+export const SimulatorPhoneNavMode = Object.freeze({
+    Hidden: 'hidden',
+    Primary: 'primary',
+    Secondary: 'secondary',
+    Tertiary: 'tertiary',
+} as const);
+
 export interface SimulatorPhoneNavItemModel {
     id: string;
     label: string;
     icon?: string;
-    action: 'channel' | 'local' | 'back' | 'submit' | 'reply' | 'forward' | 'dispose';
+    action: SimulatorPhoneNavAction;
     channel?: SimulatorChannel;
     disabled?: boolean;
 }
 
 export type SimulatorPhoneNavModel =
-    | { mode: 'hidden' }
+    | { mode: typeof SimulatorPhoneNavMode.Hidden }
     | {
-          mode: 'primary';
+          mode: typeof SimulatorPhoneNavMode.Primary;
           items: SimulatorPhoneNavItemModel[];
           activeChannel: SimulatorChannel;
       }
     | {
-          mode: 'secondary' | 'tertiary';
+          mode: typeof SimulatorPhoneNavMode.Secondary | typeof SimulatorPhoneNavMode.Tertiary;
           app:
               | typeof SimulatorApp.Phone
               | typeof SimulatorApp.Email
@@ -60,11 +81,11 @@ export const SIMULATOR_PRIMARY_NAV_ITEMS: ReadonlyArray<{
     label: string;
     icon: string;
 }> = [
-    { channel: 'contacts', label: defaultLocale.t('nav.phone'), icon: '📞' },
-    { channel: 'email', label: defaultLocale.t('nav.email'), icon: '📧' },
-    { channel: 'browser', label: defaultLocale.t('nav.internet'), icon: '🌐' },
-    { channel: 'sms', label: defaultLocale.t('nav.messages'), icon: '💬' },
-    { channel: 'home', label: defaultLocale.t('nav.home'), icon: '🏠' },
+    { channel: SimulatorChannel.Contacts, label: defaultLocale.t('nav.phone'), icon: '📞' },
+    { channel: SimulatorChannel.Email, label: defaultLocale.t('nav.email'), icon: '📧' },
+    { channel: SimulatorChannel.Browser, label: defaultLocale.t('nav.internet'), icon: '🌐' },
+    { channel: SimulatorChannel.Sms, label: defaultLocale.t('nav.messages'), icon: '💬' },
+    { channel: SimulatorChannel.Home, label: defaultLocale.t('nav.home'), icon: '🏠' },
 ];
 
 const primaryKeys = {
@@ -87,17 +108,17 @@ export function resolveSimulatorPhoneNav(
 ): SimulatorPhoneNavModel {
     const view = state.view;
     if (view == null) {
-        return { mode: 'hidden' };
+        return { mode: SimulatorPhoneNavMode.Hidden };
     }
 
     if (shouldHideHostPhoneNav(state)) {
-        return { mode: 'hidden' };
+        return { mode: SimulatorPhoneNavMode.Hidden };
     }
 
     const activeApp = view.activeApp;
     if (activeApp === SimulatorApp.Email && view.email.screen === SimulatorEmailScreenId.Compose) {
         return {
-            mode: 'tertiary',
+            mode: SimulatorPhoneNavMode.Tertiary,
             app: SimulatorApp.Email,
             activeId: '',
             items: [
@@ -105,23 +126,48 @@ export function resolveSimulatorPhoneNav(
                     id: 'send',
                     label: locale.t('nav.send'),
                     icon: '➤',
-                    action: 'submit',
+                    action: SimulatorPhoneNavAction.Submit,
                     disabled: true,
                 },
-                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+                {
+                    id: SimulatorPhoneNavAction.Back,
+                    label: locale.t('nav.back'),
+                    icon: '↩',
+                    action: SimulatorPhoneNavAction.Back,
+                },
             ],
         };
     }
     if (activeApp === SimulatorApp.Email && view.email.screen === SimulatorEmailScreenId.Detail) {
         return {
-            mode: 'tertiary',
+            mode: SimulatorPhoneNavMode.Tertiary,
             app: SimulatorApp.Email,
             activeId: '',
             items: [
-                { id: 'reply', label: locale.t('nav.reply'), icon: '↪', action: 'reply' },
-                { id: 'forward', label: locale.t('nav.forward'), icon: '➜', action: 'forward' },
-                { id: 'dispose', label: locale.t('nav.dispose'), icon: '🗑', action: 'dispose' },
-                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+                {
+                    id: SimulatorPhoneNavAction.Reply,
+                    label: locale.t('nav.reply'),
+                    icon: '↪',
+                    action: SimulatorPhoneNavAction.Reply,
+                },
+                {
+                    id: SimulatorPhoneNavAction.Forward,
+                    label: locale.t('nav.forward'),
+                    icon: '➜',
+                    action: SimulatorPhoneNavAction.Forward,
+                },
+                {
+                    id: SimulatorPhoneNavAction.Dispose,
+                    label: locale.t('nav.dispose'),
+                    icon: '🗑',
+                    action: SimulatorPhoneNavAction.Dispose,
+                },
+                {
+                    id: SimulatorPhoneNavAction.Back,
+                    label: locale.t('nav.back'),
+                    icon: '↩',
+                    action: SimulatorPhoneNavAction.Back,
+                },
             ],
         };
     }
@@ -132,7 +178,7 @@ export function resolveSimulatorPhoneNav(
             view.messages.screen === SimulatorMessagesScreenId.NewThread)
     ) {
         return {
-            mode: 'secondary',
+            mode: SimulatorPhoneNavMode.Secondary,
             app: SimulatorApp.Messages,
             activeId: SimulatorMessagesScreenId.ThreadDetail,
             items: [
@@ -140,22 +186,37 @@ export function resolveSimulatorPhoneNav(
                     id: 'send',
                     label: locale.t('nav.send'),
                     icon: '➤',
-                    action: 'submit',
+                    action: SimulatorPhoneNavAction.Submit,
                     disabled: view.messages.screen === SimulatorMessagesScreenId.NewThread,
                 },
-                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+                {
+                    id: SimulatorPhoneNavAction.Back,
+                    label: locale.t('nav.back'),
+                    icon: '↩',
+                    action: SimulatorPhoneNavAction.Back,
+                },
             ],
         };
     }
 
     if (activeApp === SimulatorApp.Home && view.home.screen === SimulatorHomeScreenId.Settings) {
         return {
-            mode: 'secondary',
+            mode: SimulatorPhoneNavMode.Secondary,
             app: SimulatorApp.Home,
             activeId: SimulatorHomeScreenId.Settings,
             items: [
-                { id: 'settings', label: locale.t('nav.settings'), icon: '⚙', action: 'local' },
-                { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
+                {
+                    id: 'settings',
+                    label: locale.t('nav.settings'),
+                    icon: '⚙',
+                    action: SimulatorPhoneNavAction.Local,
+                },
+                {
+                    id: SimulatorPhoneNavAction.Back,
+                    label: locale.t('nav.back'),
+                    icon: '↩',
+                    action: SimulatorPhoneNavAction.Back,
+                },
             ],
         };
     }
@@ -166,41 +227,47 @@ export function resolveSimulatorPhoneNav(
 
     if (showSecondaryMenu && activeApp === SimulatorApp.Phone) {
         return {
-            mode: 'secondary',
+            mode: SimulatorPhoneNavMode.Secondary,
             app: SimulatorApp.Phone,
             activeId: getPhoneSecondaryActiveId(view.phone.screen),
             items: getPhoneSecondaryItems(locale).map((item) => ({
                 id: item.id,
                 label: item.label,
                 icon: item.icon,
-                action: item.id === 'back' ? 'back' : 'local',
+                action:
+                    item.id === SimulatorPhoneNavAction.Back
+                        ? SimulatorPhoneNavAction.Back
+                        : SimulatorPhoneNavAction.Local,
             })),
         };
     }
 
     if (showSecondaryMenu && activeApp === SimulatorApp.Email) {
         return {
-            mode: 'secondary',
+            mode: SimulatorPhoneNavMode.Secondary,
             app: SimulatorApp.Email,
             activeId: getEmailSecondaryActiveId(view.email.screen, view.email.stack),
             items: getEmailSecondaryItems(locale).map((item) => ({
                 id: item.id,
                 label: item.label,
                 icon: item.icon,
-                action: item.id === 'back' ? 'back' : 'local',
+                action:
+                    item.id === SimulatorPhoneNavAction.Back
+                        ? SimulatorPhoneNavAction.Back
+                        : SimulatorPhoneNavAction.Local,
             })),
         };
     }
 
     const activeChannel = viewStateToActiveChannel(activeApp);
     return {
-        mode: 'primary',
+        mode: SimulatorPhoneNavMode.Primary,
         activeChannel,
         items: SIMULATOR_PRIMARY_NAV_ITEMS.map((item) => ({
             id: item.channel,
             label: locale.t(primaryKeys[item.channel]),
             icon: item.icon,
-            action: 'channel',
+            action: SimulatorPhoneNavAction.Channel,
             channel: item.channel,
         })),
     };
@@ -208,28 +275,31 @@ export function resolveSimulatorPhoneNav(
 
 export function dispatchSimulatorPhoneNavItem(
     dispatch: (action: SimulatorDispatchAction) => void,
-    model: Exclude<SimulatorPhoneNavModel, { mode: 'hidden' }>,
+    model: Exclude<SimulatorPhoneNavModel, { mode: typeof SimulatorPhoneNavMode.Hidden }>,
     item: SimulatorPhoneNavItemModel,
     _state?: SimulatorSessionState,
 ): void {
-    if (item.action === 'reply') {
+    if (item.action === SimulatorPhoneNavAction.Reply) {
         dispatch({
             type: SimulatorDispatchActionType.SimulatorAction,
             action: { type: 'send_reply' },
         });
         return;
     }
-    if (item.action === 'back') {
+    if (item.action === SimulatorPhoneNavAction.Back) {
         dispatch({ type: SimulatorDispatchActionType.Back });
         return;
     }
 
-    if (item.action === 'channel' && item.channel != null) {
+    if (item.action === SimulatorPhoneNavAction.Channel && item.channel != null) {
         dispatch(switchChannelAction(item.channel));
         return;
     }
 
-    if (item.action === 'local' && model.mode === 'secondary') {
+    if (
+        item.action === SimulatorPhoneNavAction.Local &&
+        model.mode === SimulatorPhoneNavMode.Secondary
+    ) {
         dispatch({ type: SimulatorDispatchActionType.NavLocal, app: model.app, screen: item.id });
     }
 }

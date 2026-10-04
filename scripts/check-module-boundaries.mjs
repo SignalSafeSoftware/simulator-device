@@ -9,13 +9,16 @@ const files = readdirSync(sourceRoot, { recursive: true }).filter((file) => /\.t
 const sources = new Set(files.map((file) => join(sourceRoot, file)));
 const failures = [];
 // This rule concerns explicit module forwarding, not exports of locally declared symbols.
-const forwarding = /\bexport\s+(?:type\s+)?(?:\*(?:\s+as\s+\w+)?|\{[^}]*\})\s+from\s+['"][^'"]+['"]/g;
+const forwarding = [
+    /\bexport\s+(?:type\s+)?\*(?:\s+as\s+\w+)?\s+from\s+['"][^'"]+['"]/,
+    /\bexport\s+(?:type\s+)?\{[^}]*\}\s+from\s+['"][^'"]+['"]/,
+];
 const imports = /\b(?:from\s*|import\s*\(\s*|import\s*)['"]([^'"]+)['"]/g;
 
 for (const file of files) {
     const location = join(sourceRoot, file);
     const text = readFileSync(location, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-    if ([...text.matchAll(forwarding)].length) {
+    if (forwarding.some((pattern) => pattern.test(text))) {
         failures.push(`${file}: import from the owning module instead of forwarding exports`);
     }
     if (/(?:^|\/)index\.tsx?$/.test(file)) {

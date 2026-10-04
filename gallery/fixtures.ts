@@ -194,8 +194,9 @@ export function createGalleryStore(mode: GalleryState): DeviceStore {
         counts: summary.counts,
         error: '',
         busy: mode === 'disabled',
-        reload: async () => {},
-        get: async (collection, id) => records[collection].find((item) => item.id === id) ?? null,
+        reload: () => Promise.resolve(),
+        get: (collection, id) =>
+            Promise.resolve(records[collection].find((item) => item.id === id) ?? null),
         page: async (collection, query) => {
             if (mode === 'error')
                 throw new Error('Synthetic page load failed. Retry is available.');
@@ -214,11 +215,11 @@ export function createGalleryStore(mode: GalleryState): DeviceStore {
                 revision: data.revision,
             };
         },
-        save: async () => false,
-        put: async () => false,
-        remove: async () => false,
-        folder: async () => false,
-        restore: async () => false,
-        exportBackup: async () => snapshot,
+        save: () => Promise.resolve(false),
+        put: () => Promise.resolve(false),
+        remove: () => Promise.resolve(false),
+        folder: () => Promise.resolve(false),
+        restore: () => Promise.resolve(false),
+        exportBackup: () => Promise.resolve(snapshot),
     };
 }

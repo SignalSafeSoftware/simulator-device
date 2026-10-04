@@ -7,7 +7,7 @@ import {
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
 import type { SimulatorSessionContact } from '@signalsafe/simulator-react/types/session';
-import type { ContactValueKind } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
+import { ContactValueKind } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import { useRef, type ReactNode } from 'react';
 
 type Value = NonNullable<SimulatorSessionContact['phoneNumbers']>[number];
@@ -47,7 +47,7 @@ export default function ContactValueList({
     return (
         <fieldset className={SIM_PHONE_CONTACT_DETAIL_VALUES}>
             <legend>
-                {kind === 'email'
+                {kind === ContactValueKind.Email
                     ? screenLocale.t('screen.contactValueList.email.addresses')
                     : screenLocale.t('screen.contactValueList.phone.numbers')}
             </legend>
@@ -78,7 +78,7 @@ export default function ContactValueList({
                             <label>
                                 {title} {index + 1}
                                 <input
-                                    type={kind === 'email' ? 'email' : 'tel'}
+                                    type={kind === ContactValueKind.Email ? 'email' : 'tel'}
                                     value={item.value}
                                     onChange={(event) =>
                                         onChange(

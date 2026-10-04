@@ -11,8 +11,10 @@ import { useComposerState } from '@signalsafe/simulator-react/contract/composerS
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { useMessageComposeOptions } from '@signalsafe/simulator-react/contract/messageComposeContract';
 import { useEmailComposeOptions } from '@signalsafe/simulator-react/contract/emailComposeContract';
-import { createSimulatorNavigationDispatch } from '@signalsafe/simulator-react/contract/navigation';
-import type { SimulatorNavigationOptions } from '@signalsafe/simulator-react/contract/navigation';
+import {
+    createSimulatorNavigationDispatch,
+    type SimulatorNavigationOptions,
+} from '@signalsafe/simulator-react/contract/navigation';
 import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 import { SimulatorAppNavItem as SimulatorPhoneNavItem } from '@signalsafe/simulator-react/ui/navigation/SimulatorAppNavItem';
@@ -20,12 +22,17 @@ import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from '../simulatorDeviceClasses.j
 import {
     dispatchSimulatorPhoneNavItem,
     resolveSimulatorPhoneNav,
+    SimulatorPhoneNavAction,
+    SimulatorPhoneNavMode,
     type SimulatorPhoneNavModel,
 } from './simulatorPhoneNavMapper.js';
 
 export interface SimulatorPhoneNavProps {
     /** Host owns forward/delete persistence; absent handlers leave actions unavailable. */
-    onEmailAction?: (intent: 'forward' | 'dispose', messageId: string | null) => void;
+    onEmailAction?: (
+        intent: typeof SimulatorPhoneNavAction.Forward | typeof SimulatorPhoneNavAction.Dispose,
+        messageId: string | null,
+    ) => void;
     state: SimulatorSessionState;
     onNavigation?: SimulatorNavigationOptions['onNavigation'];
     onNavigationEvent?: SimulatorNavigationOptions['onNavigationEvent'];
@@ -33,10 +40,10 @@ export interface SimulatorPhoneNavProps {
 }
 
 function isActiveItem(
-    model: Exclude<SimulatorPhoneNavModel, { mode: 'hidden' }>,
+    model: Exclude<SimulatorPhoneNavModel, { mode: typeof SimulatorPhoneNavMode.Hidden }>,
     itemId: string,
 ): boolean {
-    if (model.mode === 'primary') {
+    if (model.mode === SimulatorPhoneNavMode.Primary) {
         return model.activeChannel === itemId;
     }
     return model.activeId === itemId;
@@ -94,7 +101,7 @@ export default function SimulatorPhoneNav({
     );
     const model = useMemo(() => resolveSimulatorPhoneNav(state, locale), [state, locale]);
 
-    if (model.mode === 'hidden') {
+    if (model.mode === SimulatorPhoneNavMode.Hidden) {
         return null;
     }
 
@@ -119,32 +126,41 @@ export default function SimulatorPhoneNav({
                             label={item.label}
                             disabled={
                                 composer?.pending ||
-                                ((item.action === 'forward' || item.action === 'dispose') &&
+                                ((item.action === SimulatorPhoneNavAction.Forward ||
+                                    item.action === SimulatorPhoneNavAction.Dispose) &&
                                     !onEmailAction) ||
-                                (item.action === 'submit'
+                                (item.action === SimulatorPhoneNavAction.Submit
                                     ? Boolean(sendReason) || composer?.valid === false
                                     : item.disabled)
                             }
                             describedBy={
-                                ((item.action === 'forward' || item.action === 'dispose') &&
+                                ((item.action === SimulatorPhoneNavAction.Forward ||
+                                    item.action === SimulatorPhoneNavAction.Dispose) &&
                                     !onEmailAction) ||
-                                (item.action === 'submit' && sendReason)
+                                (item.action === SimulatorPhoneNavAction.Submit && sendReason)
                                     ? reasonId
                                     : undefined
                             }
-                            title={item.action === 'submit' ? sendReason || undefined : undefined}
+                            title={
+                                item.action === SimulatorPhoneNavAction.Submit
+                                    ? sendReason || undefined
+                                    : undefined
+                            }
                             icon={item.icon}
                             active={isActiveItem(model, item.id)}
                             ariaLabel={item.label}
                             onClick={(event) => {
-                                if (item.action === 'forward' || item.action === 'dispose') {
+                                if (
+                                    item.action === SimulatorPhoneNavAction.Forward ||
+                                    item.action === SimulatorPhoneNavAction.Dispose
+                                ) {
                                     onEmailAction?.(
                                         item.action,
                                         state.view.email.selectedMessageId ??
                                             state.payload.email?.selectedMessageId ??
                                             null,
                                     );
-                                } else if (item.action === 'submit') {
+                                } else if (item.action === SimulatorPhoneNavAction.Submit) {
                                     const form = event.currentTarget
                                         .closest('.simulator-device-shell')
                                         ?.querySelector<HTMLFormElement>(
@@ -161,24 +177,27 @@ export default function SimulatorPhoneNav({
             </ul>
             {!onEmailAction &&
                 model.items.some(
-                    (item) => item.action === 'forward' || item.action === 'dispose',
+                    (item) =>
+                        item.action === SimulatorPhoneNavAction.Forward ||
+                        item.action === SimulatorPhoneNavAction.Dispose,
                 ) && (
                     <small id={reasonId} className={SIM_ACTION_REASON}>
                         {locale.t('app.mail.actionsUnavailable')}
                     </small>
                 )}
-            {model.items.some((item) => item.action === 'submit') && sendReason && (
-                <small
-                    id={reasonId}
-                    className={
-                        state.view.activeApp === SimulatorApp.Messages
-                            ? SIM_VISUALLY_HIDDEN
-                            : SIM_ACTION_REASON
-                    }
-                >
-                    {sendReason}
-                </small>
-            )}
+            {model.items.some((item) => item.action === SimulatorPhoneNavAction.Submit) &&
+                sendReason && (
+                    <small
+                        id={reasonId}
+                        className={
+                            state.view.activeApp === SimulatorApp.Messages
+                                ? SIM_VISUALLY_HIDDEN
+                                : SIM_ACTION_REASON
+                        }
+                    >
+                        {sendReason}
+                    </small>
+                )}
         </nav>
     );
 }

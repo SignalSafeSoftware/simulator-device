@@ -12,28 +12,28 @@ export type SimulatorDeviceKind = (typeof SimulatorDeviceKind)[keyof typeof Simu
  */
 export function resolveSimulatorDeviceKind(value: unknown): SimulatorDeviceKind {
     if (value == null || typeof value !== 'object') {
-        return 'unsupported';
+        return SimulatorDeviceKind.Unsupported;
     }
 
     const record = value as Record<string, unknown>;
     const discriminator = record.type;
 
     if (discriminator === 'desktop') {
-        return 'unsupported';
+        return SimulatorDeviceKind.Unsupported;
     }
 
     if (typeof discriminator === 'string' && discriminator !== 'phone') {
-        return 'unsupported';
+        return SimulatorDeviceKind.Unsupported;
     }
 
     const entryPoint = record.entry_point;
     if (entryPoint == null || typeof entryPoint !== 'object') {
-        return 'unsupported';
+        return SimulatorDeviceKind.Unsupported;
     }
 
     const app = (entryPoint as { app?: unknown }).app;
     if (!isSimulatorApp(app)) {
-        return 'unsupported';
+        return SimulatorDeviceKind.Unsupported;
     }
 
     return 'phone-full-device';

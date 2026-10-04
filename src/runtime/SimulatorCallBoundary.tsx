@@ -4,11 +4,11 @@ export function SimulatorCallBoundary({
     active,
     call,
     children,
-}: {
+}: Readonly<{
     active: boolean;
     call: ReactNode;
     children: ReactNode;
-}) {
+}>) {
     return (
         <>
             <div className="package-device simulator-host-device__content" hidden={active}>

@@ -131,11 +131,14 @@ function Gallery() {
             }}
             screenOverrides={{ phone: { add_contact: EditContact } }}
             emailCompose={{
-                onSend: async () => {
+                onSend: () => {
                     if (mode === 'error') {
-                        throw new Error('Synthetic send failure. Your draft is preserved.');
+                        return Promise.reject(
+                            new Error('Synthetic send failure. Your draft is preserved.'),
+                        );
                     }
                     setStatus('Email accepted in preview only.');
+                    return Promise.resolve();
                 },
             }}
         />

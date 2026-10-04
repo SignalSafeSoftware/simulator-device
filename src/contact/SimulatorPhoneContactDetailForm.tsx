@@ -14,6 +14,7 @@ import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPa
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { useSimulatorCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
 import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
+import { ContactValueKind } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import ContactValueList from './ContactValueList.js';
 import { SIMULATOR_DEVICE_CLASS_NAMES } from '../simulatorDeviceClasses.js';
 import { useCallback, useId, useRef, useState } from 'react';
@@ -170,6 +171,58 @@ function ContactActions({
     );
 }
 
+function ScalarContactField({
+    fieldKey,
+    label,
+    inputType,
+    value,
+    display,
+    editable,
+    addLabel,
+    onChange,
+    onAdd,
+}: Readonly<{
+    fieldKey: string;
+    label: string;
+    inputType: 'tel' | 'email';
+    value: string;
+    display: string;
+    editable: boolean;
+    addLabel: string;
+    onChange: (value: string) => void;
+    onAdd: () => void;
+}>) {
+    const instanceId = useId();
+    return (
+        <>
+            <div className={SIM_PHONE_CONTACT_DETAIL_FIELD}>
+                <label
+                    className={SIM_PHONE_CONTACT_DETAIL_LABEL}
+                    htmlFor={fieldId(fieldKey, instanceId)}
+                >
+                    {label}
+                </label>
+                {editable ? (
+                    <input
+                        id={fieldId(fieldKey, instanceId)}
+                        className={SIM_PHONE_CONTACT_DETAIL_INPUT}
+                        type={inputType}
+                        value={value}
+                        onChange={(event) => onChange(event.target.value)}
+                    />
+                ) : (
+                    <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>{display}</span>
+                )}
+            </div>
+            {editable && (
+                <button type="button" onClick={onAdd}>
+                    {addLabel}
+                </button>
+            )}
+        </>
+    );
+}
+
 function ContactPhoneFields({
     draft,
     editable,
@@ -177,14 +230,14 @@ function ContactPhoneFields({
     renderPhoneAction,
 }: Readonly<FieldProps & Pick<SimulatorPhoneContactDetailFormProps, 'renderPhoneAction'>>) {
     const screenLocale = useSimulatorLocale();
-    const instanceId = useId();
     const scalarNumber = draft.number ?? '';
     const formatNumber = usePhoneNumberFormatter();
+    const label = screenLocale.t('screen.simulatorPhoneContactDetailForm.phone.number');
     if (draft.phoneNumbers) {
         return (
             <ContactValueList
-                kind="phone"
-                title={screenLocale.t('screen.simulatorPhoneContactDetailForm.phone.number')}
+                kind={ContactValueKind.Phone}
+                title={label}
                 values={draft.phoneNumbers}
                 editable={editable}
                 onChange={(phoneNumbers) =>
@@ -198,58 +251,38 @@ function ContactPhoneFields({
     }
     if (!editable && !scalarNumber.trim()) return null;
     return (
-        <>
-            <div className={SIM_PHONE_CONTACT_DETAIL_FIELD}>
-                <label
-                    className={SIM_PHONE_CONTACT_DETAIL_LABEL}
-                    htmlFor={fieldId('number', instanceId)}
-                >
-                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.phone.number')}
-                </label>
-                {editable ? (
-                    <input
-                        id={fieldId('number', instanceId)}
-                        className={SIM_PHONE_CONTACT_DETAIL_INPUT}
-                        type="tel"
-                        value={scalarNumber}
-                        onChange={(event) => updateField({ number: event.target.value })}
-                    />
-                ) : (
-                    <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>
-                        {formatNumber(scalarNumber)}
-                    </span>
-                )}
-            </div>
-            {editable && (
-                <button
-                    type="button"
-                    onClick={() =>
-                        updateField({
-                            phoneNumbers: [
-                                ...(draft.number
-                                    ? [{ label: '', value: draft.number, number: draft.number }]
-                                    : []),
-                                { label: '', value: '' },
-                            ],
-                        })
-                    }
-                >
-                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.add.phone.number')}
-                </button>
-            )}
-        </>
+        <ScalarContactField
+            fieldKey="number"
+            label={label}
+            inputType="tel"
+            value={scalarNumber}
+            display={formatNumber(scalarNumber)}
+            editable={editable}
+            addLabel={screenLocale.t('screen.simulatorPhoneContactDetailForm.add.phone.number')}
+            onChange={(number) => updateField({ number })}
+            onAdd={() =>
+                updateField({
+                    phoneNumbers: [
+                        ...(draft.number
+                            ? [{ label: '', value: draft.number, number: draft.number }]
+                            : []),
+                        { label: '', value: '' },
+                    ],
+                })
+            }
+        />
     );
 }
 
 function ContactEmailFields({ draft, editable, updateField }: Readonly<FieldProps>) {
     const screenLocale = useSimulatorLocale();
-    const instanceId = useId();
     const scalarEmail = draft.email ?? '';
+    const label = screenLocale.t('screen.simulatorPhoneContactDetailForm.email');
     if (draft.emailAddresses) {
         return (
             <ContactValueList
-                kind="email"
-                title={screenLocale.t('screen.simulatorPhoneContactDetailForm.email')}
+                kind={ContactValueKind.Email}
+                title={label}
                 values={draft.emailAddresses}
                 editable={editable}
                 onChange={(emailAddresses) =>
@@ -260,42 +293,24 @@ function ContactEmailFields({ draft, editable, updateField }: Readonly<FieldProp
     }
     if (!editable && !scalarEmail.trim()) return null;
     return (
-        <>
-            <div className={SIM_PHONE_CONTACT_DETAIL_FIELD}>
-                <label
-                    className={SIM_PHONE_CONTACT_DETAIL_LABEL}
-                    htmlFor={fieldId('email', instanceId)}
-                >
-                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.email')}
-                </label>
-                {editable ? (
-                    <input
-                        id={fieldId('email', instanceId)}
-                        className={SIM_PHONE_CONTACT_DETAIL_INPUT}
-                        type="email"
-                        value={scalarEmail}
-                        onChange={(event) => updateField({ email: event.target.value })}
-                    />
-                ) : (
-                    <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>{scalarEmail}</span>
-                )}
-            </div>
-            {editable && (
-                <button
-                    type="button"
-                    onClick={() =>
-                        updateField({
-                            emailAddresses: [
-                                ...(draft.email ? [{ label: '', value: draft.email }] : []),
-                                { label: '', value: '' },
-                            ],
-                        })
-                    }
-                >
-                    {screenLocale.t('screen.simulatorPhoneContactDetailForm.add.email')}
-                </button>
-            )}
-        </>
+        <ScalarContactField
+            fieldKey="email"
+            label={label}
+            inputType="email"
+            value={scalarEmail}
+            display={scalarEmail}
+            editable={editable}
+            addLabel={screenLocale.t('screen.simulatorPhoneContactDetailForm.add.email')}
+            onChange={(email) => updateField({ email })}
+            onAdd={() =>
+                updateField({
+                    emailAddresses: [
+                        ...(draft.email ? [{ label: '', value: draft.email }] : []),
+                        { label: '', value: '' },
+                    ],
+                })
+            }
+        />
     );
 }
 

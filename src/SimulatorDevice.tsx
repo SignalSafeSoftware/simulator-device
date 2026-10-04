@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
 import {
     simulatorDatasourceToPayload,
     updateSimulatorPayload,
+    type SimulatorDatasource,
 } from '@signalsafe/simulator-react/datasource/datasource';
-import type { SimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
 import { simulatorSessionReducerWithLogging } from '@signalsafe/simulator-react/state/simulatorSessionReducer';
 import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
@@ -20,8 +19,9 @@ import type {
 } from './contact/contactDetailTypes.js';
 import type { SimulatorDeviceRuntimePassthroughProps } from './runtime/simulatorDeviceRuntimeProps.js';
 import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
-import SimulatorPhoneDevice from './phone/SimulatorPhoneDevice.js';
-import type { SimulatorPhoneDeviceProps } from './phone/SimulatorPhoneDevice.js';
+import SimulatorPhoneDevice, {
+    type SimulatorPhoneDeviceProps,
+} from './phone/SimulatorPhoneDevice.js';
 import SimulatorDeviceFallback from './runtime/SimulatorDeviceFallback.js';
 import {
     SimulatorDeviceKind,
@@ -30,8 +30,8 @@ import {
 import { fullDeviceToPayload } from '@signalsafe/simulator-react/adapters/deviceToSession';
 
 export interface SimulatorDevicePhoneOptions {
-    onEmailAction?: SimulatorPhoneDeviceProps['onEmailAction'];
-    screenRef?: SimulatorPhoneDeviceProps['screenRef'];
+    onEmailAction?: NonNullable<SimulatorPhoneDeviceProps['onEmailAction']>;
+    screenRef?: NonNullable<SimulatorPhoneDeviceProps['screenRef']>;
     renderContactDetail?: NonNullable<SimulatorPhoneDeviceProps['renderContactDetail']>;
     contactDetail?: NonNullable<SimulatorPhoneDeviceProps['contactDetail']>;
     renderIncomingCallExtra?: NonNullable<SimulatorPhoneDeviceProps['renderIncomingCallExtra']>;
@@ -162,7 +162,7 @@ export default function SimulatorDevice({
         [value, onChange, phone?.contactDetail],
     );
 
-    if (kind === 'unsupported') {
+    if (kind === SimulatorDeviceKind.Unsupported) {
         if (renderUnsupported) {
             return <>{renderUnsupported({ value })}</>;
         }

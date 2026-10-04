@@ -177,6 +177,12 @@ export default function SimulatorAppearanceSettings({
     );
 }
 
+const APPEARANCE_TEXT_COLORS = Object.freeze({
+    Dark: '#17211c',
+    Light: '#ffffff',
+    Fallback: '#000000',
+} as const);
+
 /** Compare actual foreground colors, with a black fallback to guarantee 4.5:1. */
 export function appearanceTextColor(hex: string): string {
     const luminance = (color: string) => {
@@ -187,10 +193,12 @@ export function appearanceTextColor(hex: string): string {
         return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
     };
     const background = luminance(hex);
-    const green = luminance('#17211c');
+    const green = luminance(APPEARANCE_TEXT_COLORS.Dark);
     const greenContrast =
         (Math.max(background, green) + 0.05) / (Math.min(background, green) + 0.05);
     const whiteContrast = 1.05 / (background + 0.05);
-    if (Math.max(greenContrast, whiteContrast) < 4.5) return '#000000';
-    return greenContrast > whiteContrast ? '#17211c' : '#ffffff';
+    if (Math.max(greenContrast, whiteContrast) < 4.5) return APPEARANCE_TEXT_COLORS.Fallback;
+    return greenContrast > whiteContrast
+        ? APPEARANCE_TEXT_COLORS.Dark
+        : APPEARANCE_TEXT_COLORS.Light;
 }

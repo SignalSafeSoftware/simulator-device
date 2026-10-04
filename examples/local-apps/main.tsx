@@ -15,6 +15,14 @@ function Demo() {
     const [screen, setScreen] = useState('Vault');
     const [calling, setCalling] = useState(false);
     const back = () => setScreen('Vault');
+    const renderScreen = () => {
+        if (screen === 'Vault') return <SimulatorVault store={store} onBack={back} />;
+        if (screen === 'Photos') return <SimulatorPhotos store={store} onBack={back} />;
+        if (screen === 'Mail') return <SimulatorMailbox store={store} onBack={back} />;
+        if (screen === 'Settings')
+            return <SimulatorLockSettings store={store} onLock={() => {}} />;
+        return <SimulatorBrowserWorkbench templates={null} />;
+    };
     return (
         <main className="simulator-root" style={{ maxWidth: 390, margin: 'auto' }}>
             <nav aria-label="Demo apps">
@@ -35,17 +43,7 @@ function Demo() {
                         </section>
                     }
                 >
-                    {screen === 'Vault' ? (
-                        <SimulatorVault store={store} onBack={back} />
-                    ) : screen === 'Photos' ? (
-                        <SimulatorPhotos store={store} onBack={back} />
-                    ) : screen === 'Mail' ? (
-                        <SimulatorMailbox store={store} onBack={back} />
-                    ) : screen === 'Settings' ? (
-                        <SimulatorLockSettings store={store} onLock={() => {}} />
-                    ) : (
-                        <SimulatorBrowserWorkbench templates={null} />
-                    )}
+                    {renderScreen()}
                 </SimulatorCallBoundary>
             </SimulatorDeviceAppsProvider>
         </main>

@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
-import { SimulatorAppsProvider } from '@signalsafe/simulator-react/apps/shared/SimulatorAppsHost';
-import type { SimulatorAppsHost } from '@signalsafe/simulator-react/apps/shared/SimulatorAppsHost';
+import {
+    SimulatorAppsProvider,
+    type SimulatorAppsHost,
+} from '@signalsafe/simulator-react/apps/shared/SimulatorAppsHost';
 import SimulatorPhoneShell from '../phone/SimulatorPhoneShell.js';
 const Shell: SimulatorAppsHost['Shell'] = ({ children, nav }) => (
     <SimulatorPhoneShell useHostNav nav={nav}>
@@ -10,9 +12,9 @@ const Shell: SimulatorAppsHost['Shell'] = ({ children, nav }) => (
 export function SimulatorDeviceAppsProvider({
     children,
     value = {},
-}: {
+}: Readonly<{
     children: ReactNode;
     value?: Partial<SimulatorAppsHost>;
-}) {
+}>) {
     return <SimulatorAppsProvider value={{ Shell, ...value }}>{children}</SimulatorAppsProvider>;
 }

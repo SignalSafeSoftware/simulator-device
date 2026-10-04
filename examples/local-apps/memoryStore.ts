@@ -4,6 +4,9 @@ import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
 import type { DeviceCollection, DeviceRecords, DeviceQuery } from '@signalsafe/simulator-core/apps/deviceData';
 import type { SimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 
+/** Runs synchronous work and reports thrown errors as rejections, like an async method. */
+const settle = <T>(run: () => T): Promise<T> => new Promise((resolve) => resolve(run()));
+
 /** Example-only host adapter. The packages neither choose nor own persistence. */
 export function createMemoryStore(changed: () => void): DeviceStore {
     let state = emptySimulatorStore();
@@ -42,52 +45,56 @@ export function createMemoryStore(changed: () => void): DeviceStore {
         },
         error: '',
         busy: false,
-        reload: async () => {
-            changed();
-        },
-        get: async (collection, id) =>
-            records(collection).find((record) => record.id === id) ?? null,
-        page: async (collection, query) => {
-            const matches = filtered(collection, query);
-            const offset = query.offset ?? 0;
-            return {
-                records: matches.slice(offset, offset + (query.limit ?? 20)),
-                total: matches.length,
-                revision: state.revision,
-            };
-        },
-        put: async (collection, record) => {
-            const items = records(collection);
-            const index = items.findIndex((item) => item.id === record.id);
-            if (index < 0) items.push(record);
-            else items.splice(index, 1, record);
-            return commit();
-        },
-        remove: async (collection, id) => {
-            const items = records(collection);
-            const index = items.findIndex((item) => item.id === id);
-            if (index >= 0) items.splice(index, 1);
-            return commit();
-        },
-        save: async (metadata) => {
-            state = { ...state, ...metadata };
-            return commit();
-        },
-        folder: async (from, to, destination) => {
-            state.vaultFolders = [
-                ...new Set([
-                    ...state.vaultFolders.filter((folder) => folder !== from),
-                    to ?? destination,
-                ]),
-            ];
-            for (const secret of state.secrets)
-                if (secret.folder === from) secret.folder = to ?? destination;
-            return commit();
-        },
-        exportBackup: async () => structuredClone(state),
-        restore: async (next: SimulatorStore) => {
-            state = structuredClone(next);
-            return commit();
-        },
+        reload: () => settle(() => changed()),
+        get: (collection, id) =>
+            settle(() => records(collection).find((record) => record.id === id) ?? null),
+        page: (collection, query) =>
+            settle(() => {
+                const matches = filtered(collection, query);
+                const offset = query.offset ?? 0;
+                return {
+                    records: matches.slice(offset, offset + (query.limit ?? 20)),
+                    total: matches.length,
+                    revision: state.revision,
+                };
+            }),
+        put: (collection, record) =>
+            settle(() => {
+                const items = records(collection);
+                const index = items.findIndex((item) => item.id === record.id);
+                if (index < 0) items.push(record);
+                else items.splice(index, 1, record);
+                return commit();
+            }),
+        remove: (collection, id) =>
+            settle(() => {
+                const items = records(collection);
+                const index = items.findIndex((item) => item.id === id);
+                if (index >= 0) items.splice(index, 1);
+                return commit();
+            }),
+        save: (metadata) =>
+            settle(() => {
+                state = { ...state, ...metadata };
+                return commit();
+            }),
+        folder: (from, to, destination) =>
+            settle(() => {
+                state.vaultFolders = [
+                    ...new Set([
+                        ...state.vaultFolders.filter((folder) => folder !== from),
+                        to ?? destination,
+                    ]),
+                ];
+                for (const secret of state.secrets)
+                    if (secret.folder === from) secret.folder = to ?? destination;
+                return commit();
+            }),
+        exportBackup: () => settle(() => structuredClone(state)),
+        restore: (next: SimulatorStore) =>
+            settle(() => {
+                state = structuredClone(next);
+                return commit();
+            }),
     };
 }

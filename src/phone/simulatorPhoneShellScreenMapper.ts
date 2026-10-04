@@ -1,13 +1,13 @@
+/**
+ * Host phone shell screen modifier classes and host overlay mode from session state.
+ *
+ */
 import {
     SimulatorEmailScreenId,
     SimulatorMessagesScreenId,
     SimulatorPhoneScreenId,
 } from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
-/**
- * Host phone shell screen modifier classes and host overlay mode from session state.
- *
- */
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 
 export const SimulatorPhoneShellHostKind = Object.freeze({
@@ -98,25 +98,25 @@ export function resolveSimulatorPhoneShellScreenClasses(
     appendPhoneScreenClasses(
         classes,
         view,
-        'history',
+        SimulatorPhoneScreenId.History,
         SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneHistory,
     );
     appendPhoneScreenClasses(
         classes,
         view,
-        'contacts',
+        SimulatorPhoneScreenId.Contacts,
         SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneContacts,
     );
     appendPhoneScreenClasses(
         classes,
         view,
-        'dial',
+        SimulatorPhoneScreenId.Dial,
         SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneDial,
     );
     appendPhoneScreenClasses(
         classes,
         view,
-        'incoming_call',
+        SimulatorPhoneScreenId.IncomingCall,
         SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneIncomingCall,
     );
 
