@@ -11,15 +11,10 @@ function isInside(base, candidate) {
     return path !== '' && !path.startsWith('..') && !isAbsolute(path);
 }
 
+// The argument names a directory inside the runner temp directory, never a path.
 const requested = process.argv[2];
-if (!requested) throw new Error('Provide the runtime artifact destination directory.');
-const target = resolve(requested);
-const allowedRoots = [process.cwd(), tmpdir(), process.env.RUNNER_TEMP]
-    .filter(Boolean)
-    .map((directory) => resolve(directory));
-if (!allowedRoots.some((directory) => isInside(directory, target))) {
-    throw new Error('The destination must be inside the working directory or a temporary directory.');
-}
+if (!requested) throw new Error('Provide the runtime artifact destination directory name.');
+const target = resolve(process.env.RUNNER_TEMP ?? tmpdir(), basename(requested));
 mkdirSync(target, { recursive: true });
 
 const manifest = resolve(artifactRoot, 'manifest.json');

@@ -5,7 +5,7 @@ import type { DeviceCollection, DeviceRecords, DeviceQuery } from '@signalsafe/s
 import type { SimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 
 /** Runs synchronous work and reports thrown errors as rejections, like an async method. */
-const settle = <T>(run: () => T): Promise<T> => new Promise((resolve) => resolve(run()));
+const settle = <T>(run: () => T): Promise<T> => Promise.resolve().then(run);
 
 /** Example-only host adapter. The packages neither choose nor own persistence. */
 export function createMemoryStore(changed: () => void): DeviceStore {
