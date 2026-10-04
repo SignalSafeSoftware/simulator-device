@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
 import SimulatorWithSession from '@signalsafe/simulator-react/SimulatorWithSession';
 import { SimulatorCapabilitiesContext } from '@signalsafe/simulator-react/contract/capabilities';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 import { buildState } from './support/sessionFixtures.js';
 
 function messageState(screen: 'new_thread' | 'thread_detail', primary: boolean) {

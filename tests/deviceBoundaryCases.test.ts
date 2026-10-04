@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { resolveSimulatorDeviceKind } from '../src/resolveSimulatorDeviceKind';
+import { resolveSimulatorDeviceKind } from '../src/runtime/resolveSimulatorDeviceKind';
 import { splitContactDisplayName } from '../src/contact/splitContactDisplayName';
 import { contactSnapshotFromSessionContact } from '../src/contact/contactSnapshotFromSessionContact';
 import {

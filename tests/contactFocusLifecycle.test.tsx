@@ -1,11 +1,11 @@
 import { fireEvent, render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import type { SimulatorPhoneShellProps } from '../src/SimulatorPhoneShell.js';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import type { SimulatorPhoneShellProps } from '../src/phone/SimulatorPhoneShell.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 import { buildContactsScreenState } from './support/contactFixtures.js';
 
 const shell = vi.hoisted(() => ({ attachScreen: true }));
-vi.mock('../src/SimulatorPhoneShell.js', () => ({
+vi.mock('../src/phone/SimulatorPhoneShell.js', () => ({
     default: ({ children, screenRef, nav }: SimulatorPhoneShellProps) => (
         <div ref={shell.attachScreen ? screenRef : undefined}>
             {children}

@@ -1,6 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { createSimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
-import type { SimulatorPhoneDeviceProps } from '../src/SimulatorPhoneDevice.js';
+import type { SimulatorPhoneDeviceProps } from '../src/phone/SimulatorPhoneDevice.js';
 import SimulatorDevice from '../src/SimulatorDevice.js';
 import { buildContactsDeviceJson } from './support/deviceJsonFixtures.js';
 import { expect, it, vi } from 'vitest';
@@ -8,7 +8,7 @@ import { expect, it, vi } from 'vitest';
 const capture = vi.hoisted(() => ({
     dispatch: undefined as SimulatorPhoneDeviceProps['dispatch'] | undefined,
 }));
-vi.mock('../src/SimulatorPhoneDevice.js', () => ({
+vi.mock('../src/phone/SimulatorPhoneDevice.js', () => ({
     default: (props: SimulatorPhoneDeviceProps) => {
         capture.dispatch = props.dispatch;
         const contact = props.state.payload.contacts?.[0];

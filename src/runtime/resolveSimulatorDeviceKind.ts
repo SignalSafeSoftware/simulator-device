@@ -1,6 +1,10 @@
 import { isSimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 
-export type SimulatorDeviceKind = 'phone-full-device' | 'unsupported';
+export const SimulatorDeviceKind = Object.freeze({
+    PhoneFullDevice: 'phone-full-device',
+    Unsupported: 'unsupported',
+} as const);
+export type SimulatorDeviceKind = (typeof SimulatorDeviceKind)[keyof typeof SimulatorDeviceKind];
 
 /**
  * Classifies a simulator JSON value for {@link SimulatorDevice}.

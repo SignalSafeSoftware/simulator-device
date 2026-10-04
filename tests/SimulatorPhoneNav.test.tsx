@@ -5,7 +5,7 @@ import type {
     SimulatorViewState,
 } from '@signalsafe/simulator-react/types/session';
 import { switchChannelAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
-import SimulatorPhoneNav from '../src/SimulatorPhoneNav.js';
+import SimulatorPhoneNav from '../src/phone/SimulatorPhoneNav.js';
 
 function buildView(overrides: Partial<SimulatorViewState> = {}): SimulatorViewState {
     return {

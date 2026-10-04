@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveSimulatorDeviceKind } from '../src/resolveSimulatorDeviceKind.js';
+import { resolveSimulatorDeviceKind } from '../src/runtime/resolveSimulatorDeviceKind.js';
 import {
     buildContactsDeviceJson,
     buildDesktopDiscriminatedJson,

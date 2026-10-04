@@ -12,4 +12,9 @@ export const SIMULATOR_DEVICE_CLASS_NAMES = {
     navButtonInactive: 'simulator-device-nav__button--inactive',
     navIcon: 'simulator-device-nav__icon',
     navLabel: 'simulator-device-nav__label',
+    contactDetail: 'simulator-phone-contact-detail',
+    contactDetailButton: 'simulator-phone-contact-detail__button',
+    contactDetailButtonBack: 'simulator-phone-contact-detail__button--back',
+    contactDetailButtonSave: 'simulator-phone-contact-detail__button--save',
+    contactDetailButtonDelete: 'simulator-phone-contact-detail__button--delete',
 } as const;

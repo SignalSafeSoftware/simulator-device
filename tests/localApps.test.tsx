@@ -4,9 +4,9 @@ import { expect, it, vi } from 'vitest';
 import { emptySimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
 import { useSimulatorAppsHost } from '@signalsafe/simulator-react/apps/shared/SimulatorAppsHost';
-import { SimulatorDeviceApps } from '../src/SimulatorDeviceApps.js';
-import { SimulatorDeviceAppsProvider } from '../src/SimulatorDeviceAppsProvider.js';
-import { SimulatorCallBoundary } from '../src/SimulatorCallBoundary.js';
+import { SimulatorDeviceApps } from '../src/apps/SimulatorDeviceApps.js';
+import { SimulatorDeviceAppsProvider } from '../src/apps/SimulatorDeviceAppsProvider.js';
+import { SimulatorCallBoundary } from '../src/runtime/SimulatorCallBoundary.js';
 import { buildState } from './support/sessionFixtures.js';
 
 function store(): DeviceStore {

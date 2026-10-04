@@ -9,7 +9,7 @@ import {
     resolveSimulatorPhoneNav,
     shouldHideHostPhoneNav,
     SIMULATOR_PRIMARY_NAV_ITEMS,
-} from '../src/simulatorPhoneNavMapper.js';
+} from '../src/phone/simulatorPhoneNavMapper.js';
 
 function buildView(overrides: Partial<SimulatorViewState> = {}): SimulatorViewState {
     return {

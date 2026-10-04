@@ -1,4 +1,4 @@
-import type { SimulatorPhoneDeviceProps } from './SimulatorPhoneDevice.js';
+import type { SimulatorPhoneDeviceProps } from '../phone/SimulatorPhoneDevice.js';
 
 /**
  * Props {@link SimulatorPhoneDevice} manages internally or via {@link SimulatorDevicePhoneOptions};

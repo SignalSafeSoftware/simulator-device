@@ -6,7 +6,10 @@ import type {
 } from '@signalsafe/simulator-react/types/session';
 import SimulatorPhoneContactDetailForm from './SimulatorPhoneContactDetailForm.js';
 import { contactSnapshotFromSessionContact } from './contactSnapshotFromSessionContact.js';
-import type { SimulatorPhoneDeviceContactDetailOptions } from './contactDetailTypes.js';
+import {
+    ContactDetailMode,
+    type SimulatorPhoneDeviceContactDetailOptions,
+} from './contactDetailTypes.js';
 
 export function renderPackageContactDetail({
     contactId,
@@ -33,7 +36,7 @@ export function renderPackageContactDetail({
     return (
         <SimulatorPhoneContactDetailForm
             contact={{ ...values, id: contactId }}
-            mode={contactDetail.mode ?? 'read-only'}
+            mode={contactDetail.mode ?? ContactDetailMode.ReadOnly}
             onBack={onBack}
             onSave={
                 contactDetail.onSave

@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import { useSimulatorPhoneDeviceContactHost } from '../src/useSimulatorPhoneDeviceContactHost.js';
+import { useSimulatorPhoneDeviceContactHost } from '../src/phone/useSimulatorPhoneDeviceContactHost.js';
 import { buildContactsScreenState } from './support/contactFixtures.js';
 
 it('ignores contact-open requests when host details are disabled', () => {

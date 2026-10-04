@@ -1,9 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { MessageComposeContext } from '@signalsafe/simulator-react/contract/messageComposeContract';
-import SimulatorPhoneNav from '../src/SimulatorPhoneNav.js';
+import SimulatorPhoneNav from '../src/phone/SimulatorPhoneNav.js';
 import { SimulatorAppNavItem as SimulatorPhoneNavItem } from '@signalsafe/simulator-react/ui/navigation/SimulatorAppNavItem';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 import { buildState } from './support/sessionFixtures.js';
 
 it('uses a navigation item label as its accessible name', () => {

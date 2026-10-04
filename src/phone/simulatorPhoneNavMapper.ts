@@ -1,12 +1,17 @@
+import {
+    SimulatorEmailScreenId,
+    SimulatorHomeScreenId,
+    SimulatorMessagesScreenId,
+} from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
-import { getPhoneSecondaryItems } from '@signalsafe/simulator-react/utils/phoneLocalNavItems';
+import { getPhoneSecondaryItems } from '@signalsafe/simulator-react/utils/navigation/phoneLocalNavItems';
 import {
     getEmailSecondaryItems,
     getPhoneSecondaryActiveId,
     getEmailSecondaryActiveId,
-} from '@signalsafe/simulator-react/utils/simulatorSecondaryMenuHelpers';
-import { shouldHideSimulatorNavigation } from '@signalsafe/simulator-react/utils/simulatorNavigationPolicy';
+} from '@signalsafe/simulator-react/utils/navigation/simulatorSecondaryMenuHelpers';
+import { shouldHideSimulatorNavigation } from '@signalsafe/simulator-react/utils/navigation/simulatorNavigationPolicy';
 import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react/i18n/catalog';
 import { switchChannelAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import { viewStateToActiveChannel } from '@signalsafe/simulator-react/types/session';
@@ -90,7 +95,7 @@ export function resolveSimulatorPhoneNav(
     }
 
     const activeApp = view.activeApp;
-    if (activeApp === SimulatorApp.Email && view.email.screen === 'compose') {
+    if (activeApp === SimulatorApp.Email && view.email.screen === SimulatorEmailScreenId.Compose) {
         return {
             mode: 'tertiary',
             app: SimulatorApp.Email,
@@ -107,7 +112,7 @@ export function resolveSimulatorPhoneNav(
             ],
         };
     }
-    if (activeApp === SimulatorApp.Email && view.email.screen === 'detail') {
+    if (activeApp === SimulatorApp.Email && view.email.screen === SimulatorEmailScreenId.Detail) {
         return {
             mode: 'tertiary',
             app: SimulatorApp.Email,
@@ -123,30 +128,31 @@ export function resolveSimulatorPhoneNav(
 
     if (
         activeApp === SimulatorApp.Messages &&
-        (view.messages.screen === 'thread_detail' || view.messages.screen === 'new_thread')
+        (view.messages.screen === SimulatorMessagesScreenId.ThreadDetail ||
+            view.messages.screen === SimulatorMessagesScreenId.NewThread)
     ) {
         return {
             mode: 'secondary',
             app: SimulatorApp.Messages,
-            activeId: 'thread_detail',
+            activeId: SimulatorMessagesScreenId.ThreadDetail,
             items: [
                 {
                     id: 'send',
                     label: locale.t('nav.send'),
                     icon: '➤',
                     action: 'submit',
-                    disabled: view.messages.screen === 'new_thread',
+                    disabled: view.messages.screen === SimulatorMessagesScreenId.NewThread,
                 },
                 { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },
             ],
         };
     }
 
-    if (activeApp === SimulatorApp.Home && view.home.screen === 'settings') {
+    if (activeApp === SimulatorApp.Home && view.home.screen === SimulatorHomeScreenId.Settings) {
         return {
             mode: 'secondary',
             app: SimulatorApp.Home,
-            activeId: 'settings',
+            activeId: SimulatorHomeScreenId.Settings,
             items: [
                 { id: 'settings', label: locale.t('nav.settings'), icon: '⚙', action: 'local' },
                 { id: 'back', label: locale.t('nav.back'), icon: '↩', action: 'back' },

@@ -1,12 +1,12 @@
 import { createRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import type { SimulatorPhoneDeviceProps } from '../src/SimulatorPhoneDevice.js';
+import type { SimulatorPhoneDeviceProps } from '../src/phone/SimulatorPhoneDevice.js';
 import SimulatorDevice from '../src/SimulatorDevice.js';
 import { buildHomeDeviceJson } from './support/deviceJsonFixtures.js';
 
 const captured = vi.hoisted(() => ({ props: undefined as SimulatorPhoneDeviceProps | undefined }));
-vi.mock('../src/SimulatorPhoneDevice.js', () => ({
+vi.mock('../src/phone/SimulatorPhoneDevice.js', () => ({
     default: (props: SimulatorPhoneDeviceProps) => {
         captured.props = props;
         return null;

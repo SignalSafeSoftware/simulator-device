@@ -1,12 +1,26 @@
+import {
+    SIM_PHONE_CONTACT_DETAIL_ACTIONS,
+    SIM_PHONE_CONTACT_DETAIL_FIELD,
+    SIM_PHONE_CONTACT_DETAIL_FORM,
+    SIM_PHONE_CONTACT_DETAIL_HEADER,
+    SIM_PHONE_CONTACT_DETAIL_IDENTITY,
+    SIM_PHONE_CONTACT_DETAIL_INPUT,
+    SIM_PHONE_CONTACT_DETAIL_LABEL,
+    SIM_PHONE_CONTACT_DETAIL_PANEL,
+    SIM_PHONE_CONTACT_DETAIL_TITLE,
+    SIM_PHONE_CONTACT_DETAIL_VALUE,
+} from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { useSimulatorCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
 import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
 import ContactValueList from './ContactValueList.js';
+import { SIMULATOR_DEVICE_CLASS_NAMES } from '../simulatorDeviceClasses.js';
 import { useCallback, useId, useRef, useState } from 'react';
-import type {
-    SimulatorPhoneContactDetailFormProps,
-    SimulatorPhoneContactDetailValues,
+import {
+    ContactDetailMode,
+    type SimulatorPhoneContactDetailFormProps,
+    type SimulatorPhoneContactDetailValues,
 } from './contactDetailTypes.js';
 
 function fieldId(suffix: string, contactId: string): string {
@@ -30,6 +44,7 @@ function useContactFormState({
     'contact' | 'mode' | 'onBack' | 'onSave' | 'onDelete'
 >) {
     const capability = useSimulatorCapabilities().editContact;
+    const { t } = useSimulatorLocale();
     const unavailable = capability && capability.state !== 'enabled' ? capability.reason : '';
     const [pending, setPending] = useState(false);
     const [error, setError] = useState('');
@@ -48,10 +63,13 @@ function useContactFormState({
     ) {
         setState({ source: initialContact, draft: initialContact });
     }
-    const draft = mode === 'read-only' ? initialContact : state.draft;
+    const draft = mode === ContactDetailMode.ReadOnly ? initialContact : state.draft;
     const conflict =
-        mode === 'editable' && !sameSource && !pristine && state.source.id === initialContact.id;
-    const editable = mode === 'editable';
+        mode === ContactDetailMode.Editable &&
+        !sameSource &&
+        !pristine &&
+        state.source.id === initialContact.id;
+    const editable = mode === ContactDetailMode.Editable;
 
     const updateField = useCallback((patch: Partial<SimulatorPhoneContactDetailValues>) => {
         setState((prev) => ({ ...prev, draft: { ...prev.draft, ...patch } }));
@@ -65,11 +83,7 @@ function useContactFormState({
         try {
             await callback(draft);
         } catch (error_) {
-            setError(
-                error_ instanceof Error
-                    ? error_.message
-                    : 'Contact could not be saved. Your draft is preserved.',
-            );
+            setError(error_ instanceof Error ? error_.message : t('app.contact.saveFailed'));
         } finally {
             inFlight.current = false;
             setPending(false);
@@ -119,10 +133,10 @@ function ContactActions({
 >) {
     const screenLocale = useSimulatorLocale();
     return (
-        <div className="simulator-phone-contact-detail__actions">
+        <div className={SIM_PHONE_CONTACT_DETAIL_ACTIONS}>
             <button
                 type="button"
-                className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--back"
+                className={`${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButton} ${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButtonBack}`}
                 aria-label={screenLocale.t(
                     'screen.simulatorPhoneContactDetailForm.back.to.contacts.list',
                 )}
@@ -134,7 +148,7 @@ function ContactActions({
             {editable && onSave != null && (
                 <button
                     type="button"
-                    className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--save"
+                    className={`${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButton} ${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButtonSave}`}
                     onClick={handleSave}
                     disabled={conflict || pending || Boolean(unavailable)}
                 >
@@ -144,7 +158,7 @@ function ContactActions({
             {onDelete != null && (
                 <button
                     type="button"
-                    className="simulator-phone-contact-detail__button simulator-phone-contact-detail__button--delete"
+                    className={`${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButton} ${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButtonDelete}`}
                     onClick={handleDelete}
                     disabled={!editable || conflict || pending || Boolean(unavailable)}
                     aria-disabled={!editable || conflict || pending || Boolean(unavailable)}
@@ -185,9 +199,9 @@ function ContactPhoneFields({
     if (!editable && !scalarNumber.trim()) return null;
     return (
         <>
-            <div className="simulator-phone-contact-detail__field">
+            <div className={SIM_PHONE_CONTACT_DETAIL_FIELD}>
                 <label
-                    className="simulator-phone-contact-detail__label"
+                    className={SIM_PHONE_CONTACT_DETAIL_LABEL}
                     htmlFor={fieldId('number', instanceId)}
                 >
                     {screenLocale.t('screen.simulatorPhoneContactDetailForm.phone.number')}
@@ -195,13 +209,13 @@ function ContactPhoneFields({
                 {editable ? (
                     <input
                         id={fieldId('number', instanceId)}
-                        className="simulator-phone-contact-detail__input"
+                        className={SIM_PHONE_CONTACT_DETAIL_INPUT}
                         type="tel"
                         value={scalarNumber}
                         onChange={(event) => updateField({ number: event.target.value })}
                     />
                 ) : (
-                    <span className="simulator-phone-contact-detail__value">
+                    <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>
                         {formatNumber(scalarNumber)}
                     </span>
                 )}
@@ -247,9 +261,9 @@ function ContactEmailFields({ draft, editable, updateField }: Readonly<FieldProp
     if (!editable && !scalarEmail.trim()) return null;
     return (
         <>
-            <div className="simulator-phone-contact-detail__field">
+            <div className={SIM_PHONE_CONTACT_DETAIL_FIELD}>
                 <label
-                    className="simulator-phone-contact-detail__label"
+                    className={SIM_PHONE_CONTACT_DETAIL_LABEL}
                     htmlFor={fieldId('email', instanceId)}
                 >
                     {screenLocale.t('screen.simulatorPhoneContactDetailForm.email')}
@@ -257,13 +271,13 @@ function ContactEmailFields({ draft, editable, updateField }: Readonly<FieldProp
                 {editable ? (
                     <input
                         id={fieldId('email', instanceId)}
-                        className="simulator-phone-contact-detail__input"
+                        className={SIM_PHONE_CONTACT_DETAIL_INPUT}
                         type="email"
                         value={scalarEmail}
                         onChange={(event) => updateField({ email: event.target.value })}
                     />
                 ) : (
-                    <span className="simulator-phone-contact-detail__value">{scalarEmail}</span>
+                    <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>{scalarEmail}</span>
                 )}
             </div>
             {editable && (
@@ -322,11 +336,11 @@ export default function SimulatorPhoneContactDetailForm({
 
     return (
         <SimulatorPage
-            className="simulator-phone-contact-detail"
+            className={SIMULATOR_DEVICE_CLASS_NAMES.contactDetail}
             data-testid="simulator-phone-contact-detail"
             header={
-                <div className="simulator-phone-contact-detail__header">
-                    <span tabIndex={-1} className="simulator-phone-contact-detail__title">
+                <div className={SIM_PHONE_CONTACT_DETAIL_HEADER}>
+                    <span tabIndex={-1} className={SIM_PHONE_CONTACT_DETAIL_TITLE}>
                         {editable
                             ? screenLocale.t('screen.simulatorPhoneContactDetailForm.edit.contact')
                             : screenLocale.t('screen.simulatorPhoneContactDetailForm.contact')}
@@ -360,16 +374,16 @@ export default function SimulatorPhoneContactDetailForm({
                     </button>
                 </output>
             )}
-            <div className="simulator-phone-contact-detail__panel">
+            <div className={SIM_PHONE_CONTACT_DETAIL_PANEL}>
                 <fieldset
-                    className="simulator-phone-contact-detail__form"
+                    className={SIM_PHONE_CONTACT_DETAIL_FORM}
                     disabled={editable && (pending || Boolean(unavailable))}
                 >
-                    <div className="simulator-phone-contact-detail__identity">
+                    <div className={SIM_PHONE_CONTACT_DETAIL_IDENTITY}>
                         {renderIdentityImage?.(draft)}
-                        <div className="simulator-phone-contact-detail__field">
+                        <div className={SIM_PHONE_CONTACT_DETAIL_FIELD}>
                             <label
-                                className="simulator-phone-contact-detail__label"
+                                className={SIM_PHONE_CONTACT_DETAIL_LABEL}
                                 htmlFor={fieldId('display-name', instanceId)}
                             >
                                 {screenLocale.t(
@@ -379,7 +393,7 @@ export default function SimulatorPhoneContactDetailForm({
                             {editable ? (
                                 <input
                                     id={fieldId('display-name', instanceId)}
-                                    className="simulator-phone-contact-detail__input"
+                                    className={SIM_PHONE_CONTACT_DETAIL_INPUT}
                                     type="text"
                                     value={draft.displayName}
                                     onChange={(event) =>
@@ -387,7 +401,7 @@ export default function SimulatorPhoneContactDetailForm({
                                     }
                                 />
                             ) : (
-                                <span className="simulator-phone-contact-detail__value">
+                                <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>
                                     {draft.displayName}
                                 </span>
                             )}

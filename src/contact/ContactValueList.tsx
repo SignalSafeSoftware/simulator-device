@@ -1,6 +1,13 @@
+import {
+    SIM_PHONE_CONTACT_DETAIL_FIELD,
+    SIM_PHONE_CONTACT_DETAIL_LABEL,
+    SIM_PHONE_CONTACT_DETAIL_VALUE,
+    SIM_PHONE_CONTACT_DETAIL_VALUES,
+} from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
 import type { SimulatorSessionContact } from '@signalsafe/simulator-react/types/session';
+import type { ContactValueKind } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import { useRef, type ReactNode } from 'react';
 
 type Value = NonNullable<SimulatorSessionContact['phoneNumbers']>[number];
@@ -14,7 +21,7 @@ export default function ContactValueList({
     renderAction,
 }: Readonly<{
     title: string;
-    kind: 'phone' | 'email';
+    kind: Exclude<ContactValueKind, 'address'>;
     values: Value[];
     editable: boolean;
     onChange: (values: Value[]) => void;
@@ -38,14 +45,14 @@ export default function ContactValueList({
     };
     if (!editable && !values.some((item) => item.value.trim())) return null;
     return (
-        <fieldset className="simulator-phone-contact-detail__values">
+        <fieldset className={SIM_PHONE_CONTACT_DETAIL_VALUES}>
             <legend>
                 {kind === 'email'
                     ? screenLocale.t('screen.contactValueList.email.addresses')
                     : screenLocale.t('screen.contactValueList.phone.numbers')}
             </legend>
             {values.map((item, index) => (
-                <div className="simulator-phone-contact-detail__field" key={rowKey(item)}>
+                <div className={SIM_PHONE_CONTACT_DETAIL_FIELD} key={rowKey(item)}>
                     {editable ? (
                         <>
                             <label>
@@ -99,11 +106,11 @@ export default function ContactValueList({
                         </>
                     ) : (
                         <>
-                            <span className="simulator-phone-contact-detail__label">
+                            <span className={SIM_PHONE_CONTACT_DETAIL_LABEL}>
                                 {item.label.trim() ||
                                     screenLocale.t('screen.contactValueList.unlabeled')}
                             </span>
-                            <span className="simulator-phone-contact-detail__value">
+                            <span className={SIM_PHONE_CONTACT_DETAIL_VALUE}>
                                 {kind === 'phone' ? formatNumber(item.value) : item.value}
                             </span>
                             {renderAction?.(item)}

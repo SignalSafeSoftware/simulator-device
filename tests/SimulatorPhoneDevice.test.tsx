@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, within } from '@testing-library/react';
 import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
-import { SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES } from '../src/simulatorPhoneShellScreenMapper.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
+import { SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES } from '../src/phone/simulatorPhoneShellScreenMapper.js';
 import { renderPhoneIncomingCallHistoryExtra } from '../src/incomingCall/renderPhoneIncomingCallHistoryExtra.js';
 import { buildContactsScreenState, TEST_CONTACTS } from './support/contactFixtures.js';
 import { buildIncomingCallState } from './support/incomingCallFixtures.js';

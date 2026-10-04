@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, within } from '@testing-library/react';
-import PhoneContactEditor from '@signalsafe/simulator-react/views/PhoneContactEditor';
+import PhoneContactEditor from '@signalsafe/simulator-react/views/contacts/PhoneContactEditor';
 
-import SimulatorPhoneShell from '../src/SimulatorPhoneShell.js';
+import SimulatorPhoneShell from '../src/phone/SimulatorPhoneShell.js';
 import { SIMULATOR_DEVICE_CLASS_NAMES } from '../src/simulatorDeviceClasses.js';
 
 describe('SimulatorPhoneShell', () => {

@@ -8,7 +8,7 @@ import type {
     SimulatorScreenOverrideProps,
     SimulatorScreenOverrides,
 } from '@signalsafe/simulator-react/contract/screenOverrides';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 
 const initial = () =>
     getInitialSessionState({

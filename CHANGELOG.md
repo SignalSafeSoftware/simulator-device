@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19.0 — October 4, 2026
+
+- Group source into `phone`, `apps` and `runtime`; public subpaths moved with it. See MIGRATION.md.
+- Use shared constants for device kind, contact detail mode and shell host kind, and localized text keys from simulator-react.
+- Require simulator-react 0.19.1, core 0.5.0 and theme 0.12.0.
+
 ## 0.19.0-cleanup.5 (local, unpublished)
 
 Remove legacy conversion, wire and presentation aliases; migrate consumers to canonical contracts. See MIGRATION.md.

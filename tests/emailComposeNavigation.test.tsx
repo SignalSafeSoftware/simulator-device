@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 import { buildState } from './support/sessionFixtures.js';
 
 it.each([true, false])(

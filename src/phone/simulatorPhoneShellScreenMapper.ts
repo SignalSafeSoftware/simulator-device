@@ -1,3 +1,8 @@
+import {
+    SimulatorEmailScreenId,
+    SimulatorMessagesScreenId,
+    SimulatorPhoneScreenId,
+} from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 /**
  * Host phone shell screen modifier classes and host overlay mode from session state.
@@ -5,10 +10,15 @@ import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
  */
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 
+export const SimulatorPhoneShellHostKind = Object.freeze({
+    Runtime: 'runtime',
+    PhoneContactEdit: 'phone-contact-edit',
+} as const);
+
 /** Host overlay replacing runtime screen content (e.g. host-owned contact detail). */
 export type SimulatorPhoneShellHostMode =
-    | { kind: 'runtime' }
-    | { kind: 'phone-contact-edit'; contactId: string };
+    | { kind: typeof SimulatorPhoneShellHostKind.Runtime }
+    | { kind: typeof SimulatorPhoneShellHostKind.PhoneContactEdit; contactId: string };
 
 /** Canonical device-shell screen modifier classes. */
 export const SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES = {
@@ -24,26 +34,31 @@ export const SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES = {
     emailTrash: 'simulator-device-shell--screen-email-trash',
 } as const;
 
-const DEFAULT_HOST_MODE: SimulatorPhoneShellHostMode = { kind: 'runtime' };
+const DEFAULT_HOST_MODE: SimulatorPhoneShellHostMode = {
+    kind: SimulatorPhoneShellHostKind.Runtime,
+};
 
 export function resolveSimulatorPhoneShellHostMode(
     state: SimulatorSessionState,
     selectedContactId: string | null,
 ): SimulatorPhoneShellHostMode {
     if (selectedContactId == null) {
-        return { kind: 'runtime' };
+        return { kind: SimulatorPhoneShellHostKind.Runtime };
     }
 
-    if (state.view?.activeApp !== SimulatorApp.Phone || state.view.phone?.screen !== 'contacts') {
-        return { kind: 'runtime' };
+    if (
+        state.view?.activeApp !== SimulatorApp.Phone ||
+        state.view.phone?.screen !== SimulatorPhoneScreenId.Contacts
+    ) {
+        return { kind: SimulatorPhoneShellHostKind.Runtime };
     }
 
     const contact = state.payload.contacts?.find((entry) => entry.id === selectedContactId);
     if (contact == null) {
-        return { kind: 'runtime' };
+        return { kind: SimulatorPhoneShellHostKind.Runtime };
     }
 
-    return { kind: 'phone-contact-edit', contactId: contact.id };
+    return { kind: SimulatorPhoneShellHostKind.PhoneContactEdit, contactId: contact.id };
 }
 
 function appendPhoneScreenClasses(
@@ -63,11 +78,11 @@ function appendEmailScreenClasses(classes: string[], view: SimulatorSessionState
     }
 
     const screen = view.email?.screen;
-    if (screen === 'list') {
+    if (screen === SimulatorEmailScreenId.List) {
         classes.push(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.emailInbox);
-    } else if (screen === 'outbox') {
+    } else if (screen === SimulatorEmailScreenId.Outbox) {
         classes.push(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.emailOutbox);
-    } else if (screen === 'trash') {
+    } else if (screen === SimulatorEmailScreenId.Trash) {
         classes.push(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.emailTrash);
     }
 }
@@ -105,15 +120,21 @@ export function resolveSimulatorPhoneShellScreenClasses(
         SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneIncomingCall,
     );
 
-    if (hostMode.kind === 'phone-contact-edit') {
+    if (hostMode.kind === SimulatorPhoneShellHostKind.PhoneContactEdit) {
         classes.push(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneContactDetail);
     }
 
-    if (view?.activeApp === SimulatorApp.Messages && view.messages?.screen === 'threads') {
+    if (
+        view?.activeApp === SimulatorApp.Messages &&
+        view.messages?.screen === SimulatorMessagesScreenId.Threads
+    ) {
         classes.push(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.messagesThreads);
     }
 
-    if (view?.activeApp === SimulatorApp.Messages && view.messages?.screen === 'thread_detail') {
+    if (
+        view?.activeApp === SimulatorApp.Messages &&
+        view.messages?.screen === SimulatorMessagesScreenId.ThreadDetail
+    ) {
         classes.push(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.messagesThreadDetail);
     }
 

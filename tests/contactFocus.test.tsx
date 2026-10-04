@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 import { buildState } from './support/sessionFixtures.js';
 it('restores focus to the originating contact after closing details', () => {
     const state = buildState({

@@ -111,7 +111,7 @@ it('converts a low-level datasource once while host navigation changes', async (
         await import('@signalsafe/simulator-react/state/simulatorSessionInitialState');
     const { simulatorDatasourceToPayload } =
         await import('@signalsafe/simulator-react/datasource/datasource');
-    const { default: SimulatorPhoneDevice } = await import('../src/SimulatorPhoneDevice.js');
+    const { default: SimulatorPhoneDevice } = await import('../src/phone/SimulatorPhoneDevice.js');
     const datasource = createSimulatorDatasource(value);
     const state = getInitialSessionState(simulatorDatasourceToPayload(datasource));
     const clone = vi.spyOn(globalThis, 'structuredClone');

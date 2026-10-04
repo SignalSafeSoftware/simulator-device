@@ -18,12 +18,15 @@ import type {
     SimulatorPhoneContactDetailValues,
     SimulatorPhoneDeviceContactDetailOptions,
 } from './contact/contactDetailTypes.js';
-import type { SimulatorDeviceRuntimePassthroughProps } from './simulatorDeviceRuntimeProps.js';
+import type { SimulatorDeviceRuntimePassthroughProps } from './runtime/simulatorDeviceRuntimeProps.js';
 import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
-import SimulatorPhoneDevice from './SimulatorPhoneDevice.js';
-import type { SimulatorPhoneDeviceProps } from './SimulatorPhoneDevice.js';
-import SimulatorDeviceFallback from './SimulatorDeviceFallback.js';
-import { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
+import SimulatorPhoneDevice from './phone/SimulatorPhoneDevice.js';
+import type { SimulatorPhoneDeviceProps } from './phone/SimulatorPhoneDevice.js';
+import SimulatorDeviceFallback from './runtime/SimulatorDeviceFallback.js';
+import {
+    SimulatorDeviceKind,
+    resolveSimulatorDeviceKind,
+} from './runtime/resolveSimulatorDeviceKind.js';
 import { fullDeviceToPayload } from '@signalsafe/simulator-react/adapters/deviceToSession';
 
 export interface SimulatorDevicePhoneOptions {
@@ -120,11 +123,13 @@ export default function SimulatorDevice({
 }: Readonly<SimulatorDeviceProps>) {
     if (value !== undefined && datasource !== undefined)
         throw new Error('Supply either value or datasource, not both.');
-    const kind = datasource ? 'phone-full-device' : resolveSimulatorDeviceKind(value);
+    const kind = datasource
+        ? SimulatorDeviceKind.PhoneFullDevice
+        : resolveSimulatorDeviceKind(value);
 
     const sessionPayload = useMemo(() => {
         if (datasource) return simulatorDatasourceToPayload(datasource);
-        if (kind !== 'phone-full-device' || value === undefined) {
+        if (kind !== SimulatorDeviceKind.PhoneFullDevice || value === undefined) {
             return null;
         }
         return fullDeviceToPayload(value);

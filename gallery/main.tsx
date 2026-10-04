@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ContactValuesEditor } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import { ContactPhotoControls } from '@signalsafe/simulator-react/ui/contacts/ContactPhotoControls';
-import PhoneContactEditor from '@signalsafe/simulator-react/views/PhoneContactEditor';
+import PhoneContactEditor from '@signalsafe/simulator-react/views/contacts/PhoneContactEditor';
 import {
     SimulatorCapabilitiesContext,
     useSimulatorCapabilities,
@@ -14,8 +14,8 @@ import { simulatorSessionReducer } from '@signalsafe/simulator-react/state/simul
 import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import type { EditableContactValue } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import type { SimulatorScreenOverrideProps } from '@signalsafe/simulator-react/contract/screenOverrides';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
-import { SimulatorDeviceApps } from '../src/SimulatorDeviceApps.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
+import { SimulatorDeviceApps } from '../src/apps/SimulatorDeviceApps.js';
 import { fixture, createGalleryStore, type GalleryState } from './fixtures.js';
 import '@signalsafe/simulator-theme-bootstrap/styles.css';
 import './styles.css';

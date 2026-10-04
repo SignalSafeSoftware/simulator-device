@@ -4,7 +4,7 @@ import {
     SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES,
     resolveSimulatorPhoneShellHostMode,
     resolveSimulatorPhoneShellScreenClasses,
-} from '../src/simulatorPhoneShellScreenMapper.js';
+} from '../src/phone/simulatorPhoneShellScreenMapper.js';
 import { buildState } from './support/sessionFixtures.js';
 
 function screenClasses(key: keyof typeof SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES): string[] {

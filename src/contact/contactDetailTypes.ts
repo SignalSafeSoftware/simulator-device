@@ -7,6 +7,12 @@ import type {
 
 export interface SimulatorPhoneContactDetailValues extends SimulatorSessionContact {}
 
+export const ContactDetailMode = Object.freeze({
+    ReadOnly: 'read-only',
+    Editable: 'editable',
+} as const);
+export type ContactDetailMode = (typeof ContactDetailMode)[keyof typeof ContactDetailMode];
+
 export interface SimulatorPhoneContactDetailContext {
     state: SimulatorSessionState;
     dispatch: (action: SimulatorDispatchAction) => void;
@@ -14,7 +20,7 @@ export interface SimulatorPhoneContactDetailContext {
 }
 
 export interface SimulatorPhoneDeviceContactDetailOptions {
-    mode?: 'read-only' | 'editable';
+    mode?: ContactDetailMode;
     renderIdentityImage?: (contact: SimulatorPhoneContactDetailValues) => ReactNode;
     renderPhoneAction?: (
         phone: NonNullable<SimulatorSessionContact['phoneNumbers']>[number],
@@ -44,7 +50,7 @@ export interface SimulatorPhoneDeviceContactDetailOptions {
 
 export interface SimulatorPhoneContactDetailFormProps {
     contact: SimulatorPhoneContactDetailValues;
-    mode: 'read-only' | 'editable';
+    mode: ContactDetailMode;
     onBack: () => void;
     onSave?: (contact: SimulatorPhoneContactDetailValues) => void | Promise<void>;
     onDelete?: (contact: SimulatorPhoneContactDetailValues) => void | Promise<void>;

@@ -1,4 +1,4 @@
-import type { SimulatorPhoneDeviceProps } from '../src/SimulatorPhoneDevice.js';
+import type { SimulatorPhoneDeviceProps } from '../src/phone/SimulatorPhoneDevice.js';
 import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import SimulatorDevice from '../src/SimulatorDevice.js';
@@ -12,7 +12,7 @@ const capturedPhoneDeviceProps = vi.hoisted(() => ({
     current: null as SimulatorPhoneDeviceProps | null,
 }));
 
-vi.mock('../src/SimulatorPhoneDevice.js', () => ({
+vi.mock('../src/phone/SimulatorPhoneDevice.js', () => ({
     default: (props: SimulatorPhoneDeviceProps) => {
         capturedPhoneDeviceProps.current = props;
         return <div data-testid="mock-simulator-phone-device" />;

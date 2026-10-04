@@ -1,7 +1,7 @@
 import { useState, type ReactNode, type Ref } from 'react';
 import { ScreenActionMenuContext } from '@signalsafe/simulator-react/contract/screenActionMenu';
 import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
-import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from './simulatorDeviceClasses.js';
+import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from '../simulatorDeviceClasses.js';
 
 export interface SimulatorPhoneShellProps {
     children: ReactNode;

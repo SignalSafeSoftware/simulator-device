@@ -1,3 +1,4 @@
+import { SIM_PHONE_INCOMING_CALL_HISTORY } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import type { ReactNode } from 'react';
 import type { PhoneIncomingCallHistoryRow } from './phoneIncomingCallHistoryHelpers.js';
@@ -17,7 +18,7 @@ export function SimulatorPhoneIncomingCallHistory({
 
     return (
         <section
-            className="simulator-phone__incoming-call-history"
+            className={SIM_PHONE_INCOMING_CALL_HISTORY}
             aria-label={screenLocale.t('screen.simulatorPhoneIncomingCallHistory.previous.calls')}
             data-testid="simulator-incoming-call-history"
         >

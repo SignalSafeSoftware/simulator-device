@@ -5,8 +5,8 @@ import SimulatorPhotos from '@signalsafe/simulator-react/apps/photos/Photos';
 import SimulatorMailbox from '@signalsafe/simulator-react/apps/mail/Mailbox';
 import { LockSettings as SimulatorLockSettings } from '@signalsafe/simulator-react/apps/lock/LockScreen';
 import SimulatorBrowserWorkbench from '@signalsafe/simulator-react/apps/browser/BrowserWorkbench';
-import { SimulatorDeviceAppsProvider } from '@signalsafe/simulator-device/SimulatorDeviceAppsProvider';
-import { SimulatorCallBoundary } from '@signalsafe/simulator-device/SimulatorCallBoundary';
+import { SimulatorDeviceAppsProvider } from '@signalsafe/simulator-device/apps/SimulatorDeviceAppsProvider';
+import { SimulatorCallBoundary } from '@signalsafe/simulator-device/runtime/SimulatorCallBoundary';
 import '@signalsafe/simulator-theme-bootstrap/styles.css';
 import { createMemoryStore } from './memoryStore';
 function Demo() {

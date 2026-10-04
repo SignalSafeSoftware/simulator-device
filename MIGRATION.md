@@ -9,6 +9,8 @@ This local prerelease removes compatibility paths. Adopt core, React, device and
 - Device voicemail uses `phone.voicemail.transcript`. Device browser buttons use `target_page_id`; their converted session view models use `targetPageId`.
 - Button tones use `neutral`, `primary-outline`, `neutral-outline` and `dark-outline`, replacing `secondary` and `outline-*` aliases. `SimulatorButtonTone` defines the supported set.
 
+- Module subpaths now follow their domain: `phone/*` (`SimulatorPhoneDevice`, `SimulatorPhoneShell`, `SimulatorPhoneNav` and mappers), `apps/*` (`SimulatorDeviceApps`, `SimulatorDeviceAppsProvider`) and `runtime/*` (`SimulatorCallBoundary`, `SimulatorDeviceFallback`, `simulatorDeviceRuntimeProps`, `resolveSimulatorDeviceKind`). For example, `SimulatorPhoneDevice` is now `phone/SimulatorPhoneDevice`. There are no forwarding paths.
+
 ## Existing data
 
 The core repository supplies an offline migration tool. Preview an export with `node scripts/migrate-input-json.mjs INPUT.json`. Exit 0 means canonical input, 1 means migration is needed, and 2 means an error or conflicting fields. Write a separate converted file with `node scripts/migrate-input-json.mjs INPUT.json --output NEW.json`. The tool never overwrites existing files and is idempotent. Conflicting old/new values require manual review. Missing device entry points require authoring a real entry point; the tool does not guess a screen from the template channel.

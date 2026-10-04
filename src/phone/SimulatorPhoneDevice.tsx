@@ -1,3 +1,4 @@
+import { SimulatorPhoneScreenId } from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -38,13 +39,16 @@ import type {
     SimulatorSessionState,
 } from '@signalsafe/simulator-react/types/session';
 import type { SimulatorWithSessionProps } from '@signalsafe/simulator-react/SimulatorWithSession';
-import { renderPackageContactDetail } from './contact/renderPackageContactDetail.js';
-import type { SimulatorPhoneDeviceContactDetailOptions } from './contact/contactDetailTypes.js';
+import { renderPackageContactDetail } from '../contact/renderPackageContactDetail.js';
+import type { SimulatorPhoneDeviceContactDetailOptions } from '../contact/contactDetailTypes.js';
 import SimulatorPhoneNav, { type SimulatorPhoneNavProps } from './SimulatorPhoneNav.js';
 import SimulatorPhoneShell from './SimulatorPhoneShell.js';
-import { renderPhoneIncomingCallHistoryExtra } from './incomingCall/renderPhoneIncomingCallHistoryExtra.js';
+import { renderPhoneIncomingCallHistoryExtra } from '../incomingCall/renderPhoneIncomingCallHistoryExtra.js';
 import { shouldHideHostPhoneNav } from './simulatorPhoneNavMapper.js';
-import { resolveSimulatorPhoneShellScreenClasses } from './simulatorPhoneShellScreenMapper.js';
+import {
+    SimulatorPhoneShellHostKind,
+    resolveSimulatorPhoneShellScreenClasses,
+} from './simulatorPhoneShellScreenMapper.js';
 import { useSimulatorPhoneDeviceContactHost } from './useSimulatorPhoneDeviceContactHost.js';
 
 export interface SimulatorPhoneDeviceContactDetailRenderProps {
@@ -184,7 +188,9 @@ export default function SimulatorPhoneDevice({
     ];
 
     const showHostContactDetail =
-        hostContactEnabled && hostMode.kind === 'phone-contact-edit' && contact != null;
+        hostContactEnabled &&
+        hostMode.kind === SimulatorPhoneShellHostKind.PhoneContactEdit &&
+        contact != null;
 
     const selectedContactId = contact?.id;
     useLayoutEffect(() => {
@@ -196,7 +202,7 @@ export default function SimulatorPhoneDevice({
         } else if (returnContactId.current) {
             if (
                 state.view.activeApp === SimulatorApp.Phone &&
-                state.view.phone.screen === 'contacts'
+                state.view.phone.screen === SimulatorPhoneScreenId.Contacts
             ) {
                 const rows = Array.from(
                     screenRef.current?.querySelectorAll<HTMLElement>(

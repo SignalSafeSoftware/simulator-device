@@ -1,8 +1,8 @@
 import {
     SimulatorButtonTone,
     simBtnToneClass,
-} from '@signalsafe/simulator-react/ui/simulatorClasses';
-import { SIM_APP_PAGE_CONTENT } from '@signalsafe/simulator-react/ui/semanticSimulatorClasses';
+} from '@signalsafe/simulator-react/ui/styles/simulatorClasses';
+import { SIM_APP_PAGE_CONTENT } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { SimulatorHomeScreenId } from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
@@ -10,8 +10,9 @@ import { useState, type ReactNode } from 'react';
 import DeviceHome from '@signalsafe/simulator-react/apps/home/DeviceHome';
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
-import SimulatorPhoneShell from './SimulatorPhoneShell.js';
-import SimulatorPhoneNav from './SimulatorPhoneNav.js';
+import SimulatorPhoneShell from '../phone/SimulatorPhoneShell.js';
+import SimulatorPhoneNav from '../phone/SimulatorPhoneNav.js';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
 import Vault from '@signalsafe/simulator-react/apps/vault/Vault';
 import Photos from '@signalsafe/simulator-react/apps/photos/Photos';
@@ -50,6 +51,7 @@ function DeviceAppsContent({
     children: ReactNode;
 }) {
     const [page, setPage] = useState<DeviceAppsPage | null>(null);
+    const { t } = useSimulatorLocale();
     const home = () => {
         setPage(null);
         dispatch({ type: SimulatorDispatchActionType.SwitchApp, app: SimulatorApp.Home });
@@ -57,12 +59,12 @@ function DeviceAppsContent({
     if (!store.data)
         return (
             <section className={SIM_APP_PAGE_CONTENT}>
-                <output>{store.error || 'Loading simulated device…'}</output>
+                <output>{store.error || t('app.device.loading')}</output>
                 <button
                     className={simBtnToneClass(SimulatorButtonTone.NeutralOutline)}
                     onClick={() => void store.reload()}
                 >
-                    Retry
+                    {t('app.retry')}
                 </button>
             </section>
         );

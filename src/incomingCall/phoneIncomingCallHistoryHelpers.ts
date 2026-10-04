@@ -1,4 +1,5 @@
-import { formatPhoneCallDuration } from '@signalsafe/simulator-react/views/PhoneCallView';
+import { formatPhoneCallDuration } from '@signalsafe/simulator-react/views/phone/PhoneCallView';
+import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react/i18n/catalog';
 import type {
     SimulatorCallHistoryEntry,
     SimulatorSessionState,
@@ -26,18 +27,21 @@ export function normalizePhoneNumber(value: string | undefined | null): string {
     return value.replace(/\D/g, '');
 }
 
-function kindToLabel(kind: SimulatorCallHistoryEntry['kind']): string {
+type Translator = ReturnType<typeof createTranslator<keyof typeof simulatorEnglish>>;
+const englishTranslator: Translator = createTranslator(simulatorEnglish);
+
+function kindToLabel(kind: SimulatorCallHistoryEntry['kind'], locale: Translator): string {
     switch (kind) {
         case 'outgoing':
-            return 'Outbound';
+            return locale.t('calls.outgoing');
         case 'missed':
-            return 'Missed';
+            return locale.t('calls.missed');
         case 'voicemail':
-            return 'Voicemail';
+            return locale.t('calls.voicemail');
         case 'incoming':
-            return 'Incoming';
+            return locale.t('calls.incoming');
         default:
-            return 'Unknown';
+            return locale.t('value.unknown');
     }
 }
 
@@ -124,6 +128,7 @@ export function getRecentCallsForCaller(
     state: SimulatorSessionState,
     caller: PhoneIncomingCallCaller,
     limit = 3,
+    locale: Translator = englishTranslator,
 ): PhoneIncomingCallHistoryRow[] {
     const history = state.payload.phone?.callHistory ?? [];
     if (history.length === 0) {
@@ -145,6 +150,6 @@ export function getRecentCallsForCaller(
         id: entry.id,
         timeLabel: resolveTimeLabel(entry),
         durationLabel: resolveDurationLabel(entry),
-        statusLabel: kindToLabel(entry.kind),
+        statusLabel: kindToLabel(entry.kind, locale),
     }));
 }

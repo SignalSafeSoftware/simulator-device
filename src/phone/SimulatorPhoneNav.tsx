@@ -1,3 +1,9 @@
+import { SIM_ACTION_REASON } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
+import { SIM_VISUALLY_HIDDEN } from '@signalsafe/simulator-react/ui/styles/simulatorClasses';
+import {
+    SimulatorEmailScreenId,
+    SimulatorMessagesScreenId,
+} from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { useId, useMemo, useRef } from 'react';
 import { useSimulatorCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
@@ -10,7 +16,7 @@ import type { SimulatorNavigationOptions } from '@signalsafe/simulator-react/con
 import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 import { SimulatorAppNavItem as SimulatorPhoneNavItem } from '@signalsafe/simulator-react/ui/navigation/SimulatorAppNavItem';
-import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from './simulatorDeviceClasses.js';
+import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from '../simulatorDeviceClasses.js';
 import {
     dispatchSimulatorPhoneNavItem,
     resolveSimulatorPhoneNav,
@@ -42,10 +48,11 @@ function useSendAvailability(state: SimulatorSessionState) {
     const messageCompose = useMessageComposeOptions();
     const emailCompose = useEmailComposeOptions();
     const composingEmail =
-        state.view.activeApp === SimulatorApp.Email && state.view.email.screen === 'compose';
+        state.view.activeApp === SimulatorApp.Email &&
+        state.view.email.screen === SimulatorEmailScreenId.Compose;
     const newMessage =
         state.view.activeApp === SimulatorApp.Messages &&
-        state.view.messages.screen === 'new_thread';
+        state.view.messages.screen === SimulatorMessagesScreenId.NewThread;
     const sendCapability = composingEmail ? capabilities.sendEmail : capabilities.sendMessage;
     if (sendCapability && sendCapability.state !== 'enabled') {
         return { composingEmail, sendReason: sendCapability.reason };
@@ -156,8 +163,8 @@ export default function SimulatorPhoneNav({
                 model.items.some(
                     (item) => item.action === 'forward' || item.action === 'dispose',
                 ) && (
-                    <small id={reasonId} className="simulator-action-reason">
-                        Forward and delete are unavailable for this email.
+                    <small id={reasonId} className={SIM_ACTION_REASON}>
+                        {locale.t('app.mail.actionsUnavailable')}
                     </small>
                 )}
             {model.items.some((item) => item.action === 'submit') && sendReason && (
@@ -165,8 +172,8 @@ export default function SimulatorPhoneNav({
                     id={reasonId}
                     className={
                         state.view.activeApp === SimulatorApp.Messages
-                            ? 'simulator-visually-hidden'
-                            : 'simulator-action-reason'
+                            ? SIM_VISUALLY_HIDDEN
+                            : SIM_ACTION_REASON
                     }
                 >
                     {sendReason}

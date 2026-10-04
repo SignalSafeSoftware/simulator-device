@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, within } from '@testing-library/react';
 import SimulatorWithSession from '@signalsafe/simulator-react/SimulatorWithSession';
 import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
-import SimulatorPhoneNav from '../src/SimulatorPhoneNav.js';
-import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
+import SimulatorPhoneNav from '../src/phone/SimulatorPhoneNav.js';
+import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 
 function payload(overrides: Partial<SimulatorTemplatePayload>): SimulatorTemplatePayload {
     return {
