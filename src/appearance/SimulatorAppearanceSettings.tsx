@@ -1,4 +1,4 @@
-import { useSimulatorLocale } from '@signalsafe/simulator-react';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import BackgroundImageField from './BackgroundImageField.js';
 import { useState, type CSSProperties } from 'react';
 

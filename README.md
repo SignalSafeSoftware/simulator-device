@@ -30,8 +30,8 @@ Pass stored simulator JSON directly — the same full-device shape used in datab
 `simulator_json` (`entry_point`, `device`, `contacts`, `phone`, `email`, `messages`, `internet`, `home`).
 
 ```tsx
-import { SimulatorDevice } from '@signalsafe/simulator-device';
-import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+import SimulatorDevice from '@signalsafe/simulator-device/SimulatorDevice';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 
 function Preview({ simulatorJson }: { simulatorJson: SimulatorDevicePayload }) {
   return <SimulatorDevice value={simulatorJson} />;
@@ -66,8 +66,8 @@ forward to `SimulatorPhoneDevice` → `SimulatorWithSession`. You do **not** nee
 Phone shell options (`phone.className`, `phone.contactDetail`, etc.) remain under `phone`.
 
 ```tsx
-import { SimulatorDevice } from '@signalsafe/simulator-device';
-import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+import SimulatorDevice from '@signalsafe/simulator-device/SimulatorDevice';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 
 function RunPreview({ simulatorJson }: { simulatorJson: SimulatorDevicePayload }) {
   return (
@@ -98,8 +98,8 @@ Use `renderContactDetail` as a full escape hatch when you need completely custom
 precedence over `contactDetail` when both are set).
 
 ```tsx
-import { SimulatorDevice } from '@signalsafe/simulator-device';
-import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+import SimulatorDevice from '@signalsafe/simulator-device/SimulatorDevice';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 
 function Preview({
   simulatorJson,
@@ -127,12 +127,10 @@ function Preview({
 ### Custom fields via `renderExtraFields`
 
 ```tsx
-import { SimulatorDevice } from '@signalsafe/simulator-device';
-import type {
-  SimulatorDevicePayload,
-  SimulatorPhoneContactDetailContext,
-  SimulatorPhoneContactDetailValues,
-} from '@signalsafe/simulator-device';
+import SimulatorDevice from '@signalsafe/simulator-device/SimulatorDevice';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
+import type { SimulatorPhoneContactDetailContext } from '@signalsafe/simulator-device/contact/contactDetailTypes';
+import type { SimulatorPhoneContactDetailValues } from '@signalsafe/simulator-device/contact/contactDetailTypes';
 
 function ExtraFields({
   contact,
@@ -172,8 +170,8 @@ function Preview({ value, onChange }: { value: SimulatorDevicePayload; onChange:
 ### Fully custom contact detail (`renderContactDetail`)
 
 ```tsx
-import { SimulatorDevice } from '@signalsafe/simulator-device';
-import type { SimulatorDevicePayload } from '@signalsafe/simulator-device';
+import SimulatorDevice from '@signalsafe/simulator-device/SimulatorDevice';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 
 function Preview({
   simulatorJson,
@@ -211,20 +209,16 @@ from `@signalsafe/simulator-react`.
 No CSS framework is included — target semantic classes in your host CSS.
 
 ```tsx
-import {
-  SimulatorPhoneDevice,
-  SIMULATOR_DEVICE_CLASS_NAMES,
-  SIMULATOR_DEVICE_SCREEN_CLASS_NAMES,
-} from '@signalsafe/simulator-device';
-import {
-  getInitialSessionState,
-  type SimulatorDispatchAction,
-  type SimulatorSessionState,
-} from '@signalsafe/simulator-react';
+import SimulatorPhoneDevice from '@signalsafe/simulator-device/SimulatorPhoneDevice';
+import { SIMULATOR_DEVICE_CLASS_NAMES } from '@signalsafe/simulator-device/simulatorDeviceClasses';
+import { SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES } from '@signalsafe/simulator-device/simulatorPhoneShellScreenMapper';
+import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
+import { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 
 /** Host CSS targets `.simulator-device-shell`, `.simulator-device-nav`, etc. */
 void SIMULATOR_DEVICE_CLASS_NAMES;
-void SIMULATOR_DEVICE_SCREEN_CLASS_NAMES;
+void SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES;
 
 function PhonePreview({
   state,
@@ -244,8 +238,9 @@ const state = getInitialSessionState(templatePayload);
 **Option A — package generic form (`contactDetail`):**
 
 ```tsx
-import { SimulatorPhoneDevice } from '@signalsafe/simulator-device';
-import type { SimulatorDispatchAction, SimulatorSessionState } from '@signalsafe/simulator-react';
+import SimulatorPhoneDevice from '@signalsafe/simulator-device/SimulatorPhoneDevice';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 
 function PhonePreview({
   state,
@@ -271,12 +266,13 @@ function PhonePreview({
 **Option B — full escape hatch (`renderContactDetail`):**
 
 Pass `renderContactDetail` to replace the contact detail view with your own UI.
-The device shell applies `simulator-phone-shell--screen-phone-contact-detail` while the overlay is active.
+The device shell applies `simulator-device-shell--screen-phone-contact-detail` while the overlay is active.
 When both `renderContactDetail` and `contactDetail` are set, `renderContactDetail` wins.
 
 ```tsx
-import { SimulatorPhoneDevice } from '@signalsafe/simulator-device';
-import type { SimulatorDispatchAction, SimulatorSessionState } from '@signalsafe/simulator-react';
+import SimulatorPhoneDevice from '@signalsafe/simulator-device/SimulatorPhoneDevice';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 
 function PhonePreview({
   state,
@@ -312,13 +308,12 @@ function PhonePreview({
 For lower-level control, compose primitives directly:
 
 ```tsx
-import {
-  SimulatorPhoneShell,
-  SimulatorPhoneNav,
-  shouldHideHostPhoneNav,
-  SIMULATOR_DEVICE_CLASS_NAMES,
-} from '@signalsafe/simulator-device';
-import { SimulatorWithSession, type SimulatorSessionState } from '@signalsafe/simulator-react';
+import SimulatorPhoneShell from '@signalsafe/simulator-device/SimulatorPhoneShell';
+import SimulatorPhoneNav from '@signalsafe/simulator-device/SimulatorPhoneNav';
+import { shouldHideHostPhoneNav } from '@signalsafe/simulator-device/simulatorPhoneNavMapper';
+import { SIMULATOR_DEVICE_CLASS_NAMES } from '@signalsafe/simulator-device/simulatorDeviceClasses';
+import SimulatorWithSession from '@signalsafe/simulator-react/SimulatorWithSession';
+import { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 
 void SIMULATOR_DEVICE_CLASS_NAMES;
 
@@ -363,7 +358,7 @@ function DevicePreview({ state, dispatch }: { state: SimulatorSessionState; disp
 | `shouldHideHostPhoneNav` | Hide nav on thread/email detail screens |
 | `SIMULATOR_PRIMARY_NAV_ITEMS` | Primary tab metadata |
 | `SIMULATOR_DEVICE_CLASS_NAMES` | BEM class constants for host styling |
-| `SIMULATOR_DEVICE_SCREEN_CLASS_NAMES` | Shell screen modifier class strings for host CSS |
+| `SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES` | Shell screen modifier class strings for host CSS |
 | `resolveSimulatorPhoneShellScreenClasses` | Derive `screenClassNames` for `SimulatorPhoneShell` from session view |
 | `resolveSimulatorPhoneShellHostMode` | Host overlay mode (e.g. phone contact edit) from session + selected contact id |
 | `SimulatorPhoneShellHostMode` | Host overlay mode type |
@@ -413,7 +408,7 @@ simulator-react, without artificial history/contacts screen hops.
 The full contract and release sequence are in simulator-react's
 `docs/navigation-contract.md`. Release simulator-react first and raise this
 package's dependency minimum to that new version before releasing device.
-The current release candidate requires simulator-react 0.17.0 and simulator-core 0.4.1. No host-specific Settings implementation is included.
+The local audit candidate pins simulator-react and simulator-core artifacts in package.json. No host-specific Settings implementation is included.
 
 ### Host screen content
 
@@ -429,15 +424,15 @@ Existing contact-detail slots retain their precedence; host integration remains 
 ## Datasource entry point (0.4)
 
 ```tsx
-import { createSimulatorDatasource } from '@signalsafe/simulator-react';
-import { SimulatorDevice } from '@signalsafe/simulator-device';
+import { createSimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
+import SimulatorDevice from '@signalsafe/simulator-device/SimulatorDevice';
 const datasource = createSimulatorDatasource(jsonSource);
 <SimulatorDevice datasource={datasource} />;
 // Existing consumers remain valid:
 <SimulatorDevice value={jsonSource} />;
 ```
 
-Supply exactly one source. Both properties are a type error and throw at runtime. Datasource replacement preserves navigation and mounted drafts, reconciling removed email selections. Replacing legacy `value` retains its session-reset behavior. `SimulatorPhoneDevice` also accepts an optional datasource alongside its existing controlled state/onAction contract; the host remains responsible for session actions and resets. JSON-only consumers require no transport or callbacks. See the React package's datasource contract for source validation, full-device conventions, readonly snapshots and API ownership.
+Supply exactly one source. Both properties are a type error and throw at runtime. Datasource replacement preserves navigation and mounted drafts, reconciling removed email selections. Replacing editable `value` retains its session-reset behavior. `SimulatorPhoneDevice` also accepts an optional datasource alongside its existing controlled state/onAction contract; the host remains responsible for session actions and resets. JSON-only consumers require no transport or callbacks. See the React package's datasource contract for source validation, full-device conventions, readonly snapshots and API ownership.
 
 ### Datasource conversion ownership (0.5)
 
@@ -498,7 +493,7 @@ The npm archive includes `gallery-dist/`, a self-contained static build that can
 
 ## Release records
 
-See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). The prepared runtime dependencies are simulator-core 0.4.1 and simulator-react 0.17.0, with React 18 peers. The gallery and release smoke tests use declared registry dependencies; no sibling source checkout is required.
+See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). Runtime dependencies are pinned in package.json, with React 18 peers. The local audit build uses checksummed vendor artifacts; release checks require published dependencies. No sibling source checkout is required.
 
 Development tooling requires Node 22.22.2+ or Node 24.15+ (jsdom 30); CI selects current Node 22/24. The published runtime retains its Node >=19.0.0 contract and React 18 peers. TypeScript 7, Vite 8 and Vitest 5 are build/test tools, not runtime dependencies.
 
@@ -509,14 +504,13 @@ Node 22/24 (use Node 24.16+ locally). A separate CI job installs packed artifact
 with strict engine checks and tests runtime behavior on Node 19.0.0 and 19–24.
 
 The compatibility job builds this package and installs its declared dependencies
-from npm with strict engine checks. Release core 0.4.1, then React 0.17.0,
-then device 0.17.0; publish theme 0.10.0 before validating the device gallery.
+from npm with strict engine checks. For local audit integration use the pinned vendor artifacts. Before publication, replace file dependencies with released versions and run `yarn check:release`.
 Regenerate each downstream lockfile after its upstream releases are available.
 No sibling source overrides are used in the runtime matrix.
 
 ### Dependency revisions and coverage
 
-The prepared migration requires simulator-core `0.4.1` and simulator-react `0.17.0`.
+Use the core and React versions pinned in package.json for this local migration.
 The runtime matrix installs these registry releases through the packed device
 manifest, including their TreeSpec dependency.
 
@@ -533,3 +527,14 @@ branches, functions, and lines across the existing source coverage scope.
 Use the matching registry version after its release workflow completes. See
 [RELEASING.md](RELEASING.md) for the coordinated release order and consumer
 validation. Installed package files are never patched.
+
+### Shared app identifiers
+
+Import `SimulatorApp` and `isSimulatorApp` directly from `@signalsafe/simulator-core`.
+Use `SimulatorApp.Phone`, `.Email`, `.Messages`, `.Internet`, and `.Home` for app IDs.
+The frozen enum-style object also supplies the `SimulatorApp` string-union type; existing JSON
+values stay compatible. Use `isSimulatorApp(value)` at untrusted boundaries and
+`Object.values(SimulatorApp)` when enumerating all apps. Do not confuse app IDs with
+channels (`sms`, `browser`, `contacts`), screen names, or contact/input field kinds.
+
+See [AGENTS.md](./AGENTS.md) for module ownership and verification rules. Root imports were removed in the local audit prerelease; use the explicit owner paths shown in the examples.

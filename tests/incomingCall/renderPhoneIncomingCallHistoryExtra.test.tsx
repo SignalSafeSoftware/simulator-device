@@ -38,7 +38,7 @@ describe('renderPhoneIncomingCallHistoryExtra', () => {
                     name: 'Alice Chen',
                     kind: 'incoming',
                     timestamp: 'Today 9:15 AM',
-                    duration: '0:32',
+                    durationSeconds: 32,
                 },
             ],
         });

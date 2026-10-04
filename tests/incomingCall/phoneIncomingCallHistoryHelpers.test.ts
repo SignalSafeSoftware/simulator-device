@@ -40,7 +40,7 @@ describe('phoneIncomingCallHistoryHelpers', () => {
                     name: 'Alice Chen',
                     kind: 'incoming',
                     timestamp: 'Today 9:15 AM',
-                    duration: '0:32',
+                    durationSeconds: 32,
                 },
                 {
                     id: 'ph2',
@@ -66,7 +66,7 @@ describe('phoneIncomingCallHistoryHelpers', () => {
         expect(recent[0]).toEqual({
             id: 'ph1',
             timeLabel: 'Today 9:15 AM',
-            durationLabel: '0:32',
+            durationLabel: '00:32',
             statusLabel: 'Incoming',
         });
         expect(recent[1]).toEqual({
@@ -94,14 +94,15 @@ describe('phoneIncomingCallHistoryHelpers', () => {
         expect(getRecentCallsForCaller(state, caller)[0]?.durationLabel).toBe('—');
     });
 
-    it('derives status from label when kind is missing', () => {
+    it('uses kind independently of display labels', () => {
         const state = buildIncomingCallState({
             callHistory: [
                 {
                     id: 'ph1',
                     number: '+1-555-100-2000',
                     name: 'Alice Chen',
-                    label: 'missed call',
+                    kind: 'missed',
+                    label: 'outgoing call',
                     timestamp: 'Today 8:05 AM',
                 },
             ],
@@ -120,7 +121,7 @@ describe('phoneIncomingCallHistoryHelpers', () => {
                     name: 'Alice Chen',
                     kind: 'outgoing',
                     timestamp: 'Today 1:00 PM',
-                    duration: '1:05',
+                    durationSeconds: 65,
                 },
                 {
                     id: 'vm1',

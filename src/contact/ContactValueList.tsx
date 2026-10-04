@@ -1,8 +1,6 @@
-import {
-    useSimulatorLocale,
-    usePhoneNumberFormatter,
-    type SimulatorSessionContact,
-} from '@signalsafe/simulator-react';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
+import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
+import type { SimulatorSessionContact } from '@signalsafe/simulator-react/types/session';
 import { useRef, type ReactNode } from 'react';
 
 type Value = NonNullable<SimulatorSessionContact['phoneNumbers']>[number];

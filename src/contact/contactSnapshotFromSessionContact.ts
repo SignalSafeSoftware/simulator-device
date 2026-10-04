@@ -1,4 +1,4 @@
-import type { SimulatorSessionContact } from '@signalsafe/simulator-react';
+import type { SimulatorSessionContact } from '@signalsafe/simulator-react/types/session';
 import type { SimulatorPhoneContactDetailValues } from './contactDetailTypes.js';
 
 export function contactSnapshotFromSessionContact(

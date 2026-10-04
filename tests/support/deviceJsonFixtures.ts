@@ -1,4 +1,4 @@
-import type { SimulatorDevicePayload } from '../../src/types/simulatorDevicePayload.js';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 import { TEST_CONTACTS } from './contactFixtures.js';
 
 export function buildHomeDeviceJson(): SimulatorDevicePayload {

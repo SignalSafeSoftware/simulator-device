@@ -1,5 +1,6 @@
-import type { ReactNode, Ref } from 'react';
-import { SimulatorPage } from '@signalsafe/simulator-react';
+import { useState, type ReactNode, type Ref } from 'react';
+import { ScreenActionMenuContext } from '@signalsafe/simulator-react/contract/screenActionMenu';
+import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
 import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from './simulatorDeviceClasses.js';
 
 export interface SimulatorPhoneShellProps {
@@ -21,15 +22,22 @@ export default function SimulatorPhoneShell({
     screenClassNames = [],
     screenRef,
 }: Readonly<SimulatorPhoneShellProps>) {
+    const [screenMenu, setScreenMenu] = useState<ReactNode>(null);
     const shellClassName = [cls.shell, useHostNav ? cls.shellHostNav : '', ...screenClassNames]
         .filter(Boolean)
         .join(' ');
 
     return (
-        <SimulatorPage className={shellClassName} data-testid="simulator-device-shell" footer={nav}>
-            <div className={cls.shellScreen} ref={screenRef}>
-                <div className={cls.shellSessionColumn}>{children}</div>
-            </div>
-        </SimulatorPage>
+        <ScreenActionMenuContext.Provider value={setScreenMenu}>
+            <SimulatorPage
+                className={shellClassName}
+                data-testid="simulator-device-shell"
+                footer={screenMenu ?? nav}
+            >
+                <div className={cls.shellScreen} ref={screenRef}>
+                    <div className={cls.shellSessionColumn}>{children}</div>
+                </div>
+            </SimulatorPage>
+        </ScreenActionMenuContext.Provider>
     );
 }

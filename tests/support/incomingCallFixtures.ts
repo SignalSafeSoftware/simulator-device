@@ -1,16 +1,11 @@
-import type { SimulatorSessionState } from '@signalsafe/simulator-react';
+import type {
+    SimulatorCallHistoryEntry,
+    SimulatorSessionState,
+} from '@signalsafe/simulator-react/types/session';
 
 export function buildIncomingCallState(
     overrides: {
-        callHistory?: Array<{
-            id: string;
-            number: string;
-            name?: string;
-            kind?: 'incoming' | 'outgoing' | 'missed' | 'voicemail';
-            timestamp?: string;
-            duration?: string;
-            label?: string;
-        }>;
+        callHistory?: SimulatorCallHistoryEntry[];
         callerName?: string;
         callerNumber?: string;
         contacts?: Array<{ id: string; displayName: string; number?: string }>;

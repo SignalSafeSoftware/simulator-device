@@ -1,5 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react';
-import { createSimulatorDatasource } from '@signalsafe/simulator-react';
+import { createSimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
 import type { SimulatorPhoneDeviceProps } from '../src/SimulatorPhoneDevice.js';
 import SimulatorDevice from '../src/SimulatorDevice.js';
 import { buildContactsDeviceJson } from './support/deviceJsonFixtures.js';

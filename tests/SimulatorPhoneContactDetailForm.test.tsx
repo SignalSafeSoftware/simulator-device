@@ -1,4 +1,4 @@
-import { SimulatorLocaleProvider } from '@signalsafe/simulator-react';
+import { SimulatorLocaleProvider } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
 import SimulatorPhoneContactDetailForm from '../src/contact/SimulatorPhoneContactDetailForm.js';

@@ -46,25 +46,41 @@ it('inserts into missing contact lists and removes without mutating the source',
     expect(original).not.toHaveProperty('contacts');
 });
 it.each([
-    ['missed yesterday', 'Missed'],
+    ['missed', 'Missed'],
     ['voicemail', 'Voicemail'],
     ['outgoing', 'Outbound'],
     ['incoming', 'Incoming'],
-    ['other', 'Unknown'],
-])('derives call status from %s', (label, status) => {
+] as const)('derives call status from explicit kind %s', (kind, status) => {
     const state = buildIncomingCallState({
-        callHistory: [{ id: 'one', number: '123', label, timestamp: ' ', duration: ' ' }],
+        callHistory: [
+            { id: 'one', number: '123', kind, label: 'Unrelated display text', timestamp: ' ' },
+        ],
     });
     expect(getRecentCallsForCaller(state, { phoneNumber: '123' })).toEqual([
         { id: 'one', timeLabel: '—', durationLabel: '—', statusLabel: status },
     ]);
 });
+it.each([
+    [0, '00:00'],
+    [32, '00:32'],
+    [65, '01:05'],
+    [null, '—'],
+    [-1, '—'],
+    [NaN, '—'],
+] as const)('formats canonical duration %s', (durationSeconds, durationLabel) => {
+    const state = buildIncomingCallState({
+        callHistory: [{ id: 'one', number: '123', kind: 'incoming', durationSeconds }],
+    });
+    expect(getRecentCallsForCaller(state, { phoneNumber: '123' })[0]?.durationLabel).toBe(
+        durationLabel,
+    );
+});
 it('matches a caller by contact name or supplied name when phone numbers differ', () => {
     const state = buildIncomingCallState({
         contacts: [{ id: 'ada', displayName: 'Ada', number: '123' }],
         callHistory: [
-            { id: 'one', number: '999', name: ' ADA ' },
-            { id: 'two', number: '999', name: 'Bob' },
+            { id: 'one', number: '999', name: ' ADA ', kind: 'incoming' },
+            { id: 'two', number: '999', name: 'Bob', kind: 'incoming' },
         ],
     });
     expect(getRecentCallsForCaller(state, { contactId: 'ada' }).map((row) => row.id)).toEqual([
@@ -90,7 +106,9 @@ it('handles absent phone content and resolves incoming calls by normalized numbe
 });
 
 it('labels unrecognized call kinds and resolves callers without a contacts collection', () => {
-    const state = buildIncomingCallState({ callHistory: [{ id: 'unknown-kind', number: '123' }] });
+    const state = buildIncomingCallState({
+        callHistory: [{ id: 'unknown-kind', number: '123', kind: 'incoming' }],
+    });
     const entry = state.payload.phone?.callHistory?.[0];
     if (!entry) throw new Error('Missing fixture history');
     Object.assign(entry, { kind: 'future-kind' });

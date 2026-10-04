@@ -16,7 +16,7 @@ describe('SimulatorPhoneIncomingCallHistory', () => {
                     {
                         id: 'ph1',
                         timeLabel: 'Today 9:15 AM',
-                        durationLabel: '0:32',
+                        durationLabel: '00:32',
                         statusLabel: 'Incoming',
                     },
                 ]}
@@ -30,7 +30,7 @@ describe('SimulatorPhoneIncomingCallHistory', () => {
         expect(getByRole('columnheader', { name: 'Duration' })).toBeDefined();
         expect(getByRole('columnheader', { name: 'Status' })).toBeDefined();
         expect(getByText('Today 9:15 AM')).toBeDefined();
-        expect(getByText('0:32')).toBeDefined();
+        expect(getByText('00:32')).toBeDefined();
         expect(getByText('Incoming')).toBeDefined();
     });
 });

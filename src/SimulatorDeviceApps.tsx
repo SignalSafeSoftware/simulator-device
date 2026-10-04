@@ -1,21 +1,27 @@
-import { useState, type ReactNode } from 'react';
 import {
-    SimulatorScreenTile,
-    type SimulatorSessionState,
-    type SimulatorDispatchAction,
-} from '@signalsafe/simulator-react';
+    SimulatorButtonTone,
+    simBtnToneClass,
+} from '@signalsafe/simulator-react/ui/simulatorClasses';
+import { SIM_APP_PAGE_CONTENT } from '@signalsafe/simulator-react/ui/semanticSimulatorClasses';
+import { SimulatorHomeScreenId } from '@signalsafe/simulator-core/devicePayload';
+import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
+import { useState, type ReactNode } from 'react';
+import DeviceHome from '@signalsafe/simulator-react/apps/home/DeviceHome';
+import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import SimulatorPhoneShell from './SimulatorPhoneShell.js';
 import SimulatorPhoneNav from './SimulatorPhoneNav.js';
-import { Vault as VaultIcon, Images, Settings, LockKeyhole } from 'lucide-react';
-import type { DeviceStore } from '@signalsafe/simulator-core';
-import {
-    SimulatorVault as Vault,
-    SimulatorPhotos as Photos,
-    SimulatorMailbox as Mailbox,
-    SimulatorBrowserWorkbench as BrowserWorkbench,
-    SimulatorLockScreen as LockScreen,
-} from '@signalsafe/simulator-react';
+import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
+import Vault from '@signalsafe/simulator-react/apps/vault/Vault';
+import Photos from '@signalsafe/simulator-react/apps/photos/Photos';
+import Mailbox from '@signalsafe/simulator-react/apps/mail/Mailbox';
+import BrowserWorkbench from '@signalsafe/simulator-react/apps/browser/BrowserWorkbench';
+import { LockScreen } from '@signalsafe/simulator-react/apps/lock/LockScreen';
 import { SimulatorDeviceAppsProvider } from './SimulatorDeviceAppsProvider.js';
+const DeviceAppsPage = Object.freeze({ Vault: 'vault', Photos: 'photos' } as const);
+type DeviceAppsPage = (typeof DeviceAppsPage)[keyof typeof DeviceAppsPage];
+
 function DeviceAppsContent({
     store,
     unlocked,
@@ -43,17 +49,17 @@ function DeviceAppsContent({
     openSettings: () => void;
     children: ReactNode;
 }) {
-    const [page, setPage] = useState<'vault' | 'photos' | null>(null);
+    const [page, setPage] = useState<DeviceAppsPage | null>(null);
     const home = () => {
         setPage(null);
-        dispatch({ type: 'SWITCH_APP', app: 'home' });
+        dispatch({ type: SimulatorDispatchActionType.SwitchApp, app: SimulatorApp.Home });
     };
     if (!store.data)
         return (
-            <section className="prototype-page">
+            <section className={SIM_APP_PAGE_CONTENT}>
                 <output>{store.error || 'Loading simulated device…'}</output>
                 <button
-                    className="simulator-btn simulator-btn--neutral-outline"
+                    className={simBtnToneClass(SimulatorButtonTone.NeutralOutline)}
                     onClick={() => void store.reload()}
                 >
                     Retry
@@ -62,57 +68,40 @@ function DeviceAppsContent({
         );
     if (store.data.lock && !unlocked) return <LockScreen store={store} onUnlock={onUnlock} />;
     let content: ReactNode = children;
-    if (state.view.activeApp === 'home' && state.view.home.screen === 'home') {
+    if (
+        state.view.activeApp === SimulatorApp.Home &&
+        state.view.home.screen === SimulatorHomeScreenId.Home
+    ) {
         content =
-            page === 'vault' ? (
+            page === DeviceAppsPage.Vault ? (
                 <Vault store={store} onBack={() => setPage(null)} />
-            ) : page === 'photos' ? (
+            ) : page === DeviceAppsPage.Photos ? (
                 <Photos store={store} onBack={() => setPage(null)} />
             ) : (
-                <section className="screen-content">
-                    <h2 className="simulator-screen__header home-banner">Home</h2>
-                    {homeHeader}
-                    <div className="prototype-home">
-                        <SimulatorScreenTile
-                            label="Settings"
-                            onClick={openSettings}
-                            icon={<Settings size={48} strokeWidth={1.5} aria-hidden="true" />}
-                        />
-                        <SimulatorScreenTile
-                            label="Vault"
-                            onClick={() => setPage('vault')}
-                            icon={<VaultIcon size={48} strokeWidth={1.5} aria-hidden="true" />}
-                        />
-                        <SimulatorScreenTile
-                            label="Photos"
-                            onClick={() => setPage('photos')}
-                            icon={<Images size={48} strokeWidth={1.5} aria-hidden="true" />}
-                        />
-                    </div>
-                    {store.data.lock && (
-                        <button
-                            className="simulator-btn simulator-btn--neutral-outline"
-                            onClick={onLock}
-                        >
-                            <LockKeyhole size={18} aria-hidden="true" /> Lock device
-                        </button>
-                    )}
-                </section>
+                <DeviceHome
+                    homeHeader={homeHeader}
+                    onOpenSettings={openSettings}
+                    onOpenVault={() => setPage(DeviceAppsPage.Vault)}
+                    onOpenPhotos={() => setPage(DeviceAppsPage.Photos)}
+                    onLock={store.data.lock ? onLock : undefined}
+                />
             );
-    } else if (state.view.activeApp === 'email')
+    } else if (state.view.activeApp === SimulatorApp.Email)
         content = renderMailbox ? renderMailbox(home) : <Mailbox store={store} onBack={home} />;
-    else if (state.view.activeApp === 'internet')
+    else if (state.view.activeApp === SimulatorApp.Internet)
         content = <BrowserWorkbench templates={children} themeCss={browserThemeCss} />;
     const custom =
-        state.view.activeApp === 'internet' ||
-        (state.view.activeApp === 'home' && state.view.home.screen === 'home' && page === null);
+        state.view.activeApp === SimulatorApp.Internet ||
+        (state.view.activeApp === SimulatorApp.Home &&
+            state.view.home.screen === SimulatorHomeScreenId.Home &&
+            page === null);
     return (
         <>
             {store.error && (
                 <div className="device-notice" role="alert">
                     {store.error}
                     <button
-                        className="simulator-btn simulator-btn--neutral-outline"
+                        className={simBtnToneClass(SimulatorButtonTone.NeutralOutline)}
                         onClick={() => void store.reload()}
                     >
                         Reload saved state

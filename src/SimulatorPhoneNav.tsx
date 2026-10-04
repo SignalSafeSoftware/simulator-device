@@ -1,24 +1,21 @@
+import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { useId, useMemo, useRef } from 'react';
-import {
-    useSimulatorCapabilities,
-    useComposerState,
-    useSimulatorLocale,
-    useMessageComposeOptions,
-    useEmailComposeOptions,
-    createSimulatorNavigationDispatch,
-    type SimulatorNavigationOptions,
-    type SimulatorDispatchAction,
-    type SimulatorSessionState,
-} from '@signalsafe/simulator-react';
-import SimulatorPhoneNavItem from './SimulatorPhoneNavItem.js';
+import { useSimulatorCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
+import { useComposerState } from '@signalsafe/simulator-react/contract/composerState';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
+import { useMessageComposeOptions } from '@signalsafe/simulator-react/contract/messageComposeContract';
+import { useEmailComposeOptions } from '@signalsafe/simulator-react/contract/emailComposeContract';
+import { createSimulatorNavigationDispatch } from '@signalsafe/simulator-react/contract/navigation';
+import type { SimulatorNavigationOptions } from '@signalsafe/simulator-react/contract/navigation';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
+import { SimulatorAppNavItem as SimulatorPhoneNavItem } from '@signalsafe/simulator-react/ui/navigation/SimulatorAppNavItem';
 import { SIMULATOR_DEVICE_CLASS_NAMES as cls } from './simulatorDeviceClasses.js';
 import {
     dispatchSimulatorPhoneNavItem,
     resolveSimulatorPhoneNav,
     type SimulatorPhoneNavModel,
 } from './simulatorPhoneNavMapper.js';
-
-export { shouldHideHostPhoneNav } from './simulatorPhoneNavMapper.js';
 
 export interface SimulatorPhoneNavProps {
     /** Host owns forward/delete persistence; absent handlers leave actions unavailable. */
@@ -45,9 +42,10 @@ function useSendAvailability(state: SimulatorSessionState) {
     const messageCompose = useMessageComposeOptions();
     const emailCompose = useEmailComposeOptions();
     const composingEmail =
-        state.view.activeApp === 'email' && state.view.email.screen === 'compose';
+        state.view.activeApp === SimulatorApp.Email && state.view.email.screen === 'compose';
     const newMessage =
-        state.view.activeApp === 'messages' && state.view.messages.screen === 'new_thread';
+        state.view.activeApp === SimulatorApp.Messages &&
+        state.view.messages.screen === 'new_thread';
     const sendCapability = composingEmail ? capabilities.sendEmail : capabilities.sendMessage;
     if (sendCapability && sendCapability.state !== 'enabled') {
         return { composingEmail, sendReason: sendCapability.reason };
@@ -127,6 +125,7 @@ export default function SimulatorPhoneNav({
                                     ? reasonId
                                     : undefined
                             }
+                            title={item.action === 'submit' ? sendReason || undefined : undefined}
                             icon={item.icon}
                             active={isActiveItem(model, item.id)}
                             ariaLabel={item.label}
@@ -162,7 +161,14 @@ export default function SimulatorPhoneNav({
                     </small>
                 )}
             {model.items.some((item) => item.action === 'submit') && sendReason && (
-                <small id={reasonId} className="simulator-action-reason">
+                <small
+                    id={reasonId}
+                    className={
+                        state.view.activeApp === SimulatorApp.Messages
+                            ? 'simulator-visually-hidden'
+                            : 'simulator-action-reason'
+                    }
+                >
                     {sendReason}
                 </small>
             )}

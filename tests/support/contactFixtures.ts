@@ -1,4 +1,7 @@
-import type { SimulatorSessionContact, SimulatorSessionState } from '@signalsafe/simulator-react';
+import type {
+    SimulatorSessionContact,
+    SimulatorSessionState,
+} from '@signalsafe/simulator-react/types/session';
 import { buildState } from './sessionFixtures.js';
 
 export const TEST_CONTACTS: SimulatorSessionContact[] = [

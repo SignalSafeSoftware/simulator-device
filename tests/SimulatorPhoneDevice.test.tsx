@@ -1,11 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, within } from '@testing-library/react';
-import { getInitialSessionState } from '@signalsafe/simulator-react';
+import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
 import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
-import {
-    SIMULATOR_DEVICE_SCREEN_CLASS_NAMES,
-    renderPhoneIncomingCallHistoryExtra,
-} from '../src/index.js';
+import { SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES } from '../src/simulatorPhoneShellScreenMapper.js';
+import { renderPhoneIncomingCallHistoryExtra } from '../src/incomingCall/renderPhoneIncomingCallHistoryExtra.js';
 import { buildContactsScreenState, TEST_CONTACTS } from './support/contactFixtures.js';
 import { buildIncomingCallState } from './support/incomingCallFixtures.js';
 
@@ -80,7 +78,7 @@ describe('SimulatorPhoneDevice', () => {
                     name: 'Alice Chen',
                     kind: 'incoming',
                     timestamp: 'Today 9:15 AM',
-                    duration: '0:32',
+                    durationSeconds: 32,
                 },
             ],
         });
@@ -178,7 +176,7 @@ describe('SimulatorPhoneDevice', () => {
         );
         clickContactRow(container, 'IT Helpdesk');
         dispatch.mockClear();
-        const back = getAllByRole('button', { name: 'Back', exact: true }).at(-1)!;
+        const back = getAllByRole('button', { name: 'Back' }).at(-1)!;
         fireEvent.click(back);
         expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
         expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
@@ -213,7 +211,7 @@ describe('SimulatorPhoneDevice', () => {
         expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
     });
 
-    it('screenClassNames include simulator-phone-shell--screen-phone-contact-detail while custom contact detail is active', () => {
+    it('screenClassNames include simulator-device-shell--screen-phone-contact-detail while custom contact detail is active', () => {
         const state = buildContactsScreenState();
         const dispatch = vi.fn();
 
@@ -230,10 +228,10 @@ describe('SimulatorPhoneDevice', () => {
         clickContactRow(container, 'IT Helpdesk');
 
         expect(getByTestId('simulator-device-shell').className).toContain(
-            SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneContactDetail,
+            SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneContactDetail,
         );
         expect(getByTestId('simulator-device-shell').className).toContain(
-            'simulator-phone-shell--screen-phone-contact-detail',
+            'simulator-device-shell--screen-phone-contact-detail',
         );
     });
 
@@ -340,13 +338,14 @@ it('closes host contact details when switching phone tabs', () => {
         <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />,
     );
     clickContactRow(container, 'HR');
-    fireEvent.click(getByRole('button', { name: 'History', exact: true }));
+    fireEvent.click(getByRole('button', { name: 'History' }));
     expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
     expect(dispatch).toHaveBeenCalledWith({ type: 'NAV_LOCAL', app: 'phone', screen: 'history' });
 });
 
 it('hides navigation when there is no active app', () => {
     const state = buildContactsScreenState();
+    // @ts-expect-error Exercise malformed state received from an untyped host.
     state.view.activeApp = null;
     const view = render(<SimulatorPhoneDevice state={state} dispatch={vi.fn()} />);
     expect(view.queryByRole('navigation')).toBeNull();

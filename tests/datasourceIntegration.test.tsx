@@ -1,8 +1,8 @@
 import { expect, it, vi } from 'vitest';
 import { fireEvent, render, waitFor, within } from '@testing-library/react';
-import { createSimulatorDatasource } from '@signalsafe/simulator-react';
+import { createSimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
 import SimulatorDevice from '../src/SimulatorDevice.js';
-import type { SimulatorDevicePayload } from '../src/types/simulatorDevicePayload.js';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 const value: SimulatorDevicePayload = {
     entry_point: { app: 'home', screen: 'home' },
     contacts: [{ id: 'c1', display_name: 'Source Contact', number: '+12025550123' }],
@@ -107,8 +107,10 @@ it.each([
 );
 
 it('converts a low-level datasource once while host navigation changes', async () => {
-    const { getInitialSessionState, simulatorDatasourceToPayload } =
-        await import('@signalsafe/simulator-react');
+    const { getInitialSessionState } =
+        await import('@signalsafe/simulator-react/state/simulatorSessionInitialState');
+    const { simulatorDatasourceToPayload } =
+        await import('@signalsafe/simulator-react/datasource/datasource');
     const { default: SimulatorPhoneDevice } = await import('../src/SimulatorPhoneDevice.js');
     const datasource = createSimulatorDatasource(value);
     const state = getInitialSessionState(simulatorDatasourceToPayload(datasource));

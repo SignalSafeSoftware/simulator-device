@@ -1,4 +1,4 @@
-import type { SimulatorDevicePayload } from '../types/simulatorDevicePayload.js';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 import type { SimulatorPhoneContactDetailValues } from './contactDetailTypes.js';
 
 function toDeviceContact(contact: SimulatorPhoneContactDetailValues) {

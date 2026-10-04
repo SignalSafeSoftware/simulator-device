@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { isSimulatorDevicePayload } from '@signalsafe/simulator-core';
-import type { SimulatorDevicePayload } from '../src/types/simulatorDevicePayload.js';
+import { isSimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayloadGuards';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 
-describe('simulatorDevicePayload re-export', () => {
-    it('re-exports canonical payload type from simulator-core', () => {
+describe('canonical device payload', () => {
+    it('uses the canonical payload contract from simulator-core', () => {
         const payload: SimulatorDevicePayload = {
             entry_point: { app: 'phone', screen: 'history' },
         };

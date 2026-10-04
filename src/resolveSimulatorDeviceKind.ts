@@ -1,12 +1,6 @@
-import type { SimulatorApp } from '@signalsafe/simulator-core';
+import { isSimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 
 export type SimulatorDeviceKind = 'phone-full-device' | 'unsupported';
-
-const SUPPORTED_APPS: SimulatorApp[] = ['phone', 'email', 'messages', 'internet', 'home'];
-
-function isSupportedApp(value: unknown): value is SimulatorApp {
-    return typeof value === 'string' && (SUPPORTED_APPS as string[]).includes(value);
-}
 
 /**
  * Classifies a simulator JSON value for {@link SimulatorDevice}.
@@ -34,7 +28,7 @@ export function resolveSimulatorDeviceKind(value: unknown): SimulatorDeviceKind 
     }
 
     const app = (entryPoint as { app?: unknown }).app;
-    if (!isSupportedApp(app)) {
+    if (!isSimulatorApp(app)) {
         return 'unsupported';
     }
 

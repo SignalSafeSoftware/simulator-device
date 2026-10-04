@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
-import type { SimulatorSessionState, SimulatorViewState } from '@signalsafe/simulator-react';
-import { switchChannelAction } from '@signalsafe/simulator-react';
+import type {
+    SimulatorSessionState,
+    SimulatorViewState,
+} from '@signalsafe/simulator-react/types/session';
+import { switchChannelAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import SimulatorPhoneNav from '../src/SimulatorPhoneNav.js';
 
 function buildView(overrides: Partial<SimulatorViewState> = {}): SimulatorViewState {
@@ -93,7 +96,8 @@ describe('SimulatorPhoneNav', () => {
 });
 
 it('uses provider menu labels without changing navigation actions', async () => {
-    const { SimulatorLocaleProvider } = await import('@signalsafe/simulator-react');
+    const { SimulatorLocaleProvider } =
+        await import('@signalsafe/simulator-react/i18n/SimulatorLocale');
     const dispatch = vi.fn();
     const { getByRole } = render(
         <SimulatorLocaleProvider
@@ -112,6 +116,7 @@ it('uses provider menu labels without changing navigation actions', async () => 
 
 it('renders no navigation when no app is selected', () => {
     const { queryByRole } = render(
+        // @ts-expect-error Exercise malformed state received from an untyped host.
         <SimulatorPhoneNav state={buildState({ activeApp: null })} dispatch={vi.fn()} />,
     );
     expect(queryByRole('navigation')).toBeNull();

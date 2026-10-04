@@ -1,13 +1,12 @@
 import { useMemo, useReducer, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import {
-    SimulatorVault,
-    SimulatorPhotos,
-    SimulatorMailbox,
-    SimulatorLockSettings,
-    SimulatorBrowserWorkbench,
-} from '@signalsafe/simulator-react';
-import { SimulatorDeviceAppsProvider, SimulatorCallBoundary } from '@signalsafe/simulator-device';
+import SimulatorVault from '@signalsafe/simulator-react/apps/vault/Vault';
+import SimulatorPhotos from '@signalsafe/simulator-react/apps/photos/Photos';
+import SimulatorMailbox from '@signalsafe/simulator-react/apps/mail/Mailbox';
+import { LockSettings as SimulatorLockSettings } from '@signalsafe/simulator-react/apps/lock/LockScreen';
+import SimulatorBrowserWorkbench from '@signalsafe/simulator-react/apps/browser/BrowserWorkbench';
+import { SimulatorDeviceAppsProvider } from '@signalsafe/simulator-device/SimulatorDeviceAppsProvider';
+import { SimulatorCallBoundary } from '@signalsafe/simulator-device/SimulatorCallBoundary';
 import '@signalsafe/simulator-theme-bootstrap/styles.css';
 import { createMemoryStore } from './memoryStore';
 function Demo() {

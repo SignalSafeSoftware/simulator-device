@@ -1,4 +1,8 @@
-import type { SimulatorCallHistoryEntry, SimulatorSessionState } from '@signalsafe/simulator-react';
+import { formatPhoneCallDuration } from '@signalsafe/simulator-react/views/PhoneCallView';
+import type {
+    SimulatorCallHistoryEntry,
+    SimulatorSessionState,
+} from '@signalsafe/simulator-react/types/session';
 
 export interface PhoneIncomingCallCaller {
     contactId?: string;
@@ -37,32 +41,11 @@ function kindToLabel(kind: SimulatorCallHistoryEntry['kind']): string {
     }
 }
 
-function resolveStatusLabel(entry: SimulatorCallHistoryEntry): string {
-    if (entry.kind != null) {
-        return kindToLabel(entry.kind);
-    }
-
-    const label = (entry.label ?? '').toLowerCase();
-    if (label.includes('missed')) {
-        return 'Missed';
-    }
-    if (label.includes('voicemail')) {
-        return 'Voicemail';
-    }
-    if (label.includes('out')) {
-        return 'Outbound';
-    }
-    if (label.includes('in')) {
-        return 'Incoming';
-    }
-
-    return 'Unknown';
-}
-
 function resolveDurationLabel(entry: SimulatorCallHistoryEntry): string {
-    const rawDuration = (entry as SimulatorCallHistoryEntry & { duration?: string }).duration;
-    const duration = rawDuration?.trim();
-    return duration != null && duration !== '' ? duration : MISSING_LABEL;
+    const seconds = entry.durationSeconds;
+    return seconds == null || !Number.isFinite(seconds) || seconds < 0
+        ? MISSING_LABEL
+        : formatPhoneCallDuration(seconds);
 }
 
 function resolveTimeLabel(entry: SimulatorCallHistoryEntry): string {
@@ -162,6 +145,6 @@ export function getRecentCallsForCaller(
         id: entry.id,
         timeLabel: resolveTimeLabel(entry),
         durationLabel: resolveDurationLabel(entry),
-        statusLabel: resolveStatusLabel(entry),
+        statusLabel: kindToLabel(entry.kind),
     }));
 }

@@ -1,31 +1,43 @@
+import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode, RefCallback, MutableRefObject } from 'react';
+import SimulatorWithSession from '@signalsafe/simulator-react/SimulatorWithSession';
+import { ComposerStateContext } from '@signalsafe/simulator-react/contract/composerState';
+import type { ComposerState } from '@signalsafe/simulator-react/contract/composerState';
 import {
-    SimulatorWithSession,
-    ComposerStateContext,
-    type ComposerState,
     EmailComposeContext,
-    MessageComposeContext,
-    PhoneDialDraftContext,
-    SimulatorCapabilitiesContext,
     useEmailComposeOptions,
+} from '@signalsafe/simulator-react/contract/emailComposeContract';
+import {
+    MessageComposeContext,
     useMessageComposeOptions,
+} from '@signalsafe/simulator-react/contract/messageComposeContract';
+import {
+    PhoneDialDraftContext,
     usePhoneDialDraft,
+} from '@signalsafe/simulator-react/contract/phoneDialContract';
+import {
+    SimulatorCapabilitiesContext,
     useSimulatorCapabilities,
-    type MessageComposeOptions,
-    type PhoneDialDraft,
-    type SimulatorActionCapabilities,
-    type EmailComposeOptions,
+} from '@signalsafe/simulator-react/contract/capabilities';
+import type { MessageComposeOptions } from '@signalsafe/simulator-react/contract/messageComposeContract';
+import type { PhoneDialDraft } from '@signalsafe/simulator-react/contract/phoneDialContract';
+import type { SimulatorActionCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
+import type { EmailComposeOptions } from '@signalsafe/simulator-react/contract/emailComposeContract';
+import {
     simulatorDatasourceToPayload,
     updateSimulatorPayload,
-    type SimulatorDatasource,
-    createSimulatorNavigationDispatch,
-    type SimulatorDispatchAction,
-    type SimulatorPhoneIncomingCallExtraRenderProps,
-    type SimulatorSessionContact,
-    type SimulatorSessionState,
-    type SimulatorWithSessionProps,
-} from '@signalsafe/simulator-react';
+} from '@signalsafe/simulator-react/datasource/datasource';
+import type { SimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
+import { createSimulatorNavigationDispatch } from '@signalsafe/simulator-react/contract/navigation';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import type { SimulatorPhoneIncomingCallExtraRenderProps } from '@signalsafe/simulator-react/ui/renderSlots';
+import type {
+    SimulatorSessionContact,
+    SimulatorSessionState,
+} from '@signalsafe/simulator-react/types/session';
+import type { SimulatorWithSessionProps } from '@signalsafe/simulator-react/SimulatorWithSession';
 import { renderPackageContactDetail } from './contact/renderPackageContactDetail.js';
 import type { SimulatorPhoneDeviceContactDetailOptions } from './contact/contactDetailTypes.js';
 import SimulatorPhoneNav, { type SimulatorPhoneNavProps } from './SimulatorPhoneNav.js';
@@ -34,13 +46,6 @@ import { renderPhoneIncomingCallHistoryExtra } from './incomingCall/renderPhoneI
 import { shouldHideHostPhoneNav } from './simulatorPhoneNavMapper.js';
 import { resolveSimulatorPhoneShellScreenClasses } from './simulatorPhoneShellScreenMapper.js';
 import { useSimulatorPhoneDeviceContactHost } from './useSimulatorPhoneDeviceContactHost.js';
-
-export type {
-    SimulatorPhoneContactDetailContext,
-    SimulatorPhoneContactDetailFormProps,
-    SimulatorPhoneContactDetailValues,
-    SimulatorPhoneDeviceContactDetailOptions,
-} from './contact/contactDetailTypes.js';
 
 export interface SimulatorPhoneDeviceContactDetailRenderProps {
     contactId: string;
@@ -84,7 +89,9 @@ export interface SimulatorPhoneDeviceProps extends Omit<
 
 function shouldClearHostContactSelection(action: SimulatorDispatchAction): boolean {
     return (
-        (action.type === 'NAV_LOCAL' && action.app === 'phone') || action.type === 'BACK_TO_PRIMARY'
+        (action.type === SimulatorDispatchActionType.NavLocal &&
+            action.app === SimulatorApp.Phone) ||
+        action.type === SimulatorDispatchActionType.BackToPrimary
     );
 }
 
@@ -148,7 +155,7 @@ export default function SimulatorPhoneDevice({
 
     const dispatchAndClear = useCallback(
         (action: SimulatorDispatchAction) => {
-            if (action.type === 'BACK' && contact) {
+            if (action.type === SimulatorDispatchActionType.Back && contact) {
                 clearSelection();
                 return;
             }
@@ -187,7 +194,10 @@ export default function SimulatorPhoneDevice({
                 ?.querySelector<HTMLElement>('input:not([type="hidden"]), [tabindex="-1"], button')
                 ?.focus();
         } else if (returnContactId.current) {
-            if (state.view.activeApp === 'phone' && state.view.phone.screen === 'contacts') {
+            if (
+                state.view.activeApp === SimulatorApp.Phone &&
+                state.view.phone.screen === 'contacts'
+            ) {
                 const rows = Array.from(
                     screenRef.current?.querySelectorAll<HTMLElement>(
                         '[data-simulator-contact-id]',
@@ -225,6 +235,7 @@ export default function SimulatorPhoneDevice({
     const runtime = (
         <SimulatorWithSession
             {...sessionProps}
+            hostOwnsScreenActions={!hideNav}
             state={state}
             dispatch={dispatchWithHostClear}
             renderIncomingCallExtra={renderIncomingCallExtra}

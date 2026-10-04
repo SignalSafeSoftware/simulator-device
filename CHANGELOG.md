@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.19.0-cleanup.5 (local, unpublished)
+
+Remove legacy conversion, wire and presentation aliases; migrate consumers to canonical contracts. See MIGRATION.md.
+
+## Unreleased — shared PhoneMe UI
+
+- Use one shared call view, avatar/navigation primitives, and full-width history-row presentation across scenario and provider hosts.
+- Move the default PhoneMe palette and screen layout into the theme package; preserve host data, callbacks, and explicit appearance configuration.
+- Verify narrow devices and enlarged text, and prevent duplicate message actions when shell navigation renders them.
+- Local `ui` prereleases are packed integration artifacts, not registry releases.
+
 ## 0.17.0 — September 29, 2026
 
 - Export `SimulatorDeviceApps`, `SimulatorDeviceAppsProvider` and `SimulatorCallBoundary` for Home, local apps, locking and call overlays that preserve mounted drafts.

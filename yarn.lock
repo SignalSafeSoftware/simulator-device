@@ -418,27 +418,24 @@
   resolved "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz#e3fcee093fbb5ce765e1ad088ff4de2889f6f9be"
   integrity sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==
 
-"@signalsafe/simulator-core@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-core/-/simulator-core-0.4.1.tgz#7f23092cb3c38c05f5b846fc0d1a90a85cfbd47e"
-  integrity sha512-WAJpozJEDukMMaQB4vfKtiOETECVPWAM+MGBi7/QWCrj/4wwcGc4PqCHSyrfVl5x5t7MDxhH5Oa3Rz6E0NTwhg==
+"@signalsafe/simulator-core@file:../../../../Library/Caches/Yarn/v6/.tmp/477dd40c6f0f1e4a6bbad1362be09f34/vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz", "@signalsafe/simulator-core@file:vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz":
+  version "0.5.0-cleanup.3"
+  resolved "file:vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz#e30937cb6b12503c7bbf6d02405e2c5fd5c0ec14"
   dependencies:
     "@signalsafe/tree-spec" "^0.4.1"
     zod "^4.0.0"
 
-"@signalsafe/simulator-react@0.17.0":
-  version "0.17.0"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-react/-/simulator-react-0.17.0.tgz#7a5a1c8e693650bade85cb2ceec7a8ddf8c76430"
-  integrity sha512-e8ppkUKb4pjBIjn9GSoy2ywkXhMt8qtJmz/foXwgMyRXtqArYzAH8/lSqukgLenJfNOchkfs+Ftjre3z785ggA==
+"@signalsafe/simulator-react@file:vendor/npm/signalsafe-simulator-react-0.19.0-cleanup.13.tgz":
+  version "0.19.0-cleanup.13"
+  resolved "file:vendor/npm/signalsafe-simulator-react-0.19.0-cleanup.13.tgz#2942e047ffbddb802cfb939c1af5851d181d105d"
   dependencies:
-    "@signalsafe/simulator-core" "0.4.1"
+    "@signalsafe/simulator-core" "file:../../../../Library/Caches/Yarn/v6/.tmp/477dd40c6f0f1e4a6bbad1362be09f34/vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz"
     "@signalsafe/tree-spec" "^0.4.1"
     lucide-react "^1.31.0"
 
-"@signalsafe/simulator-theme-bootstrap@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.10.0.tgz#d0533488d806343acda350fb7f07be5b444fc0ff"
-  integrity sha512-cYlR7Hn6a9dvVYQJMx+Cz8jTEzV20KmbiQXyNII1Bvd+kmQk6q5sZeyAc08SAid9/81j1ZrpzD1Y0X3QVEdNqg==
+"@signalsafe/simulator-theme-bootstrap@file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.12.0-cleanup.7.tgz":
+  version "0.12.0-cleanup.7"
+  resolved "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.12.0-cleanup.7.tgz#675eb11565bbc9f3fa5a6a3a7f2f76f7ed5ed57e"
 
 "@signalsafe/tree-spec@^0.4.1":
   version "0.4.1"
@@ -488,6 +485,13 @@
   version "1.0.9"
   resolved "https://registry.npmjs.org/@types/estree/-/estree-1.0.9.tgz"
   integrity sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==
+
+"@types/node@22.17.0":
+  version "22.17.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.17.0.tgz#e8c9090e957bd4d9860efb323eb92d297347eac7"
+  integrity sha512-bbAKTCqX5aNVryi7qXVMi+OkB3w/OyblodicMbvE38blyAz7GxXf6XYhklokijuPwwVg9sDLKRxt0ZHXQwZVfQ==
+  dependencies:
+    undici-types "~6.21.0"
 
 "@types/prop-types@*":
   version "15.7.15"
@@ -1204,6 +1208,11 @@ typescript@^7.0.2:
     "@typescript/typescript-sunos-x64" "7.0.2"
     "@typescript/typescript-win32-arm64" "7.0.2"
     "@typescript/typescript-win32-x64" "7.0.2"
+
+undici-types@~6.21.0:
+  version "6.21.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.21.0.tgz#691d00af3909be93a7faa13be61b3a5b50ef12cb"
+  integrity sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==
 
 undici@^8.9.0:
   version "8.10.2"

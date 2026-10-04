@@ -1,4 +1,4 @@
-import { useSimulatorLocale } from '@signalsafe/simulator-react';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import type { ReactNode } from 'react';
 import type { PhoneIncomingCallHistoryRow } from './phoneIncomingCallHistoryHelpers.js';
 

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import type {
-    SimulatorDispatchAction,
     SimulatorSessionContact,
     SimulatorSessionState,
-} from '@signalsafe/simulator-react';
+} from '@signalsafe/simulator-react/types/session';
 import SimulatorPhoneContactDetailForm from './SimulatorPhoneContactDetailForm.js';
 import { contactSnapshotFromSessionContact } from './contactSnapshotFromSessionContact.js';
 import type { SimulatorPhoneDeviceContactDetailOptions } from './contactDetailTypes.js';

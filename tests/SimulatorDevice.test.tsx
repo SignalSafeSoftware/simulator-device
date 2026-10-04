@@ -1,3 +1,4 @@
+import type { SimulatorPhoneDeviceProps } from '../src/SimulatorPhoneDevice.js';
 import { describe, expect, it, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import SimulatorDevice from '../src/SimulatorDevice.js';
@@ -8,15 +9,28 @@ import {
 } from './support/deviceJsonFixtures.js';
 
 const capturedPhoneDeviceProps = vi.hoisted(() => ({
-    current: null as Record<string, unknown> | null,
+    current: null as SimulatorPhoneDeviceProps | null,
 }));
 
 vi.mock('../src/SimulatorPhoneDevice.js', () => ({
-    default: (props: Record<string, unknown>) => {
+    default: (props: SimulatorPhoneDeviceProps) => {
         capturedPhoneDeviceProps.current = props;
         return <div data-testid="mock-simulator-phone-device" />;
     },
 }));
+
+function phoneProps(): SimulatorPhoneDeviceProps {
+    const props = capturedPhoneDeviceProps.current;
+    if (!props) throw new Error('Expected SimulatorPhoneDevice to render.');
+    return props;
+}
+
+function contactContext() {
+    const { state, dispatch } = phoneProps();
+    const originalContact = state.payload.contacts?.find((contact) => contact.id === 'c1');
+    if (!originalContact) throw new Error('Expected the fixture contact.');
+    return { state, dispatch, originalContact };
+}
 
 describe('SimulatorDevice', () => {
     it('renders SimulatorPhoneDevice for a valid full-device payload', async () => {
@@ -35,10 +49,7 @@ describe('SimulatorDevice', () => {
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
-        expect(
-            (capturedPhoneDeviceProps.current?.state as { view?: { activeApp?: string } })?.view
-                ?.activeApp,
-        ).toBe('home');
+        expect(phoneProps().state.view.activeApp).toBe('home');
     });
 
     it('updates internal session state when dispatch is invoked', async () => {
@@ -48,17 +59,12 @@ describe('SimulatorDevice', () => {
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
-        (capturedPhoneDeviceProps.current!.dispatch as (action: unknown) => void)({
+        phoneProps().dispatch({
             type: 'SWITCH_APP',
             app: 'email',
         });
 
-        await waitFor(() =>
-            expect(
-                (capturedPhoneDeviceProps.current?.state as { view?: { activeApp?: string } })?.view
-                    ?.activeApp,
-            ).toBe('email'),
-        );
+        await waitFor(() => expect(phoneProps().state.view.activeApp).toBe('email'));
     });
 
     it('passes phone.contactDetail through to SimulatorPhoneDevice', async () => {
@@ -68,8 +74,8 @@ describe('SimulatorDevice', () => {
         render(<SimulatorDevice value={buildContactsDeviceJson()} phone={{ contactDetail }} />);
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
-        expect(capturedPhoneDeviceProps.current?.contactDetail).toMatchObject({ mode: 'editable' });
-        expect(capturedPhoneDeviceProps.current?.contactDetail).toHaveProperty('onSave');
+        expect(phoneProps().contactDetail).toMatchObject({ mode: 'editable' });
+        expect(phoneProps().contactDetail).toHaveProperty('onSave');
     });
 
     it('contact save patches value.contacts and calls onChange after host onSave succeeds', async () => {
@@ -88,18 +94,17 @@ describe('SimulatorDevice', () => {
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
-        const wrappedOnSave = (
-            capturedPhoneDeviceProps.current?.contactDetail as {
-                onSave?: (contact: unknown) => void;
-            }
-        )?.onSave;
+        const wrappedOnSave = phoneProps().contactDetail?.onSave;
 
-        wrappedOnSave?.({
-            id: 'c1',
-            displayName: 'Updated Helpdesk',
-            number: '+1999',
-            email: 'help@example.com',
-        });
+        wrappedOnSave?.(
+            {
+                id: 'c1',
+                displayName: 'Updated Helpdesk',
+                number: '+1999',
+                email: 'help@example.com',
+            },
+            contactContext(),
+        );
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0]?.[0]?.contacts?.[0]?.display_name).toBe('Updated Helpdesk');
@@ -125,17 +130,16 @@ describe('SimulatorDevice', () => {
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
-        const wrappedOnDelete = (
-            capturedPhoneDeviceProps.current?.contactDetail as {
-                onDelete?: (contact: unknown) => void;
-            }
-        )?.onDelete;
+        const wrappedOnDelete = phoneProps().contactDetail?.onDelete;
 
-        wrappedOnDelete?.({
-            id: 'c1',
-            displayName: 'IT Helpdesk',
-            number: '+15550001111',
-        });
+        wrappedOnDelete?.(
+            {
+                id: 'c1',
+                displayName: 'IT Helpdesk',
+                number: '+15550001111',
+            },
+            contactContext(),
+        );
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0]?.[0]?.contacts).toHaveLength(1);
@@ -155,7 +159,7 @@ describe('SimulatorDevice', () => {
         );
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
-        expect(capturedPhoneDeviceProps.current?.renderContactDetail).toBe(renderContactDetail);
+        expect(phoneProps().renderContactDetail).toBe(renderContactDetail);
     });
 
     it('passes phone.renderIncomingCallExtra through to SimulatorPhoneDevice', async () => {
@@ -167,9 +171,7 @@ describe('SimulatorDevice', () => {
         );
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
-        expect(capturedPhoneDeviceProps.current?.renderIncomingCallExtra).toBe(
-            renderIncomingCallExtra,
-        );
+        expect(phoneProps().renderIncomingCallExtra).toBe(renderIncomingCallExtra);
     });
 
     it('forwards runtime passthrough props to SimulatorPhoneDevice', async () => {
@@ -179,7 +181,9 @@ describe('SimulatorDevice', () => {
         const developerToolsTimelineEntries = [
             { kind: 'session_started' as const, timestamp: 't', app: 'home', screen: 'home' },
         ];
-        const developerToolsRuntimeIssues = [{ id: 'w1', message: 'warn' }];
+        const developerToolsRuntimeIssues = [
+            { id: 'w1', message: 'warn', severity: 'warning' as const },
+        ];
         const renderChoice = vi.fn();
         const renderFeedback = vi.fn();
         const renderContactsOverlay = vi.fn();
@@ -205,22 +209,18 @@ describe('SimulatorDevice', () => {
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
 
-        expect(capturedPhoneDeviceProps.current?.onSimulatorEvent).toBe(onSimulatorEvent);
-        expect(capturedPhoneDeviceProps.current?.developerTools).toBe(developerTools);
-        expect(capturedPhoneDeviceProps.current?.developerToolsTimelineEntries).toBe(
-            developerToolsTimelineEntries,
-        );
-        expect(capturedPhoneDeviceProps.current?.developerToolsRuntimeIssues).toBe(
-            developerToolsRuntimeIssues,
-        );
-        expect(capturedPhoneDeviceProps.current?.initialContactsSearch).toBe('alice');
-        expect(capturedPhoneDeviceProps.current?.compact).toBe(true);
-        expect(capturedPhoneDeviceProps.current?.exitLink).toBe(exitLink);
-        expect(capturedPhoneDeviceProps.current?.exitTo).toBe('/leave');
-        expect(capturedPhoneDeviceProps.current?.exitLabel).toBe('Leave');
-        expect(capturedPhoneDeviceProps.current?.renderChoice).toBe(renderChoice);
-        expect(capturedPhoneDeviceProps.current?.renderFeedback).toBe(renderFeedback);
-        expect(capturedPhoneDeviceProps.current?.renderContactsOverlay).toBe(renderContactsOverlay);
+        expect(phoneProps().onSimulatorEvent).toBe(onSimulatorEvent);
+        expect(phoneProps().developerTools).toBe(developerTools);
+        expect(phoneProps().developerToolsTimelineEntries).toBe(developerToolsTimelineEntries);
+        expect(phoneProps().developerToolsRuntimeIssues).toBe(developerToolsRuntimeIssues);
+        expect(phoneProps().initialContactsSearch).toBe('alice');
+        expect(phoneProps().compact).toBe(true);
+        expect(phoneProps().exitLink).toBe(exitLink);
+        expect(phoneProps().exitTo).toBe('/leave');
+        expect(phoneProps().exitLabel).toBe('Leave');
+        expect(phoneProps().renderChoice).toBe(renderChoice);
+        expect(phoneProps().renderFeedback).toBe(renderFeedback);
+        expect(phoneProps().renderContactsOverlay).toBe(renderContactsOverlay);
     });
 
     it('does not expose state or dispatch on SimulatorDevice public props surface', async () => {
@@ -229,8 +229,8 @@ describe('SimulatorDevice', () => {
         render(<SimulatorDevice value={buildHomeDeviceJson()} onSimulatorEvent={vi.fn()} />);
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
-        expect(capturedPhoneDeviceProps.current?.state).toBeDefined();
-        expect(capturedPhoneDeviceProps.current?.dispatch).toBeTypeOf('function');
+        expect(phoneProps().state).toBeDefined();
+        expect(phoneProps().dispatch).toBeTypeOf('function');
     });
 
     it('renders renderUnsupported for unsupported future shapes', () => {

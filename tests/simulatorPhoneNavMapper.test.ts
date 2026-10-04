@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { SimulatorSessionState, SimulatorViewState } from '@signalsafe/simulator-react';
-import { switchChannelAction } from '@signalsafe/simulator-react';
+import type {
+    SimulatorSessionState,
+    SimulatorViewState,
+} from '@signalsafe/simulator-react/types/session';
+import { switchChannelAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import {
     dispatchSimulatorPhoneNavItem,
     resolveSimulatorPhoneNav,
@@ -210,6 +213,7 @@ it.each(['outbox', 'trash'] as const)('selects the %s email tab', (screen) => {
 });
 
 it('hides navigation when no app is selected', () => {
+    // @ts-expect-error Exercise malformed state received from an untyped host.
     const state = buildState({ activeApp: null });
     expect(shouldHideHostPhoneNav(state)).toBe(true);
     expect(resolveSimulatorPhoneNav(state)).toEqual({ mode: 'hidden' });

@@ -1,19 +1,20 @@
+import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
+import { getPhoneSecondaryItems } from '@signalsafe/simulator-react/utils/phoneLocalNavItems';
 import {
-    getPhoneSecondaryItems,
     getEmailSecondaryItems,
     getPhoneSecondaryActiveId,
     getEmailSecondaryActiveId,
-    shouldHideSimulatorNavigation,
-} from '@signalsafe/simulator-react';
-import {
-    createTranslator,
-    simulatorEnglish,
-    switchChannelAction,
-    viewStateToActiveChannel,
-    type SimulatorChannel,
-    type SimulatorDispatchAction,
-    type SimulatorSessionState,
-} from '@signalsafe/simulator-react';
+} from '@signalsafe/simulator-react/utils/simulatorSecondaryMenuHelpers';
+import { shouldHideSimulatorNavigation } from '@signalsafe/simulator-react/utils/simulatorNavigationPolicy';
+import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react/i18n/catalog';
+import { switchChannelAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import { viewStateToActiveChannel } from '@signalsafe/simulator-react/types/session';
+import type {
+    SimulatorChannel,
+    SimulatorSessionState,
+} from '@signalsafe/simulator-react/types/session';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 /**
  * Host phone navigation model derived from @signalsafe/simulator-react session state.
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
@@ -37,7 +38,11 @@ export type SimulatorPhoneNavModel =
       }
     | {
           mode: 'secondary' | 'tertiary';
-          app: 'phone' | 'email' | 'home' | 'messages';
+          app:
+              | typeof SimulatorApp.Phone
+              | typeof SimulatorApp.Email
+              | typeof SimulatorApp.Home
+              | typeof SimulatorApp.Messages;
           items: SimulatorPhoneNavItemModel[];
           activeId: string;
       };
@@ -85,10 +90,10 @@ export function resolveSimulatorPhoneNav(
     }
 
     const activeApp = view.activeApp;
-    if (activeApp === 'email' && view.email.screen === 'compose') {
+    if (activeApp === SimulatorApp.Email && view.email.screen === 'compose') {
         return {
             mode: 'tertiary',
-            app: 'email',
+            app: SimulatorApp.Email,
             activeId: '',
             items: [
                 {
@@ -102,10 +107,10 @@ export function resolveSimulatorPhoneNav(
             ],
         };
     }
-    if (activeApp === 'email' && view.email.screen === 'detail') {
+    if (activeApp === SimulatorApp.Email && view.email.screen === 'detail') {
         return {
             mode: 'tertiary',
-            app: 'email',
+            app: SimulatorApp.Email,
             activeId: '',
             items: [
                 { id: 'reply', label: locale.t('nav.reply'), icon: '↪', action: 'reply' },
@@ -117,12 +122,12 @@ export function resolveSimulatorPhoneNav(
     }
 
     if (
-        activeApp === 'messages' &&
+        activeApp === SimulatorApp.Messages &&
         (view.messages.screen === 'thread_detail' || view.messages.screen === 'new_thread')
     ) {
         return {
             mode: 'secondary',
-            app: 'messages',
+            app: SimulatorApp.Messages,
             activeId: 'thread_detail',
             items: [
                 {
@@ -137,10 +142,10 @@ export function resolveSimulatorPhoneNav(
         };
     }
 
-    if (activeApp === 'home' && view.home.screen === 'settings') {
+    if (activeApp === SimulatorApp.Home && view.home.screen === 'settings') {
         return {
             mode: 'secondary',
-            app: 'home',
+            app: SimulatorApp.Home,
             activeId: 'settings',
             items: [
                 { id: 'settings', label: locale.t('nav.settings'), icon: '⚙', action: 'local' },
@@ -150,12 +155,13 @@ export function resolveSimulatorPhoneNav(
     }
 
     const showSecondaryMenu =
-        !view.showPrimaryMenu && (activeApp === 'phone' || activeApp === 'email');
+        !view.showPrimaryMenu &&
+        (activeApp === SimulatorApp.Phone || activeApp === SimulatorApp.Email);
 
-    if (showSecondaryMenu && activeApp === 'phone') {
+    if (showSecondaryMenu && activeApp === SimulatorApp.Phone) {
         return {
             mode: 'secondary',
-            app: 'phone',
+            app: SimulatorApp.Phone,
             activeId: getPhoneSecondaryActiveId(view.phone.screen),
             items: getPhoneSecondaryItems(locale).map((item) => ({
                 id: item.id,
@@ -166,10 +172,10 @@ export function resolveSimulatorPhoneNav(
         };
     }
 
-    if (showSecondaryMenu && activeApp === 'email') {
+    if (showSecondaryMenu && activeApp === SimulatorApp.Email) {
         return {
             mode: 'secondary',
-            app: 'email',
+            app: SimulatorApp.Email,
             activeId: getEmailSecondaryActiveId(view.email.screen, view.email.stack),
             items: getEmailSecondaryItems(locale).map((item) => ({
                 id: item.id,
@@ -201,11 +207,14 @@ export function dispatchSimulatorPhoneNavItem(
     _state?: SimulatorSessionState,
 ): void {
     if (item.action === 'reply') {
-        dispatch({ type: 'SIMULATOR_ACTION', action: { type: 'send_reply' } });
+        dispatch({
+            type: SimulatorDispatchActionType.SimulatorAction,
+            action: { type: 'send_reply' },
+        });
         return;
     }
     if (item.action === 'back') {
-        dispatch({ type: 'BACK' });
+        dispatch({ type: SimulatorDispatchActionType.Back });
         return;
     }
 
@@ -215,6 +224,6 @@ export function dispatchSimulatorPhoneNavItem(
     }
 
     if (item.action === 'local' && model.mode === 'secondary') {
-        dispatch({ type: 'NAV_LOCAL', app: model.app, screen: item.id });
+        dispatch({ type: SimulatorDispatchActionType.NavLocal, app: model.app, screen: item.id });
     }
 }

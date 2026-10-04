@@ -1,57 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-    SIMULATOR_DEVICE_SCREEN_CLASS_NAMES,
     SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES,
     resolveSimulatorPhoneShellHostMode,
     resolveSimulatorPhoneShellScreenClasses,
 } from '../src/simulatorPhoneShellScreenMapper.js';
 import { buildState } from './support/sessionFixtures.js';
 
-function pairedScreenClasses(key: keyof typeof SIMULATOR_DEVICE_SCREEN_CLASS_NAMES): string[] {
-    return [
-        SIMULATOR_DEVICE_SCREEN_CLASS_NAMES[key],
-        SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES[key],
-    ];
+function screenClasses(key: keyof typeof SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES): string[] {
+    return [SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES[key]];
 }
 
-describe('SIMULATOR_DEVICE_SCREEN_CLASS_NAMES', () => {
-    it('matches expected CSS class strings', () => {
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneHistory).toBe(
-            'simulator-phone-shell--screen-phone-history',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneContacts).toBe(
-            'simulator-phone-shell--screen-phone-contacts',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneDial).toBe(
-            'simulator-phone-shell--screen-phone-dial',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneIncomingCall).toBe(
-            'simulator-phone-shell--screen-phone-incoming-call',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.phoneContactDetail).toBe(
-            'simulator-phone-shell--screen-phone-contact-detail',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.messagesThreads).toBe(
-            'simulator-phone-shell--screen-messages-threads',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.messagesThreadDetail).toBe(
-            'simulator-phone-shell--screen-messages-thread-detail',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailInbox).toBe(
-            'simulator-phone-shell--screen-email-inbox',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailOutbox).toBe(
-            'simulator-phone-shell--screen-email-outbox',
-        );
-        expect(SIMULATOR_DEVICE_SCREEN_CLASS_NAMES.emailTrash).toBe(
-            'simulator-phone-shell--screen-email-trash',
-        );
-    });
-});
-
 describe('SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES', () => {
-    it('matches expected device-shell screen modifier aliases', () => {
+    it('matches expected device-shell screen modifiers', () => {
         expect(SIMULATOR_DEVICE_SHELL_SCREEN_CLASS_NAMES.phoneHistory).toBe(
             'simulator-device-shell--screen-phone-history',
         );
@@ -95,7 +56,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     phone: { screen: 'history', stack: [], chosenIndex: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('phoneHistory'));
+        ).toEqual(screenClasses('phoneHistory'));
 
         expect(
             resolveSimulatorPhoneShellScreenClasses(
@@ -105,7 +66,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     phone: { screen: 'contacts', stack: [], chosenIndex: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('phoneContacts'));
+        ).toEqual(screenClasses('phoneContacts'));
 
         expect(
             resolveSimulatorPhoneShellScreenClasses(
@@ -115,7 +76,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     phone: { screen: 'dial', stack: [], chosenIndex: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('phoneDial'));
+        ).toEqual(screenClasses('phoneDial'));
 
         expect(
             resolveSimulatorPhoneShellScreenClasses(
@@ -125,7 +86,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     phone: { screen: 'incoming_call', stack: [], chosenIndex: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('phoneIncomingCall'));
+        ).toEqual(screenClasses('phoneIncomingCall'));
     });
 
     it('returns messages screen classes for threads and thread detail', () => {
@@ -137,7 +98,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     messages: { screen: 'threads', stack: [], visibleCount: 0 },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('messagesThreads'));
+        ).toEqual(screenClasses('messagesThreads'));
 
         expect(
             resolveSimulatorPhoneShellScreenClasses(
@@ -147,7 +108,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     messages: { screen: 'thread_detail', stack: [], visibleCount: 2 },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('messagesThreadDetail'));
+        ).toEqual(screenClasses('messagesThreadDetail'));
     });
 
     it('returns email folder screen classes', () => {
@@ -159,7 +120,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     email: { screen: 'list', stack: [], selectedMessageId: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('emailInbox'));
+        ).toEqual(screenClasses('emailInbox'));
 
         expect(
             resolveSimulatorPhoneShellScreenClasses(
@@ -169,7 +130,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     email: { screen: 'outbox', stack: [], selectedMessageId: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('emailOutbox'));
+        ).toEqual(screenClasses('emailOutbox'));
 
         expect(
             resolveSimulatorPhoneShellScreenClasses(
@@ -179,7 +140,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                     email: { screen: 'trash', stack: [], selectedMessageId: null },
                 }),
             ),
-        ).toEqual(pairedScreenClasses('emailTrash'));
+        ).toEqual(screenClasses('emailTrash'));
     });
 
     it('includes phone contact detail class when hostMode is phone-contact-edit', () => {
@@ -194,10 +155,7 @@ describe('resolveSimulatorPhoneShellScreenClasses', () => {
                 kind: 'phone-contact-edit',
                 contactId: 'alice',
             }),
-        ).toEqual([
-            ...pairedScreenClasses('phoneContacts'),
-            ...pairedScreenClasses('phoneContactDetail'),
-        ]);
+        ).toEqual([...screenClasses('phoneContacts'), ...screenClasses('phoneContactDetail')]);
     });
 });
 

@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
 import {
-    getInitialSessionState,
     simulatorDatasourceToPayload,
     updateSimulatorPayload,
-    type SimulatorDatasource,
-    simulatorSessionReducerWithLogging,
-    type SimulatorDispatchAction,
-    type SimulatorSessionState,
-} from '@signalsafe/simulator-react';
+} from '@signalsafe/simulator-react/datasource/datasource';
+import type { SimulatorDatasource } from '@signalsafe/simulator-react/datasource/datasource';
+import { simulatorSessionReducerWithLogging } from '@signalsafe/simulator-react/state/simulatorSessionReducer';
+import type { SimulatorDispatchAction } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
+import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 import {
     patchContactInDevicePayload,
     removeContactFromDevicePayload,
@@ -19,15 +19,12 @@ import type {
     SimulatorPhoneDeviceContactDetailOptions,
 } from './contact/contactDetailTypes.js';
 import type { SimulatorDeviceRuntimePassthroughProps } from './simulatorDeviceRuntimeProps.js';
-import type { SimulatorDevicePayload } from './types/simulatorDevicePayload.js';
+import type { SimulatorDevicePayload } from '@signalsafe/simulator-core/devicePayload';
 import SimulatorPhoneDevice from './SimulatorPhoneDevice.js';
 import type { SimulatorPhoneDeviceProps } from './SimulatorPhoneDevice.js';
 import SimulatorDeviceFallback from './SimulatorDeviceFallback.js';
 import { resolveSimulatorDeviceKind } from './resolveSimulatorDeviceKind.js';
-import { simulatorDeviceValueToSessionPayload } from './simulatorDeviceValueToSessionPayload.js';
-
-export type { SimulatorDeviceRuntimePassthroughProps } from './simulatorDeviceRuntimeProps.js';
-export type { SimulatorDeviceManagedPhoneDeviceProps } from './simulatorDeviceRuntimeProps.js';
+import { fullDeviceToPayload } from '@signalsafe/simulator-react/adapters/deviceToSession';
 
 export interface SimulatorDevicePhoneOptions {
     onEmailAction?: SimulatorPhoneDeviceProps['onEmailAction'];
@@ -130,7 +127,7 @@ export default function SimulatorDevice({
         if (kind !== 'phone-full-device' || value === undefined) {
             return null;
         }
-        return simulatorDeviceValueToSessionPayload(value);
+        return fullDeviceToPayload(value);
     }, [kind, value, datasource]);
 
     const [state, setState] = useState<SimulatorSessionState | null>(() =>
@@ -181,8 +178,8 @@ export default function SimulatorDevice({
             renderIncomingCallExtra={phone?.renderIncomingCallExtra}
             className={phone?.className}
             screenClassNames={phone?.screenClassNames}
-            screenRef={phone?.screenRef}
-            onEmailAction={phone?.onEmailAction}
+            screenRef={phone?.screenRef ?? runtimeProps.screenRef}
+            onEmailAction={phone?.onEmailAction ?? runtimeProps.onEmailAction}
         />
     );
 }

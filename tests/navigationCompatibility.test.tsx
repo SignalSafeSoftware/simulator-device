@@ -1,19 +1,44 @@
+import type { SimulatorTemplatePayload } from '@signalsafe/simulator-react/types/session';
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, within } from '@testing-library/react';
-import { SimulatorWithSession, getInitialSessionState } from '@signalsafe/simulator-react';
+import SimulatorWithSession from '@signalsafe/simulator-react/SimulatorWithSession';
+import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
 import SimulatorPhoneNav from '../src/SimulatorPhoneNav.js';
 import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
 
+function payload(overrides: Partial<SimulatorTemplatePayload>): SimulatorTemplatePayload {
+    return {
+        templateId: null,
+        templateKey: 'test',
+        name: '',
+        topicTags: [],
+        channel: 'phone',
+        entryPoint: null,
+        device: null,
+        phone: null,
+        email: null,
+        sms: null,
+        browser: null,
+        home: null,
+        contacts: [],
+        directory: null,
+        runId: null,
+        attemptId: null,
+        ...overrides,
+    };
+}
 const homeState = () =>
-    getInitialSessionState({
-        channel: 'home',
-        entryPoint: { app: 'home', screen: 'home' },
-        home: {
-            widgets: [],
-            featuredApps: [],
-            settingsSections: [{ id: 'general', title: 'General' }],
-        },
-    });
+    getInitialSessionState(
+        payload({
+            channel: 'home',
+            entryPoint: { app: 'home', screen: 'home' },
+            home: {
+                widgets: [],
+                featuredApps: [],
+                settingsSections: [{ id: 'general', title: 'General' }],
+            },
+        }),
+    );
 
 describe('source package consumer navigation compatibility', () => {
     for (const Component of [SimulatorWithSession, SimulatorPhoneDevice]) {
@@ -67,10 +92,12 @@ describe('source package consumer navigation compatibility', () => {
         });
     }
     it('device Contacts primary Back emits one primary request, with no artificial screen hops', () => {
-        const state = getInitialSessionState({
-            channel: 'phone',
-            entryPoint: { app: 'phone', screen: 'contacts' },
-        });
+        const state = getInitialSessionState(
+            payload({
+                channel: 'phone',
+                entryPoint: { app: 'phone', screen: 'contacts' },
+            }),
+        );
         const dispatch = vi.fn();
         const events = vi.fn();
         const { container } = render(
@@ -85,11 +112,17 @@ describe('source package consumer navigation compatibility', () => {
     });
     for (const Component of [SimulatorWithSession, SimulatorPhoneDevice, SimulatorPhoneNav]) {
         it(`${Component.name} intercepts secondary menu navigation without dispatch`, () => {
-            const state = getInitialSessionState({
-                channel: 'phone',
-                entryPoint: { app: 'phone', screen: 'contacts' },
-                phone: { content: {}, chosenIndex: null, callHistory: [] },
-            });
+            const state = getInitialSessionState(
+                payload({
+                    channel: 'phone',
+                    entryPoint: { app: 'phone', screen: 'contacts' },
+                    phone: {
+                        content: { transcript: '', choices: [] },
+                        chosenIndex: null,
+                        callHistory: [],
+                    },
+                }),
+            );
             const dispatch = vi.fn();
             const onNavigation = vi.fn(() => 'handled' as const);
             const { container } = render(

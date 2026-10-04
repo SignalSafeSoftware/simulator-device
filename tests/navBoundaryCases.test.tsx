@@ -1,8 +1,8 @@
 import { fireEvent, render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import { MessageComposeContext } from '@signalsafe/simulator-react';
+import { MessageComposeContext } from '@signalsafe/simulator-react/contract/messageComposeContract';
 import SimulatorPhoneNav from '../src/SimulatorPhoneNav.js';
-import SimulatorPhoneNavItem from '../src/SimulatorPhoneNavItem.js';
+import { SimulatorAppNavItem as SimulatorPhoneNavItem } from '@signalsafe/simulator-react/ui/navigation/SimulatorAppNavItem';
 import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
 import { buildState } from './support/sessionFixtures.js';
 

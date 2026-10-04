@@ -1,6 +1,6 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.17.0",
+  "version": "0.19.0-cleanup.13",
   "type": "module",
   "description": "Reusable full phone/device simulator UI composition on top of @signalsafe/simulator-react.",
   "license": "MIT",
@@ -24,14 +24,113 @@
     "signalsafe"
   ],
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
+    "./SimulatorCallBoundary": {
+      "types": "./dist/SimulatorCallBoundary.d.ts",
+      "import": "./dist/SimulatorCallBoundary.js",
+      "default": "./dist/SimulatorCallBoundary.js"
+    },
+    "./SimulatorDevice": {
+      "types": "./dist/SimulatorDevice.d.ts",
+      "import": "./dist/SimulatorDevice.js",
+      "default": "./dist/SimulatorDevice.js"
+    },
+    "./SimulatorDeviceApps": {
+      "types": "./dist/SimulatorDeviceApps.d.ts",
+      "import": "./dist/SimulatorDeviceApps.js",
+      "default": "./dist/SimulatorDeviceApps.js"
+    },
+    "./SimulatorDeviceAppsProvider": {
+      "types": "./dist/SimulatorDeviceAppsProvider.d.ts",
+      "import": "./dist/SimulatorDeviceAppsProvider.js",
+      "default": "./dist/SimulatorDeviceAppsProvider.js"
+    },
+    "./SimulatorPhoneDevice": {
+      "types": "./dist/SimulatorPhoneDevice.d.ts",
+      "import": "./dist/SimulatorPhoneDevice.js",
+      "default": "./dist/SimulatorPhoneDevice.js"
+    },
+    "./SimulatorPhoneNav": {
+      "types": "./dist/SimulatorPhoneNav.d.ts",
+      "import": "./dist/SimulatorPhoneNav.js",
+      "default": "./dist/SimulatorPhoneNav.js"
+    },
+    "./SimulatorPhoneShell": {
+      "types": "./dist/SimulatorPhoneShell.d.ts",
+      "import": "./dist/SimulatorPhoneShell.js",
+      "default": "./dist/SimulatorPhoneShell.js"
+    },
+    "./appearance/SimulatorAppearanceSettings": {
+      "types": "./dist/appearance/SimulatorAppearanceSettings.d.ts",
+      "import": "./dist/appearance/SimulatorAppearanceSettings.js",
+      "default": "./dist/appearance/SimulatorAppearanceSettings.js"
+    },
+    "./contact/SimulatorPhoneContactDetailForm": {
+      "types": "./dist/contact/SimulatorPhoneContactDetailForm.d.ts",
+      "import": "./dist/contact/SimulatorPhoneContactDetailForm.js",
+      "default": "./dist/contact/SimulatorPhoneContactDetailForm.js"
+    },
+    "./contact/contactDetailTypes": {
+      "types": "./dist/contact/contactDetailTypes.d.ts",
+      "import": "./dist/contact/contactDetailTypes.js",
+      "default": "./dist/contact/contactDetailTypes.js"
+    },
+    "./contact/contactSnapshotFromSessionContact": {
+      "types": "./dist/contact/contactSnapshotFromSessionContact.d.ts",
+      "import": "./dist/contact/contactSnapshotFromSessionContact.js",
+      "default": "./dist/contact/contactSnapshotFromSessionContact.js"
+    },
+    "./contact/patchContactsInDevicePayload": {
+      "types": "./dist/contact/patchContactsInDevicePayload.d.ts",
+      "import": "./dist/contact/patchContactsInDevicePayload.js",
+      "default": "./dist/contact/patchContactsInDevicePayload.js"
+    },
+    "./contact/splitContactDisplayName": {
+      "types": "./dist/contact/splitContactDisplayName.d.ts",
+      "import": "./dist/contact/splitContactDisplayName.js",
+      "default": "./dist/contact/splitContactDisplayName.js"
+    },
+    "./incomingCall/SimulatorPhoneIncomingCallHistory": {
+      "types": "./dist/incomingCall/SimulatorPhoneIncomingCallHistory.d.ts",
+      "import": "./dist/incomingCall/SimulatorPhoneIncomingCallHistory.js",
+      "default": "./dist/incomingCall/SimulatorPhoneIncomingCallHistory.js"
+    },
+    "./incomingCall/phoneIncomingCallHistoryHelpers": {
+      "types": "./dist/incomingCall/phoneIncomingCallHistoryHelpers.d.ts",
+      "import": "./dist/incomingCall/phoneIncomingCallHistoryHelpers.js",
+      "default": "./dist/incomingCall/phoneIncomingCallHistoryHelpers.js"
+    },
+    "./incomingCall/renderPhoneIncomingCallHistoryExtra": {
+      "types": "./dist/incomingCall/renderPhoneIncomingCallHistoryExtra.d.ts",
+      "import": "./dist/incomingCall/renderPhoneIncomingCallHistoryExtra.js",
+      "default": "./dist/incomingCall/renderPhoneIncomingCallHistoryExtra.js"
+    },
+    "./resolveSimulatorDeviceKind": {
+      "types": "./dist/resolveSimulatorDeviceKind.d.ts",
+      "import": "./dist/resolveSimulatorDeviceKind.js",
+      "default": "./dist/resolveSimulatorDeviceKind.js"
+    },
+    "./simulatorDeviceClasses": {
+      "types": "./dist/simulatorDeviceClasses.d.ts",
+      "import": "./dist/simulatorDeviceClasses.js",
+      "default": "./dist/simulatorDeviceClasses.js"
+    },
+    "./simulatorDeviceRuntimeProps": {
+      "types": "./dist/simulatorDeviceRuntimeProps.d.ts",
+      "import": "./dist/simulatorDeviceRuntimeProps.js",
+      "default": "./dist/simulatorDeviceRuntimeProps.js"
+    },
+    "./simulatorPhoneNavMapper": {
+      "types": "./dist/simulatorPhoneNavMapper.d.ts",
+      "import": "./dist/simulatorPhoneNavMapper.js",
+      "default": "./dist/simulatorPhoneNavMapper.js"
+    },
+    "./simulatorPhoneShellScreenMapper": {
+      "types": "./dist/simulatorPhoneShellScreenMapper.d.ts",
+      "import": "./dist/simulatorPhoneShellScreenMapper.js",
+      "default": "./dist/simulatorPhoneShellScreenMapper.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",
@@ -40,7 +139,12 @@
     "gallery-dist",
     "CHANGELOG.md",
     "RELEASING.md",
-    "examples/local-apps"
+    "examples/local-apps",
+    "vendor/npm/manifest.json",
+    "MIGRATION.md",
+    "vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz",
+    "vendor/npm/signalsafe-simulator-react-0.19.0-cleanup.13.tgz",
+    "vendor/npm/signalsafe-simulator-theme-bootstrap-0.12.0-cleanup.7.tgz"
   ],
   "engines": {
     "node": ">=19.0.0"
@@ -50,12 +154,12 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "lint": "oxlint src tests --deny-warnings",
-    "typecheck": "tsc --noEmit",
+    "build": "npm run check:artifacts && node scripts/clean-dist.mjs && tsc -p tsconfig.build.json",
+    "lint": "npm run check:modules && oxlint src tests --deny-warnings",
+    "typecheck": "tsc --noEmit && npm run typecheck:tests",
     "smoke:package": "node scripts/smoke-package.mjs",
     "publish:dry-run": "npm publish --dry-run",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run check:release && npm run build",
     "prepare": "npm run build && npm run check:gallery && npm run build:gallery",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -63,11 +167,15 @@
     "build:gallery": "vite build --config gallery/vite.config.ts",
     "check:gallery": "tsc -p tsconfig.gallery.json",
     "format": "oxfmt src tests",
-    "format:check": "oxfmt --check src tests"
+    "format:check": "oxfmt --check src tests",
+    "check:artifacts": "node scripts/check-package-artifacts.mjs",
+    "check:release": "node scripts/check-package-artifacts.mjs --release",
+    "check:modules": "node scripts/check-module-boundaries.mjs",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json"
   },
   "dependencies": {
-    "@signalsafe/simulator-core": "0.4.1",
-    "@signalsafe/simulator-react": "0.17.0",
+    "@signalsafe/simulator-core": "file:vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz",
+    "@signalsafe/simulator-react": "file:vendor/npm/signalsafe-simulator-react-0.19.0-cleanup.13.tgz",
     "lucide-react": "^1.31.0"
   },
   "peerDependencies": {
@@ -75,7 +183,7 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@signalsafe/simulator-theme-bootstrap": "0.10.0",
+    "@signalsafe/simulator-theme-bootstrap": "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.12.0-cleanup.7.tgz",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
     "@types/react": "^18.2.66",
@@ -88,6 +196,12 @@
     "react-dom": "^18.3.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "@types/node": "22.17.0"
+  },
+  "resolutions": {
+    "@signalsafe/simulator-core": "file:vendor/npm/signalsafe-simulator-core-0.5.0-cleanup.3.tgz",
+    "@signalsafe/simulator-react": "file:vendor/npm/signalsafe-simulator-react-0.19.0-cleanup.13.tgz",
+    "@signalsafe/simulator-theme-bootstrap": "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.12.0-cleanup.7.tgz"
   }
 }

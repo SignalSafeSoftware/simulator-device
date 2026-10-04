@@ -25,7 +25,7 @@ test('standalone packages preserve drafts across calls and support local apps', 
     await page.getByRole('button', { name: 'Save draft' }).click();
     await page.getByRole('button', { name: /Standalone mail/ }).click();
     await page.getByRole('button', { name: 'Edit draft' }).click();
-    await page.getByRole('button', { name: 'Send simulated email' }).click();
+    await page.getByRole('button', { name: 'Send' }).click();
     await expect(page.getByRole('button', { name: /Standalone mail/ })).toBeVisible();
     await apps.getByRole('button', { name: 'Settings' }).click();
     await page.getByLabel('New password', { exact: true }).fill('synthetic-password');
@@ -40,13 +40,11 @@ test('standalone packages preserve drafts across calls and support local apps', 
         canvas.height = 12;
         return canvas.toDataURL('image/png').split(',')[1]!;
     });
-    await page
-        .getByLabel('Add photo')
-        .setInputFiles({
-            name: 'Synthetic.png',
-            mimeType: 'image/png',
-            buffer: Buffer.from(png, 'base64'),
-        });
+    await page.getByLabel('Add photo').setInputFiles({
+        name: 'Synthetic.png',
+        mimeType: 'image/png',
+        buffer: Buffer.from(png, 'base64'),
+    });
     await page.getByLabel('Title', { exact: true }).fill('Standalone photo');
     await page.getByRole('button', { name: 'Save photo' }).click();
     await expect(page.getByRole('button', { name: /Standalone photo/ })).toBeVisible();

@@ -1,4 +1,4 @@
-import { useSimulatorLocale } from '@signalsafe/simulator-react';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 /** Safe default when {@link SimulatorDevice} receives an unsupported value shape. */
 export default function SimulatorDeviceFallback() {
     const screenLocale = useSimulatorLocale();

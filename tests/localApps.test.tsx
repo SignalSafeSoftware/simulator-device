@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import { emptySimulatorStore, type DeviceStore } from '@signalsafe/simulator-core';
-import { useSimulatorAppsHost } from '@signalsafe/simulator-react';
+import { emptySimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
+import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
+import { useSimulatorAppsHost } from '@signalsafe/simulator-react/apps/shared/SimulatorAppsHost';
 import { SimulatorDeviceApps } from '../src/SimulatorDeviceApps.js';
 import { SimulatorDeviceAppsProvider } from '../src/SimulatorDeviceAppsProvider.js';
 import { SimulatorCallBoundary } from '../src/SimulatorCallBoundary.js';
@@ -65,7 +66,9 @@ it('preserves the mounted draft while a call obscures the app', () => {
             <Draft />
         </SimulatorCallBoundary>,
     );
-    expect(view.getByLabelText<HTMLInputElement>('Draft').value).toBe('Unsaved');
+    const draft = view.getByLabelText('Draft');
+    if (!(draft instanceof HTMLInputElement)) throw new Error('Expected a draft input.');
+    expect(draft.value).toBe('Unsaved');
     expect(view.queryByText('Call')).toBeNull();
 });
 it('exposes loading and failed-read recovery before any app can open', () => {
@@ -84,15 +87,16 @@ it('routes home tiles, settings, primary navigation and local app back actions',
     const props = setup();
     const view = render(<SimulatorDeviceApps {...props} homeHeader={<p>Host clock</p>} />);
     expect(view.getByText('Host clock')).toBeTruthy();
-    fireEvent.click(view.getByRole('button', { name: 'Settings', exact: true }));
+    expect(view.queryByRole('button', { name: 'Lock device' })).toBeNull();
+    fireEvent.click(view.getByRole('button', { name: 'Settings' }));
     expect(props.openSettings).toHaveBeenCalledOnce();
-    fireEvent.click(view.getByRole('button', { name: 'Vault', exact: true }));
+    fireEvent.click(view.getByRole('button', { name: 'Vault' }));
     await view.findByRole('button', { name: /Unfiled/ });
-    fireEvent.click(view.getByRole('button', { name: 'Back', exact: true }));
-    fireEvent.click(view.getByRole('button', { name: 'Photos', exact: true }));
+    fireEvent.click(view.getByRole('button', { name: 'Back' }));
+    fireEvent.click(view.getByRole('button', { name: 'Photos' }));
     await view.findByText('No photos saved.');
-    fireEvent.click(view.getByRole('button', { name: 'Back', exact: true }));
-    fireEvent.click(view.getByRole('button', { name: 'Phone', exact: true }));
+    fireEvent.click(view.getByRole('button', { name: 'Back' }));
+    fireEvent.click(view.getByRole('button', { name: 'Phone' }));
     expect(props.dispatch).toHaveBeenCalled();
 });
 it('keeps lock and persistence errors at the composition boundary', () => {
@@ -114,7 +118,7 @@ it('keeps lock and persistence errors at the composition boundary', () => {
 it('supports the default mailbox, a host mailbox and host decoration', () => {
     const props = setup(store(), buildState({ activeApp: 'email' }));
     const view = render(<SimulatorDeviceApps {...props} />);
-    fireEvent.click(view.getByRole('button', { name: 'Back', exact: true }));
+    fireEvent.click(view.getByRole('button', { name: 'Back' }));
     expect(props.dispatch).toHaveBeenCalledWith({ type: 'SWITCH_APP', app: 'home' });
     props.dispatch.mockClear();
     view.rerender(

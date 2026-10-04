@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { SimulatorPhoneIncomingCallExtraRenderProps } from '@signalsafe/simulator-react';
+import type { SimulatorPhoneIncomingCallExtraRenderProps } from '@signalsafe/simulator-react/ui/renderSlots';
 import { SimulatorPhoneIncomingCallHistory } from './SimulatorPhoneIncomingCallHistory.js';
 import {
     getRecentCallsForCaller,

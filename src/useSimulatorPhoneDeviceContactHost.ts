@@ -1,16 +1,17 @@
+import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { SimulatorPhoneContactOpenProps } from '@signalsafe/simulator-react/ui/renderSlots';
 import type {
-    SimulatorPhoneContactOpenProps,
     SimulatorSessionContact,
     SimulatorSessionState,
-} from '@signalsafe/simulator-react';
+} from '@signalsafe/simulator-react/types/session';
 import {
     resolveSimulatorPhoneShellHostMode,
     type SimulatorPhoneShellHostMode,
 } from './simulatorPhoneShellScreenMapper.js';
 
 function isPhoneContactsScreen(state: SimulatorSessionState): boolean {
-    return state.view?.activeApp === 'phone' && state.view.phone?.screen === 'contacts';
+    return state.view?.activeApp === SimulatorApp.Phone && state.view.phone?.screen === 'contacts';
 }
 
 export function useSimulatorPhoneDeviceContactHost(

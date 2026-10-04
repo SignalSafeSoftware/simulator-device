@@ -1,9 +1,7 @@
-import {
-    SimulatorPage,
-    useSimulatorLocale,
-    useSimulatorCapabilities,
-    usePhoneNumberFormatter,
-} from '@signalsafe/simulator-react';
+import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
+import { useSimulatorCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
+import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
 import ContactValueList from './ContactValueList.js';
 import { useCallback, useId, useRef, useState } from 'react';
 import type {

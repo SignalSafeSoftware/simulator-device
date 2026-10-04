@@ -1,4 +1,7 @@
-import type { SimulatorSessionState, SimulatorViewState } from '@signalsafe/simulator-react';
+import type {
+    SimulatorSessionState,
+    SimulatorViewState,
+} from '@signalsafe/simulator-react/types/session';
 
 export function buildView(overrides: Partial<SimulatorViewState> = {}): SimulatorViewState {
     return {

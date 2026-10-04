@@ -1,12 +1,8 @@
-import {
-    emptySimulatorStore,
-    summarizeDevice,
-    type DeviceStore,
-    type DeviceCollection,
-    type DeviceRecords,
-    type DeviceQuery,
-    type SimulatorStore,
-} from '@signalsafe/simulator-core';
+import { emptySimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
+import { summarizeDevice } from '@signalsafe/simulator-core/apps/deviceData';
+import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
+import type { DeviceCollection, DeviceRecords, DeviceQuery } from '@signalsafe/simulator-core/apps/deviceData';
+import type { SimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 
 /** Example-only host adapter. The packages neither choose nor own persistence. */
 export function createMemoryStore(changed: () => void): DeviceStore {

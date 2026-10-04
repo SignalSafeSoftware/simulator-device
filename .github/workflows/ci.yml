@@ -126,8 +126,9 @@ jobs:
               run: |
                   mkdir -p "$RUNNER_TEMP/runtime-consumer"
                   cp package/tests/runtime-compatibility.mjs "$RUNNER_TEMP/runtime-consumer/"
+                  node package/scripts/copy-runtime-artifacts.mjs "$RUNNER_TEMP/runtime-artifacts"
                   cd "$RUNNER_TEMP/runtime-consumer"
-                  npm init -y
+                  node "$GITHUB_WORKSPACE/package/scripts/prepare-runtime-consumer.mjs" "$RUNNER_TEMP/runtime-artifacts" "$RUNNER_TEMP/runtime-consumer"
                   npm install --engine-strict --ignore-scripts --no-audit --no-fund "$RUNNER_TEMP"/runtime-artifacts/*.tgz react@18.3.1 react-dom@18.3.1
                   node runtime-compatibility.mjs
 
@@ -157,7 +158,7 @@ jobs:
               run: yarn check:gallery && yarn build:gallery
 
             - name: Verify artifact before publish
-              run: yarn smoke:package
+              run: yarn check:release && yarn smoke:package
 
             - name: Verify release tag matches package version
               run: |

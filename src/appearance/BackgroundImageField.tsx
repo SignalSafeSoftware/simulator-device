@@ -1,4 +1,4 @@
-import { useSimulatorLocale } from '@signalsafe/simulator-react';
+import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { useEffect, useRef, useState } from 'react';
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;

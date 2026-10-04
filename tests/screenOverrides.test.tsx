@@ -1,13 +1,13 @@
 import { useEffect, useReducer } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, within } from '@testing-library/react';
-import {
-    SimulatorWithSession,
-    getInitialSessionState,
-    simulatorSessionReducer,
-    type SimulatorScreenOverrideProps,
-    type SimulatorScreenOverrides,
-} from '@signalsafe/simulator-react';
+import SimulatorWithSession from '@signalsafe/simulator-react/SimulatorWithSession';
+import { getInitialSessionState } from '@signalsafe/simulator-react/state/simulatorSessionInitialState';
+import { simulatorSessionReducer } from '@signalsafe/simulator-react/state/simulatorSessionReducer';
+import type {
+    SimulatorScreenOverrideProps,
+    SimulatorScreenOverrides,
+} from '@signalsafe/simulator-react/contract/screenOverrides';
 import SimulatorPhoneDevice from '../src/SimulatorPhoneDevice.js';
 
 const initial = () =>
