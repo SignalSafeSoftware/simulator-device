@@ -20,7 +20,7 @@ import { fixture, createGalleryStore, type GalleryState } from './fixtures.js';
 import '@signalsafe/simulator-theme-bootstrap/styles.css';
 import './styles.css';
 
-function EditContact({ onBack }: SimulatorScreenOverrideProps) {
+function EditContact({ onBack }: Readonly<SimulatorScreenOverrideProps>) {
     const { changePhoto } = useSimulatorCapabilities();
     const [values, setValues] = useState<EditableContactValue[]>([
         { id: 'one', label: 'Mobile', value: '+12025550123' },
