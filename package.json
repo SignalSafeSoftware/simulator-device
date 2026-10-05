@@ -167,7 +167,9 @@
     "check:artifacts": "node scripts/check-package-artifacts.mjs",
     "check:release": "node scripts/check-package-artifacts.mjs --release",
     "check:modules": "node scripts/check-module-boundaries.mjs",
-    "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json"
+    "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json",
+    "check:cycles": "npx --yes madge@8.0.0 --circular --extensions ts,tsx --ts-config tsconfig.json src",
+    "check:duplication": "jscpd src --min-lines 8 --min-tokens 70 --threshold 0 --reporters console --silent"
   },
   "dependencies": {
     "@signalsafe/simulator-core": "0.5.0",
@@ -186,6 +188,7 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitest/coverage-v8": "^5.0.1",
+    "jscpd": "^5.4.0",
     "jsdom": "^30.0.1",
     "oxfmt": "0.71.0",
     "oxlint": "1.86.0",
