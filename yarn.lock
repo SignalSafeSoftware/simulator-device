@@ -405,27 +405,27 @@
   resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz#e3fcee093fbb5ce765e1ad088ff4de2889f6f9be"
   integrity sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==
 
-"@signalsafe/simulator-core@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-core/-/simulator-core-0.5.0.tgz#c6ea79e3fcc6c37663548296ae7f95447bb361d4"
-  integrity sha512-/9Y+/lixGnXaWrAjCrQizV6QeQ6gPMmDGNrqnMvBtYENbry08useoocOKikSuJvveNzrcM1PdoRqlMrRe77PgQ==
+"@signalsafe/simulator-core@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-core/-/simulator-core-0.6.0.tgz#63ad133e6fab314de5a54a4ebc0d3d2818bbd029"
+  integrity sha512-9OnlfoBzvLnPVe3acdgXsrUrT7K41fn5Vj8lcmGpHpcaA2YPfMeftMIQSLc4Rsm1jH2xVjsqHo4VOCBmdpkVhA==
   dependencies:
     "@signalsafe/tree-spec" "^0.4.1"
     zod "^4.0.0"
 
-"@signalsafe/simulator-react@0.19.1":
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.19.1.tgz#ebb671269dd922fd7001d5af50251b69e9558d5b"
-  integrity sha512-2X3myCTKn6erG16yUmIuHjDQhzdwB7IooPe7ZtL+mgCLULBKmnnbHSKRH6mDZJe7UMAhu5LsncDldkjWvUyheg==
+"@signalsafe/simulator-react@0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.20.1.tgz#1b6b93dc799a4e4902ca7e2acf4a9fff4bd0544d"
+  integrity sha512-3Iuys6FMY8ZaJSmX80J4tvZuGzYLy4qQDtHIjKB479ON43M9DL4Ar2LLN2wHvJmU7y1yXyWcwmi3uVFAg/h6Jw==
   dependencies:
-    "@signalsafe/simulator-core" "0.5.0"
+    "@signalsafe/simulator-core" "0.6.0"
     "@signalsafe/tree-spec" "^0.4.1"
     lucide-react "^1.31.0"
 
-"@signalsafe/simulator-theme-bootstrap@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.12.0.tgz#3a3d0c6c710742b418cfd47f408ea7a1da535b02"
-  integrity sha512-qcNcSXlqAorLF7pWPUTjXZGzLEK9UcBtYh5udWkMfkgimf3f3JyqNXgDl7CeE8eDL9ug3Dq1zhrhaYD0eKGXtw==
+"@signalsafe/simulator-theme-bootstrap@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.12.1.tgz#e3ea3727330f82a7b10ecafffded0292f28a9246"
+  integrity sha512-+eOz7kkT5HGp1EST0cBrmWh0g30aKNnNsPQFpe74whDJXvqRUAR1uETn6hRu3PDvxHgvlM1qLVOeAWhQvPci/g==
 
 "@signalsafe/tree-spec@^0.4.1":
   version "0.4.1"

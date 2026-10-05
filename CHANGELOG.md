@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.20.0 — October 4, 2026
+
+- Require simulator-react 0.20.1, core 0.6.0 and theme 0.12.1.
+- Extract contact-list focus restoration from `SimulatorPhoneDevice` and share the secondary-menu item mapping; behavior is unchanged.
+- Check import cycles and duplicated code in CI (`check:cycles`, `check:duplication`).
+- Align lint and format tooling with core and react and update development dependencies.
+
 ## 0.19.0 — October 4, 2026
 
 - Group source into `phone`, `apps` and `runtime`; public subpaths moved with it. See MIGRATION.md.
