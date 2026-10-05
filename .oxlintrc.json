@@ -25,7 +25,12 @@
         "skipBlankLines": true,
         "skipComments": true
       }
-    ]
+    ],
+    "react/refs": "off",
+    "react/purity": "off",
+    "react/globals": "off",
+    "react/set-state-in-effect": "off",
+    "react/static-components": "off"
   },
   "overrides": [
     {

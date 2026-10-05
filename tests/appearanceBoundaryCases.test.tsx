@@ -30,11 +30,11 @@ it('previews individual colors and removes a background before applying', () => 
 });
 it('ignores cancelled file selection and reports a FileReader error', async () => {
     const onChange = vi.fn();
-    const read = vi
-        .spyOn(FileReader.prototype, 'readAsDataURL')
-        .mockImplementation(function (this: FileReader) {
-            this.dispatchEvent(new ProgressEvent('error'));
-        });
+    const read = vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(function (
+        this: FileReader,
+    ) {
+        this.dispatchEvent(new ProgressEvent('error'));
+    });
     try {
         const view = render(<BackgroundImageField onChange={onChange} />);
         fireEvent.change(view.getByLabelText('Background image'), { target: { files: [] } });
@@ -69,11 +69,11 @@ it('resets without a preset while retaining the current colors', () => {
 
 it('ignores stale file readers and non-string results', () => {
     const readers: FileReader[] = [];
-    const read = vi
-        .spyOn(FileReader.prototype, 'readAsDataURL')
-        .mockImplementation(function (this: FileReader) {
-            readers.push(this);
-        });
+    const read = vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(function (
+        this: FileReader,
+    ) {
+        readers.push(this);
+    });
     const onChange = vi.fn();
     try {
         const view = render(<BackgroundImageField onChange={onChange} />);

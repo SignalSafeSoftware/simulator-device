@@ -77,6 +77,15 @@ type ManagedSimulatorWithSessionProps =
     | 'hostOwnsPhoneContactDetail'
     | 'onPhoneContactOpen';
 
+/** Writes an element to a host-supplied callback or object ref. */
+function assignElementRef(
+    ref: RefCallback<HTMLDivElement> | MutableRefObject<HTMLDivElement | null> | undefined,
+    element: HTMLDivElement | null,
+): void {
+    if (typeof ref === 'function') ref(element);
+    else if (ref) ref.current = element;
+}
+
 export interface SimulatorPhoneDeviceProps extends Omit<
     SimulatorWithSessionProps,
     ManagedSimulatorWithSessionProps
@@ -158,8 +167,7 @@ export default function SimulatorPhoneDevice({
     const attachScreen = useCallback(
         (element: HTMLDivElement | null) => {
             screenRef.current = element;
-            if (typeof hostScreenRef === 'function') hostScreenRef(element);
-            else if (hostScreenRef) hostScreenRef.current = element;
+            assignElementRef(hostScreenRef, element);
         },
         [hostScreenRef],
     );
