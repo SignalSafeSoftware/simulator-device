@@ -71,6 +71,57 @@ jobs:
             - name: Test with coverage
               run: yarn test:coverage
 
+    scan:
+        name: SonarCloud scan
+        needs: tests
+        if: |
+            github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
+        env:
+            SONAR_TOKEN: ${{ secrets.PACKAGES_SONAR_TOKEN }}
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ env.PUBLISH_NODE_VERSION }}
+
+            - name: Enable Yarn
+              run: corepack enable
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile --ignore-scripts
+
+            - name: Test with coverage
+              run: yarn test:coverage
+
+            - name: Verify coverage report
+              run: |
+                  test -f coverage/lcov.info
+                  grep '^SF:src/' coverage/lcov.info
+
+            - name: SonarCloud scan
+              uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0
+              env:
+                  SONAR_TOKEN: ${{ secrets.PACKAGES_SONAR_TOKEN }}
+
+            - name: Report SonarCloud new-code issues
+              if: always()
+              run: |
+                  url=$(grep '^ceTaskUrl=' .scannerwork/report-task.txt | cut -d= -f2-)
+                  for attempt in $(seq 1 24); do
+                      status=$(curl -sS -u "$SONAR_TOKEN:" "$url" | jq -r '.task.status // empty')
+                      case "$status" in PENDING|IN_PROGRESS|"") sleep 5 ;; *) break ;; esac
+                  done
+                  echo "task status: $status"
+                  response=$(curl -sS -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?organization=signalsafesoftware&componentKeys=SignalSafeSoftware_simulator-device&branch=main&inNewCodePeriod=true&resolved=false&ps=100")
+                  echo "$response" | jq -r '(.errors // [] | map(.msg)[]), "total: \(.total)", (.issues[]? | "\(.severity) \(.type) \(.rule) \(.component | sub("^[^:]*:";"")):\(.line // 0) \(.message)")'
+
     smoke-package:
         name: Smoke package (Node ${{ matrix.node-version }})
         needs: [checks, tests]
