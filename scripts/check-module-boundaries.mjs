@@ -24,7 +24,10 @@ for (const file of files) {
     if (/(?:^|\/)index\.tsx?$/.test(file)) {
         failures.push(`${file}: internal barrel files are not allowed`);
     }
-    if (packageName === '@signalsafe/simulator-react' && /^(?:apps|components)\/[^/]+\.tsx?$/.test(file)) {
+    if (
+        packageName === '@signalsafe/simulator-react' &&
+        /^(?:apps|components)\/[^/]+\.tsx?$/.test(file)
+    ) {
         failures.push(`${file}: place app or UI modules in their feature directory`);
     }
     for (const [, specifier] of text.matchAll(imports)) {
@@ -33,10 +36,14 @@ for (const file of files) {
         }
         if (!specifier.startsWith('.')) continue;
         const target = resolve(dirname(location), specifier).replace(/\.js$/, '');
-        const resolved = [target, `${target}.ts`, `${target}.tsx`].find((candidate) => sources.has(candidate));
+        const resolved = [target, `${target}.ts`, `${target}.tsx`].find((candidate) =>
+            sources.has(candidate),
+        );
         if (!resolved) failures.push(`${file}: unresolved source import ${specifier}`);
         if (resolved === join(sourceRoot, 'index.ts')) {
-            failures.push(`${file}: do not import the public package entry from inside the package`);
+            failures.push(
+                `${file}: do not import the public package entry from inside the package`,
+            );
         }
     }
 }
@@ -44,5 +51,7 @@ if (failures.length) {
     console.error(failures.join('\n'));
     process.exitCode = 1;
 } else {
-    console.log(`Module boundaries: ${files.length} source modules; no internal re-exports or unresolved imports (${relative(root, sourceRoot)}).`);
+    console.log(
+        `Module boundaries: ${files.length} source modules; no internal re-exports or unresolved imports (${relative(root, sourceRoot)}).`,
+    );
 }

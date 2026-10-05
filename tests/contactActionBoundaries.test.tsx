@@ -13,7 +13,7 @@ it('preserves a draft after a non-Error rejection', async () => {
         <SimulatorPhoneContactDetailForm
             contact={contact}
             context={context}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             onSave={vi.fn().mockRejectedValue('offline')}
         />,
@@ -39,7 +39,7 @@ it('blocks custom save and back actions while saving', async () => {
         <SimulatorPhoneContactDetailForm
             contact={contact}
             context={context}
-            mode="editable"
+            mode='editable'
             onBack={onBack}
             onSave={onSave}
             renderActions={(actions) => (
@@ -71,7 +71,7 @@ it('blocks custom actions in read-only mode', () => {
                 emailAddresses: [{ label: 'Work', value: 'work@example.com' }],
             }}
             context={context}
-            mode="read-only"
+            mode='read-only'
             onBack={vi.fn()}
             onSave={onSave}
             onDelete={onDelete}
@@ -117,7 +117,7 @@ it('provides no save action when the host has not supplied one', () => {
         <SimulatorPhoneContactDetailForm
             contact={contact}
             context={context}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             renderActions={actions}
         />,

@@ -1,7 +1,11 @@
 import { emptySimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 import { summarizeDevice } from '@signalsafe/simulator-core/apps/deviceData';
 import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
-import type { DeviceCollection, DeviceRecords, DeviceQuery } from '@signalsafe/simulator-core/apps/deviceData';
+import type {
+    DeviceCollection,
+    DeviceRecords,
+    DeviceQuery,
+} from '@signalsafe/simulator-core/apps/deviceData';
 import type { SimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 
 /** Runs synchronous work and reports thrown errors as rejections, like an async method. */

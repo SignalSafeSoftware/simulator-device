@@ -93,7 +93,7 @@ describe('SimulatorPhoneDevice', () => {
     it('allows overriding renderIncomingCallExtra', () => {
         const state = buildIncomingCallState();
         const dispatch = vi.fn();
-        const customExtra = vi.fn(() => <div data-testid="custom-incoming-extra">Custom</div>);
+        const customExtra = vi.fn(() => <div data-testid='custom-incoming-extra'>Custom</div>);
 
         const { getByTestId } = render(
             <SimulatorPhoneDevice
@@ -127,9 +127,9 @@ describe('SimulatorPhoneDevice', () => {
                 state={state}
                 dispatch={dispatch}
                 renderContactDetail={({ contact, onBack }) => (
-                    <div data-testid="host-contact-detail">
+                    <div data-testid='host-contact-detail'>
                         <span>{contact.displayName}</span>
-                        <button type="button" onClick={onBack}>
+                        <button type='button' onClick={onBack}>
                             Back
                         </button>
                     </div>
@@ -152,7 +152,7 @@ describe('SimulatorPhoneDevice', () => {
                 state={state}
                 dispatch={dispatch}
                 renderContactDetail={({ contact }) => (
-                    <div data-testid="host-contact-detail">{contact.displayName}</div>
+                    <div data-testid='host-contact-detail'>{contact.displayName}</div>
                 )}
             />,
         );
@@ -192,9 +192,9 @@ describe('SimulatorPhoneDevice', () => {
                 state={state}
                 dispatch={dispatch}
                 renderContactDetail={({ contact, onBack }) => (
-                    <div data-testid="host-contact-detail">
+                    <div data-testid='host-contact-detail'>
                         <span>{contact.displayName}</span>
-                        <button type="button" onClick={onBack}>
+                        <button type='button' onClick={onBack}>
                             Back
                         </button>
                     </div>
@@ -220,7 +220,7 @@ describe('SimulatorPhoneDevice', () => {
                 state={state}
                 dispatch={dispatch}
                 renderContactDetail={({ contact }) => (
-                    <div data-testid="host-contact-detail">{contact.displayName}</div>
+                    <div data-testid='host-contact-detail'>{contact.displayName}</div>
                 )}
             />,
         );
@@ -243,7 +243,7 @@ describe('SimulatorPhoneDevice', () => {
             <SimulatorPhoneDevice
                 state={state}
                 dispatch={dispatch}
-                className="host-simulator-root"
+                className='host-simulator-root'
                 screenClassNames={['host-simulator-root--preview']}
             />,
         );
@@ -286,7 +286,7 @@ describe('SimulatorPhoneDevice', () => {
                 dispatch={dispatch}
                 contactDetail={{ mode: 'editable', onSave: vi.fn() }}
                 renderContactDetail={({ contact }) => (
-                    <div data-testid="host-contact-detail">{contact.displayName}</div>
+                    <div data-testid='host-contact-detail'>{contact.displayName}</div>
                 )}
             />,
         );

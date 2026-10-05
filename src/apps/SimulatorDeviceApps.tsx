@@ -57,7 +57,7 @@ function StoreLoading({ store }: Readonly<{ store: DeviceStore }>) {
 function StoreNotice({ store }: Readonly<{ store: DeviceStore }>) {
     if (!store.error) return null;
     return (
-        <div className="device-notice" role="alert">
+        <div className='device-notice' role='alert'>
             {store.error}
             <button className={OUTLINE_BUTTON} onClick={() => void store.reload()}>
                 {/* Use t('app.device.reloadState') once simulator-react 0.19.2 is published. */}

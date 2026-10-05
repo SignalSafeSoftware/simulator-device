@@ -21,7 +21,8 @@ const manifest = resolve(artifactRoot, 'manifest.json');
 if (existsSync(manifest)) {
     for (const file of Object.keys(JSON.parse(readFileSync(manifest, 'utf8')))) {
         const source = resolve(root, file);
-        if (!isInside(artifactRoot, source)) throw new Error(`Artifact is outside vendor/npm: ${file}`);
+        if (!isInside(artifactRoot, source))
+            throw new Error(`Artifact is outside vendor/npm: ${file}`);
         copyFileSync(source, resolve(target, basename(file)));
     }
 }

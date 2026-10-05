@@ -11,7 +11,7 @@ export function SimulatorCallBoundary({
 }>) {
     return (
         <>
-            <div className="package-device simulator-host-device__content" hidden={active}>
+            <div className='package-device simulator-host-device__content' hidden={active}>
                 {children}
             </div>
             {active && call}

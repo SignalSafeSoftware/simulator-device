@@ -4,7 +4,7 @@ export default function SimulatorDeviceFallback() {
     const screenLocale = useSimulatorLocale();
 
     return (
-        <output data-testid="simulator-device-unsupported">
+        <output data-testid='simulator-device-unsupported'>
             {screenLocale.t(
                 'screen.simulatorDeviceFallback.unsupported.simulator.device.configuration',
             )}

@@ -56,7 +56,7 @@ describe('actual source screen override consumer', () => {
                         return exit;
                     }, []);
                     return (
-                        <section aria-label="Host settings">
+                        <section aria-label='Host settings'>
                             <h1>{location.screen}</h1>
                             <button onClick={onBack}>Return to previous screen</button>
                         </section>

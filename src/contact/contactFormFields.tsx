@@ -48,7 +48,7 @@ export function ContactActions({
     return (
         <div className={SIM_PHONE_CONTACT_DETAIL_ACTIONS}>
             <button
-                type="button"
+                type='button'
                 className={`${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButton} ${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButtonBack}`}
                 aria-label={screenLocale.t(
                     'screen.simulatorPhoneContactDetailForm.back.to.contacts.list',
@@ -60,7 +60,7 @@ export function ContactActions({
             </button>
             {editable && onSave != null && (
                 <button
-                    type="button"
+                    type='button'
                     className={`${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButton} ${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButtonSave}`}
                     onClick={handleSave}
                     disabled={conflict || pending || Boolean(unavailable)}
@@ -70,7 +70,7 @@ export function ContactActions({
             )}
             {onDelete != null && (
                 <button
-                    type="button"
+                    type='button'
                     className={`${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButton} ${SIMULATOR_DEVICE_CLASS_NAMES.contactDetailButtonDelete}`}
                     onClick={handleDelete}
                     disabled={!editable || conflict || pending || Boolean(unavailable)}
@@ -127,7 +127,7 @@ export function ScalarContactField({
                 )}
             </div>
             {editable && (
-                <button type="button" onClick={onAdd}>
+                <button type='button' onClick={onAdd}>
                     {addLabel}
                 </button>
             )}
@@ -164,9 +164,9 @@ export function ContactPhoneFields({
     if (!editable && !scalarNumber.trim()) return null;
     return (
         <ScalarContactField
-            fieldKey="number"
+            fieldKey='number'
             label={label}
-            inputType="tel"
+            inputType='tel'
             value={scalarNumber}
             display={formatNumber(scalarNumber)}
             editable={editable}
@@ -206,9 +206,9 @@ export function ContactEmailFields({ draft, editable, updateField }: Readonly<Fi
     if (!editable && !scalarEmail.trim()) return null;
     return (
         <ScalarContactField
-            fieldKey="email"
+            fieldKey='email'
             label={label}
-            inputType="email"
+            inputType='email'
             value={scalarEmail}
             display={scalarEmail}
             editable={editable}

@@ -27,11 +27,11 @@ function EditContact({ onBack }: Readonly<SimulatorScreenOverrideProps>) {
     ]);
     const [preferred, setPreferred] = useState<string | null>('one');
     return (
-        <section className="simulator-app-page">
-            <h2 className="simulator-screen__header">Add contact</h2>
-            <div className="simulator-contact-editor-layout">
+        <section className='simulator-app-page'>
+            <h2 className='simulator-screen__header'>Add contact</h2>
+            <div className='simulator-contact-editor-layout'>
                 <PhoneContactEditor
-                    defaultName="Synthetic person"
+                    defaultName='Synthetic person'
                     identityImage={
                         <ContactPhotoControls
                             capability={changePhoto ?? { state: 'enabled' }}
@@ -46,7 +46,7 @@ function EditContact({ onBack }: Readonly<SimulatorScreenOverrideProps>) {
                     }
                     valueFields={
                         <ContactValuesEditor
-                            kind="phone"
+                            kind='phone'
                             values={values}
                             preferredId={preferred}
                             createId={() => crypto.randomUUID()}
@@ -151,7 +151,7 @@ function Gallery() {
                 Synthetic fixtures only. Actions stay in this page; no calls, messages, or API
                 requests are made.
             </p>
-            <div className="gallery-controls">
+            <div className='gallery-controls'>
                 <label>
                     Surface{' '}
                     <select value={surface} onChange={(event) => setSurface(event.target.value)}>
@@ -201,7 +201,7 @@ function Gallery() {
                     </select>
                 </label>
             </div>
-            <div className="gallery-controls" aria-label="Preview screens">
+            <div className='gallery-controls' aria-label='Preview screens'>
                 <button
                     onClick={() => {
                         setSurface('device apps');
@@ -261,10 +261,10 @@ function Gallery() {
             </div>
             <output>{status}</output>
             {mode === 'error' && (
-                <p role="alert">Synthetic refresh failed. Existing preview data remains visible.</p>
+                <p role='alert'>Synthetic refresh failed. Existing preview data remains visible.</p>
             )}
             <div
-                className="simulator-root simulator-host-device"
+                className='simulator-root simulator-host-device'
                 style={{ width: `${width}px`, maxWidth: '100%' }}
             >
                 <SimulatorCapabilitiesContext.Provider value={capabilities}>
@@ -274,8 +274,8 @@ function Gallery() {
                                 <SimulatorDeviceApps
                                     homeHeader={
                                         <time
-                                            className="prototype-home-clock"
-                                            dateTime="2026-10-03T16:30:00Z"
+                                            className='prototype-home-clock'
+                                            dateTime='2026-10-03T16:30:00Z'
                                         >
                                             <span>Saturday, October 3, 2026</span>
                                             <strong>4:30:00 PM</strong>

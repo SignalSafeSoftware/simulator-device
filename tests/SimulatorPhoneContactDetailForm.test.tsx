@@ -26,7 +26,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
                     number: '+1-555-100-2000',
                     email: 'alice@example.com',
                 }}
-                mode="read-only"
+                mode='read-only'
                 onBack={vi.fn()}
                 context={context}
             />,
@@ -41,7 +41,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { queryByRole } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Bob', number: '555', email: 'bob@example.com' }}
-                mode="read-only"
+                mode='read-only'
                 onBack={vi.fn()}
                 context={context}
             />,
@@ -54,7 +54,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { getByLabelText } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Alice', number: '111', email: 'a@example.com' }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={vi.fn()}
                 context={context}
@@ -70,7 +70,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { getByLabelText, getByRole } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Alice', number: '111', email: 'a@example.com' }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={onSave}
                 context={context}
@@ -93,7 +93,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { getByRole } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Alice', number: '111', email: 'a@example.com' }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={vi.fn()}
                 onDelete={onDelete}
@@ -115,7 +115,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { getByRole } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Alice', number: '111', email: 'a@example.com' }}
-                mode="read-only"
+                mode='read-only'
                 onBack={onBack}
                 context={context}
             />,
@@ -129,15 +129,15 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { getByTestId, getByLabelText, getByRole } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Alice', number: '111', email: 'a@example.com' }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={vi.fn()}
                 context={context}
                 renderExtraFields={({ contact, updateContact }) => (
-                    <div data-testid="extra-fields">
+                    <div data-testid='extra-fields'>
                         <span>{contact.displayName}</span>
                         <button
-                            type="button"
+                            type='button'
                             onClick={() => updateContact({ displayName: 'Extra Updated' })}
                         >
                             Patch name
@@ -156,11 +156,11 @@ describe('SimulatorPhoneContactDetailForm', () => {
         const { getByTestId, queryByRole } = render(
             <SimulatorPhoneContactDetailForm
                 contact={{ id: 'c1', displayName: 'Alice', number: '111', email: 'a@example.com' }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={vi.fn()}
                 context={context}
-                renderActions={() => <div data-testid="custom-actions">Custom</div>}
+                renderActions={() => <div data-testid='custom-actions'>Custom</div>}
             />,
         );
 
@@ -181,7 +181,7 @@ it('renders each labeled number and its own host action', () => {
                     { label: '', value: '2025550125' },
                 ],
             }}
-            mode="read-only"
+            mode='read-only'
             onBack={vi.fn()}
             context={context}
             renderPhoneAction={(phone) => <button>Call {phone.value}</button>}
@@ -202,7 +202,7 @@ it('adds, edits and removes labeled numbers without retaining a stale dialable n
                 displayName: 'Multi',
                 phoneNumbers: [{ label: 'Mobile', value: '+12025550123', number: '+12025550123' }],
             }}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             context={context}
             onSave={onSave}
@@ -222,7 +222,7 @@ it('refreshes read-only values for the same contact', () => {
     const { rerender, getByText, queryByText } = render(
         <SimulatorPhoneContactDetailForm
             contact={contact}
-            mode="read-only"
+            mode='read-only'
             onBack={vi.fn()}
             context={context}
         />,
@@ -230,7 +230,7 @@ it('refreshes read-only values for the same contact', () => {
     rerender(
         <SimulatorPhoneContactDetailForm
             contact={{ ...contact, displayName: 'After', number: '222' }}
-            mode="read-only"
+            mode='read-only'
             onBack={vi.fn()}
             context={context}
         />,
@@ -246,7 +246,7 @@ it('preserves a dirty draft and requires explicit reload after an external updat
     const { rerender, getByLabelText, getByRole } = render(
         <SimulatorPhoneContactDetailForm
             contact={contact}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             onSave={onSave}
             context={context}
@@ -256,7 +256,7 @@ it('preserves a dirty draft and requires explicit reload after an external updat
     rerender(
         <SimulatorPhoneContactDetailForm
             contact={{ ...contact, displayName: 'External' }}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             onSave={onSave}
             context={context}
@@ -276,7 +276,7 @@ it('omits empty read-only contact sections and keeps editing controls', () => {
     const { rerender, queryByText, getByRole } = render(
         <SimulatorPhoneContactDetailForm
             contact={contact}
-            mode="read-only"
+            mode='read-only'
             onBack={vi.fn()}
             context={context}
         />,
@@ -286,7 +286,7 @@ it('omits empty read-only contact sections and keeps editing controls', () => {
     rerender(
         <SimulatorPhoneContactDetailForm
             contact={contact}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             context={context}
         />,
@@ -312,7 +312,7 @@ it('keeps phone and email input kinds when visible labels are overridden', () =>
                     ],
                     emailAddresses: [{ label: 'Work', value: 'synthetic@example.test' }],
                 }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={vi.fn()}
                 context={context}
@@ -334,7 +334,7 @@ it.each([true, false])(
                     displayName: 'Contact',
                     ...(existing ? { number: '111', email: 'old@example.com' } : {}),
                 }}
-                mode="editable"
+                mode='editable'
                 onBack={vi.fn()}
                 onSave={onSave}
                 context={context}
@@ -377,7 +377,7 @@ it('removes the last email and phone without keeping stale scalar values', () =>
                 phoneNumbers: [{ label: '', value: '111' }],
                 emailAddresses: [{ label: '', value: 'old@example.com' }],
             }}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             onSave={onSave}
             context={context}
@@ -407,7 +407,7 @@ it("preserves a contact row's input and focus through edits and removal of an ea
                     { label: 'Mobile', value: '111' },
                 ],
             }}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             context={context}
         />,
@@ -441,7 +441,7 @@ it('gives two editors of the same contact distinct stable label targets', () => 
                     key={key}
                     contact={contact}
                     context={context}
-                    mode="editable"
+                    mode='editable'
                     onBack={vi.fn()}
                     onSave={vi.fn()}
                 />

@@ -48,7 +48,7 @@ export default function SimulatorAppearanceSettings({
     };
     return (
         <section
-            className="simulator-appearance"
+            className='simulator-appearance'
             aria-label={screenLocale.t('screen.simulatorAppearanceSettings.appearance')}
         >
             <h3>{screenLocale.t('screen.simulatorAppearanceSettings.appearance')}</h3>
@@ -73,7 +73,7 @@ export default function SimulatorAppearanceSettings({
                         }
                     }}
                 >
-                    <option value="" disabled>
+                    <option value='' disabled>
                         {screenLocale.t('screen.simulatorAppearanceSettings.custom')}
                     </option>
                     {presets.map((item) => (
@@ -86,7 +86,7 @@ export default function SimulatorAppearanceSettings({
             <label>
                 {screenLocale.t('screen.simulatorAppearanceSettings.background.color')}
                 <input
-                    type="color"
+                    type='color'
                     aria-label={screenLocale.t(
                         'screen.simulatorAppearanceSettings.background.color',
                     )}
@@ -101,7 +101,7 @@ export default function SimulatorAppearanceSettings({
             <label>
                 {screenLocale.t('screen.simulatorAppearanceSettings.accent.color')}
                 <input
-                    type="color"
+                    type='color'
                     aria-label={screenLocale.t('screen.simulatorAppearanceSettings.accent.color')}
                     value={draft.accent}
                     onChange={(event) => {
@@ -142,9 +142,9 @@ export default function SimulatorAppearanceSettings({
                     {screenLocale.t('screen.simulatorAppearanceSettings.selected.item')}
                 </span>
             </div>
-            <div className="simulator-appearance__actions">
+            <div className='simulator-appearance__actions'>
                 <button
-                    type="button"
+                    type='button'
                     onClick={() => {
                         onApply(draft);
                         setMessage(
@@ -155,7 +155,7 @@ export default function SimulatorAppearanceSettings({
                     {screenLocale.t('screen.simulatorAppearanceSettings.apply.appearance')}
                 </button>
                 <button
-                    type="button"
+                    type='button'
                     onClick={() => {
                         setImageReset((current) => current + 1);
                         onReset();

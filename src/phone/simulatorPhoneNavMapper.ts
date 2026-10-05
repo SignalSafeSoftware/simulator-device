@@ -27,6 +27,8 @@ import {
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
  */
 
+const BACK_LABEL_KEY = 'nav.back';
+
 export const SimulatorPhoneNavAction = Object.freeze({
     Channel: 'channel',
     Local: 'local',
@@ -131,7 +133,7 @@ export function resolveSimulatorPhoneNav(
                 },
                 {
                     id: SimulatorPhoneNavAction.Back,
-                    label: locale.t('nav.back'),
+                    label: locale.t(BACK_LABEL_KEY),
                     icon: '↩',
                     action: SimulatorPhoneNavAction.Back,
                 },
@@ -164,7 +166,7 @@ export function resolveSimulatorPhoneNav(
                 },
                 {
                     id: SimulatorPhoneNavAction.Back,
-                    label: locale.t('nav.back'),
+                    label: locale.t(BACK_LABEL_KEY),
                     icon: '↩',
                     action: SimulatorPhoneNavAction.Back,
                 },
@@ -191,7 +193,7 @@ export function resolveSimulatorPhoneNav(
                 },
                 {
                     id: SimulatorPhoneNavAction.Back,
-                    label: locale.t('nav.back'),
+                    label: locale.t(BACK_LABEL_KEY),
                     icon: '↩',
                     action: SimulatorPhoneNavAction.Back,
                 },
@@ -213,7 +215,7 @@ export function resolveSimulatorPhoneNav(
                 },
                 {
                     id: SimulatorPhoneNavAction.Back,
-                    label: locale.t('nav.back'),
+                    label: locale.t(BACK_LABEL_KEY),
                     icon: '↩',
                     action: SimulatorPhoneNavAction.Back,
                 },

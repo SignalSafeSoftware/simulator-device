@@ -42,7 +42,7 @@ it('preserves the mounted draft while a call obscures the app', () => {
         const [text, setText] = useState('');
         return (
             <input
-                aria-label="Draft"
+                aria-label='Draft'
                 value={text}
                 onChange={(event) => setText(event.target.value)}
             />
@@ -143,7 +143,7 @@ it('supports the default mailbox, a host mailbox and host decoration', () => {
 });
 it('provides Internet composition and preserves host overrides in the shell provider', () => {
     const props = setup(store(), buildState({ activeApp: 'internet' }));
-    const view = render(<SimulatorDeviceApps {...props} browserThemeCss="body { color: blue; }" />);
+    const view = render(<SimulatorDeviceApps {...props} browserThemeCss='body { color: blue; }' />);
     expect(view.getByRole('heading', { name: 'Internet' })).toBeTruthy();
     function Probe() {
         const { Shell, formatDate } = useSimulatorAppsHost();

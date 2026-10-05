@@ -17,12 +17,12 @@ export default function BackgroundImageField({
     const reader = useRef<FileReader | null>(null);
     useEffect(() => () => reader.current?.abort(), []);
     return (
-        <div className="simulator-background-image">
+        <div className='simulator-background-image'>
             <label>
                 {screenLocale.t('screen.backgroundImageField.background.image')}
                 <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
+                    type='file'
+                    accept='image/png,image/jpeg,image/webp'
                     onChange={(event) => {
                         reader.current?.abort();
                         const file = event.target.files?.[0];
@@ -67,7 +67,7 @@ export default function BackgroundImageField({
             </p>
             {value && (
                 <button
-                    type="button"
+                    type='button'
                     onClick={() => {
                         reader.current?.abort();
                         reader.current = null;

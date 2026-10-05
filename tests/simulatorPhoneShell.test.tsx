@@ -9,7 +9,7 @@ describe('SimulatorPhoneShell', () => {
     it('wraps session content in simulator-device-shell__session-column', () => {
         const { container } = render(
             <SimulatorPhoneShell>
-                <div data-testid="session-content">Runtime</div>
+                <div data-testid='session-content'>Runtime</div>
             </SimulatorPhoneShell>,
         );
 
@@ -27,7 +27,7 @@ it('moves contact actions into the shell footer and restores navigation when edi
     const view = render(
         <SimulatorPhoneShell useHostNav nav={<button>Contacts</button>}>
             <PhoneContactEditor
-                number=""
+                number=''
                 onNumberChange={() => {}}
                 onSubmit={(event) => {
                     event.preventDefault();
@@ -71,8 +71,8 @@ it('keeps contact save availability and pending actions synchronized with the fo
     const screen = (saving: boolean, saveDisabled: boolean) => (
         <SimulatorPhoneShell useHostNav nav={<button>Contacts</button>}>
             <PhoneContactEditor
-                defaultName="Synthetic"
-                number=""
+                defaultName='Synthetic'
+                number=''
                 onNumberChange={() => {}}
                 onSubmit={submit}
                 onCancel={cancel}
@@ -101,8 +101,8 @@ it('keeps nested device action menus scoped to their own shell', () => {
         <SimulatorPhoneShell useHostNav nav={<button>Outer navigation</button>}>
             <SimulatorPhoneShell useHostNav nav={<button>Inner navigation</button>}>
                 <PhoneContactEditor
-                    defaultName="Synthetic"
-                    number=""
+                    defaultName='Synthetic'
+                    number=''
                     onNumberChange={() => {}}
                     onSubmit={(event) => event.preventDefault()}
                     onCancel={() => {}}

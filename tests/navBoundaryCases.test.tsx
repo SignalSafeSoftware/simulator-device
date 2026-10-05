@@ -8,7 +8,7 @@ import { buildState } from './support/sessionFixtures.js';
 
 it('uses a navigation item label as its accessible name', () => {
     const click = vi.fn();
-    const view = render(<SimulatorPhoneNavItem label="Standalone" onClick={click} />);
+    const view = render(<SimulatorPhoneNavItem label='Standalone' onClick={click} />);
     fireEvent.click(view.getByRole('button', { name: 'Standalone' }));
     expect(click).toHaveBeenCalledOnce();
 });
@@ -37,8 +37,8 @@ it('submits the message form from the navigation menu and tolerates a missing sh
         </MessageComposeContext.Provider>
     );
     const view = render(
-        <div className="simulator-device-shell">
-            <form className="simulator-messages__composer" onSubmit={submit} />
+        <div className='simulator-device-shell'>
+            <form className='simulator-messages__composer' onSubmit={submit} />
             {nav}
         </div>,
     );

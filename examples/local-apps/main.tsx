@@ -19,13 +19,12 @@ function Demo() {
         if (screen === 'Vault') return <SimulatorVault store={store} onBack={back} />;
         if (screen === 'Photos') return <SimulatorPhotos store={store} onBack={back} />;
         if (screen === 'Mail') return <SimulatorMailbox store={store} onBack={back} />;
-        if (screen === 'Settings')
-            return <SimulatorLockSettings store={store} onLock={() => {}} />;
+        if (screen === 'Settings') return <SimulatorLockSettings store={store} onLock={() => {}} />;
         return <SimulatorBrowserWorkbench templates={null} />;
     };
     return (
-        <main className="simulator-root" style={{ maxWidth: 390, margin: 'auto' }}>
-            <nav aria-label="Demo apps">
+        <main className='simulator-root' style={{ maxWidth: 390, margin: 'auto' }}>
+            <nav aria-label='Demo apps'>
                 {['Vault', 'Photos', 'Mail', 'Settings', 'Internet'].map((name) => (
                     <button key={name} onClick={() => setScreen(name)}>
                         {name}

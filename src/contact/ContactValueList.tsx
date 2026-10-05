@@ -95,7 +95,7 @@ export default function ContactValueList({
                                 />
                             </label>
                             <button
-                                type="button"
+                                type='button'
                                 onClick={() =>
                                     onChange(values.filter((_, position) => position !== index))
                                 }
@@ -120,7 +120,7 @@ export default function ContactValueList({
             ))}
             {editable && (
                 <button
-                    type="button"
+                    type='button'
                     onClick={() => onChange([...values, { label: '', value: '' }])}
                 >
                     {screenLocale.t('screen.contactValueList.add')}

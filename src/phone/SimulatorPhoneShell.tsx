@@ -31,7 +31,7 @@ export default function SimulatorPhoneShell({
         <ScreenActionMenuContext.Provider value={setScreenMenu}>
             <SimulatorPage
                 className={shellClassName}
-                data-testid="simulator-device-shell"
+                data-testid='simulator-device-shell'
                 footer={screenMenu ?? nav}
             >
                 <div className={cls.shellScreen} ref={screenRef}>

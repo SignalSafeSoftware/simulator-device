@@ -11,7 +11,7 @@ it('keeps a rejected contact draft and permits a deliberate retry', async () => 
     const { getByLabelText, getByRole } = render(
         <SimulatorPhoneContactDetailForm
             contact={contact}
-            mode="editable"
+            mode='editable'
             onBack={vi.fn()}
             onSave={save}
             context={{ state: buildState(), dispatch: vi.fn(), originalContact: contact }}

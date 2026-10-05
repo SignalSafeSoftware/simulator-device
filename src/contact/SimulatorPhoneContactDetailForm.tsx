@@ -60,7 +60,7 @@ export default function SimulatorPhoneContactDetailForm({
     return (
         <SimulatorPage
             className={SIMULATOR_DEVICE_CLASS_NAMES.contactDetail}
-            data-testid="simulator-phone-contact-detail"
+            data-testid='simulator-phone-contact-detail'
             header={
                 <div className={SIM_PHONE_CONTACT_DETAIL_HEADER}>
                     <span tabIndex={-1} className={SIM_PHONE_CONTACT_DETAIL_TITLE}>
@@ -76,7 +76,7 @@ export default function SimulatorPhoneContactDetailForm({
                     {screenLocale.t('screen.simulatorPhoneContactDetailForm.saving.contact')}
                 </output>
             )}
-            {error && <p role="alert">{error}</p>}
+            {error && <p role='alert'>{error}</p>}
             {unavailable && <output>{unavailable}</output>}
             {onDelete && !editable && (
                 <p>
@@ -90,7 +90,7 @@ export default function SimulatorPhoneContactDetailForm({
                     {screenLocale.t(
                         'screen.simulatorPhoneContactDetailForm.this.contact.changed.while.you.were.editing.your.d',
                     )}
-                    <button type="button" disabled={pending} onClick={reload}>
+                    <button type='button' disabled={pending} onClick={reload}>
                         {screenLocale.t(
                             'screen.simulatorPhoneContactDetailForm.discard.draft.and.reload.contact',
                         )}
@@ -117,7 +117,7 @@ export default function SimulatorPhoneContactDetailForm({
                                 <input
                                     id={fieldId('display-name', instanceId)}
                                     className={SIM_PHONE_CONTACT_DETAIL_INPUT}
-                                    type="text"
+                                    type='text'
                                     value={draft.displayName}
                                     onChange={(event) =>
                                         updateField({ displayName: event.target.value })

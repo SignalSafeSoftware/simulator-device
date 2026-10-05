@@ -116,7 +116,7 @@ export default function SimulatorPhoneNav({
         <nav
             className={cls.nav}
             aria-label={ariaLabel}
-            data-testid="simulator-device-nav"
+            data-testid='simulator-device-nav'
             data-nav-mode={model.mode}
         >
             <ul className={cls.navList}>

@@ -75,7 +75,9 @@ function fixNodeEsmRelativeImports(targetDir) {
     }
 
     if (changedFiles > 0) {
-        console.log(`fix-node-esm-relative-imports: updated ${changedFiles} file(s) in ${targetDir}`);
+        console.log(
+            `fix-node-esm-relative-imports: updated ${changedFiles} file(s) in ${targetDir}`,
+        );
     }
 }
 
@@ -138,10 +140,14 @@ export function runSmokePackage(config) {
     runStandaloneBuild(root, npmCmd);
 
     const packDir = fs.mkdtempSync(path.join(os.tmpdir(), 'smoke-pack-'));
-    const packOutput = execFileSync(npmCmd, ['pack', '--ignore-scripts', '--pack-destination', packDir], {
-        cwd: root,
-        encoding: 'utf8',
-    });
+    const packOutput = execFileSync(
+        npmCmd,
+        ['pack', '--ignore-scripts', '--pack-destination', packDir],
+        {
+            cwd: root,
+            encoding: 'utf8',
+        },
+    );
     const tgzName = packOutput
         .trim()
         .split('\n')
@@ -182,9 +188,13 @@ export function runSmokePackage(config) {
                     private: true,
                     type: 'module',
                     dependencies,
-                    overrides: Object.fromEntries(Object.entries(dependencies)
-                        .filter(([name, range]) => name !== pkg.name && range.startsWith('file:'))
-                        .map(([name]) => [name, `$${name}`])),
+                    overrides: Object.fromEntries(
+                        Object.entries(dependencies)
+                            .filter(
+                                ([name, range]) => name !== pkg.name && range.startsWith('file:'),
+                            )
+                            .map(([name]) => [name, `$${name}`]),
+                    ),
                     devDependencies,
                 },
                 null,
@@ -213,7 +223,9 @@ function getRegistryDeps(pkg, root) {
     const out = {};
     for (const [name, range] of Object.entries(pkg.dependencies || {})) {
         if (name.startsWith('@signalsafe/')) {
-            out[name] = range.startsWith('file:') ? `file:${path.resolve(root, range.slice(5))}` : range;
+            out[name] = range.startsWith('file:')
+                ? `file:${path.resolve(root, range.slice(5))}`
+                : range;
         }
     }
     return out;
@@ -242,9 +254,7 @@ function runRuntimeChecks(consumerDir, packageName, runtimeChecks) {
         lines.push(`const ${alias} = await import(${JSON.stringify(spec)});`);
         for (const exportName of check.exports) {
             const message = JSON.stringify(`missing export ${exportName} from ${spec}`);
-            lines.push(
-                `assert.ok(typeof ${alias}.${exportName} !== "undefined", ${message});`,
-            );
+            lines.push(`assert.ok(typeof ${alias}.${exportName} !== "undefined", ${message});`);
         }
         lines.push('');
     });
@@ -283,24 +293,28 @@ function runTypeChecks(consumerDir, packageName, subpaths) {
         )}\n`,
     );
 
-    execFileSync(process.execPath, [path.join(consumerDir, 'node_modules/typescript/bin/tsc'), '-p', 'tsconfig.json'], {
-        cwd: consumerDir,
-        stdio: 'inherit',
-    });
+    execFileSync(
+        process.execPath,
+        [path.join(consumerDir, 'node_modules/typescript/bin/tsc'), '-p', 'tsconfig.json'],
+        {
+            cwd: consumerDir,
+            stdio: 'inherit',
+        },
+    );
     console.log('type declaration checks OK');
 }
 
 function verifyTarballContents(tgzPath, pkg) {
-    const listing = execFileSync(process.platform === 'win32' ? String.raw`C:\Windows\System32\tar.exe` : '/usr/bin/tar', ['-tf', tgzPath], { encoding: 'utf8' })
+    const listing = execFileSync(
+        process.platform === 'win32' ? String.raw`C:\Windows\System32\tar.exe` : '/usr/bin/tar',
+        ['-tf', tgzPath],
+        { encoding: 'utf8' },
+    )
         .trim()
         .split('\n')
         .filter(Boolean);
 
-    const required = new Set([
-        'package/package.json',
-        'package/README.md',
-        'package/LICENSE',
-    ]);
+    const required = new Set(['package/package.json', 'package/README.md', 'package/LICENSE']);
 
     const addPackagePath = (relativePath) => {
         if (!relativePath) {

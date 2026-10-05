@@ -15,7 +15,7 @@ const capturedPhoneDeviceProps = vi.hoisted(() => ({
 vi.mock('../src/phone/SimulatorPhoneDevice.js', () => ({
     default: (props: SimulatorPhoneDeviceProps) => {
         capturedPhoneDeviceProps.current = props;
-        return <div data-testid="mock-simulator-phone-device" />;
+        return <div data-testid='mock-simulator-phone-device' />;
     },
 }));
 
@@ -152,7 +152,7 @@ describe('SimulatorDevice', () => {
 
     it('passes phone.renderContactDetail through to SimulatorPhoneDevice', async () => {
         capturedPhoneDeviceProps.current = null;
-        const renderContactDetail = vi.fn(() => <div data-testid="host-contact-detail" />);
+        const renderContactDetail = vi.fn(() => <div data-testid='host-contact-detail' />);
 
         render(
             <SimulatorDevice value={buildContactsDeviceJson()} phone={{ renderContactDetail }} />,
@@ -164,7 +164,7 @@ describe('SimulatorDevice', () => {
 
     it('passes phone.renderIncomingCallExtra through to SimulatorPhoneDevice', async () => {
         capturedPhoneDeviceProps.current = null;
-        const renderIncomingCallExtra = vi.fn(() => <div data-testid="host-incoming-extra" />);
+        const renderIncomingCallExtra = vi.fn(() => <div data-testid='host-incoming-extra' />);
 
         render(
             <SimulatorDevice value={buildHomeDeviceJson()} phone={{ renderIncomingCallExtra }} />,
@@ -196,11 +196,11 @@ describe('SimulatorDevice', () => {
                 developerTools={developerTools}
                 developerToolsTimelineEntries={developerToolsTimelineEntries}
                 developerToolsRuntimeIssues={developerToolsRuntimeIssues}
-                initialContactsSearch="alice"
+                initialContactsSearch='alice'
                 compact
                 exitLink={exitLink}
-                exitTo="/leave"
-                exitLabel="Leave"
+                exitTo='/leave'
+                exitLabel='Leave'
                 renderChoice={renderChoice}
                 renderFeedback={renderFeedback}
                 renderContactsOverlay={renderContactsOverlay}
@@ -237,7 +237,7 @@ describe('SimulatorDevice', () => {
         const { getByTestId, queryByTestId } = render(
             <SimulatorDevice
                 value={buildDesktopDiscriminatedJson() as never}
-                renderUnsupported={() => <div data-testid="custom-unsupported">Desktop later</div>}
+                renderUnsupported={() => <div data-testid='custom-unsupported'>Desktop later</div>}
             />,
         );
 

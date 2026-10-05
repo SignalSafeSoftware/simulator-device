@@ -20,19 +20,19 @@ export function SimulatorPhoneIncomingCallHistory({
         <section
             className={SIM_PHONE_INCOMING_CALL_HISTORY}
             aria-label={screenLocale.t('screen.simulatorPhoneIncomingCallHistory.previous.calls')}
-            data-testid="simulator-incoming-call-history"
+            data-testid='simulator-incoming-call-history'
         >
             <h3>{screenLocale.t('screen.simulatorPhoneIncomingCallHistory.previous.calls')}</h3>
             <table>
                 <thead>
                     <tr>
-                        <th scope="col">
+                        <th scope='col'>
                             {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.time')}
                         </th>
-                        <th scope="col">
+                        <th scope='col'>
                             {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.duration')}
                         </th>
-                        <th scope="col">
+                        <th scope='col'>
                             {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.status')}
                         </th>
                     </tr>

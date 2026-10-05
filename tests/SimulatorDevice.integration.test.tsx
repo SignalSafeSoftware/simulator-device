@@ -15,9 +15,9 @@ describe('SimulatorDevice integration', () => {
 
     it('host contact detail render prop receives contact context from JSON contacts', async () => {
         const renderContactDetail = vi.fn(({ contact, onBack }) => (
-            <div data-testid="host-contact-detail">
+            <div data-testid='host-contact-detail'>
                 <span>{contact.displayName}</span>
-                <button type="button" onClick={onBack}>
+                <button type='button' onClick={onBack}>
                     Back
                 </button>
             </div>
