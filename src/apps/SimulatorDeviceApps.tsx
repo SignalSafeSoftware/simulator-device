@@ -40,15 +40,14 @@ interface DeviceAppsContentProps {
     children: ReactNode;
 }
 
+const OUTLINE_BUTTON = simBtnToneClass(SimulatorButtonTone.NeutralOutline);
+
 function StoreLoading({ store }: Readonly<{ store: DeviceStore }>) {
     const { t } = useSimulatorLocale();
     return (
         <section className={SIM_APP_PAGE_CONTENT}>
             <output>{store.error || t('app.device.loading')}</output>
-            <button
-                className={simBtnToneClass(SimulatorButtonTone.NeutralOutline)}
-                onClick={() => void store.reload()}
-            >
+            <button className={OUTLINE_BUTTON} onClick={() => void store.reload()}>
                 {t('app.retry')}
             </button>
         </section>
@@ -60,10 +59,7 @@ function StoreNotice({ store }: Readonly<{ store: DeviceStore }>) {
     return (
         <div className="device-notice" role="alert">
             {store.error}
-            <button
-                className={simBtnToneClass(SimulatorButtonTone.NeutralOutline)}
-                onClick={() => void store.reload()}
-            >
+            <button className={OUTLINE_BUTTON} onClick={() => void store.reload()}>
                 {/* Use t('app.device.reloadState') once simulator-react 0.19.2 is published. */}
                 Reload saved state
             </button>
