@@ -42,7 +42,9 @@ it('ignores cancelled file selection and reports a FileReader error', async () =
         fireEvent.change(view.getByLabelText('Background image'), {
             target: { files: [new File(['data'], 'image.png', { type: 'image/png' })] },
         });
-        await waitFor(() => expect(view.getByText(/could not be read/)).toBeDefined());
+        await waitFor(() =>
+            expect(view.getByText(/could not be read/)).toBeInstanceOf(HTMLElement),
+        );
         expect(onChange).not.toHaveBeenCalled();
     } finally {
         read.mockRestore();

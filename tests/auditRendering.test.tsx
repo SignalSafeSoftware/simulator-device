@@ -19,7 +19,7 @@ describe('audited full-device conversion through rendered screens', () => {
                 }}
             />,
         );
-        expect(view.getByText('History-only caller')).toBeTruthy();
+        expect(view.getByText('History-only caller')).toBeInstanceOf(HTMLElement);
         expect(view.queryByRole('button', { name: 'Answer' })).toBeNull();
     });
 
@@ -40,7 +40,7 @@ describe('audited full-device conversion through rendered screens', () => {
                 }}
             />,
         );
-        expect(view.getByText('Retained voicemail text')).toBeTruthy();
+        expect(view.getByText('Retained voicemail text')).toBeInstanceOf(HTMLElement);
         expect(view.queryByRole('button', { name: 'Answer' })).toBeNull();
     });
 
@@ -76,6 +76,6 @@ describe('audited full-device conversion through rendered screens', () => {
             />,
         );
         fireEvent.click(view.getByRole('button', { name: 'Continue to destination' }));
-        expect(view.getByText('Arrived at the authored destination')).toBeTruthy();
+        expect(view.getByText('Arrived at the authored destination')).toBeInstanceOf(HTMLElement);
     });
 });

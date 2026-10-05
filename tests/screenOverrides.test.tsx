@@ -113,14 +113,16 @@ describe('actual source screen override consumer', () => {
                                   : 'Action entry',
                     }),
                 );
-                expect(view.getByRole('region', { name: 'Host settings' })).toBeTruthy();
+                expect(view.getByRole('region', { name: 'Host settings' })).toBeInstanceOf(
+                    HTMLElement,
+                );
                 expect(container.querySelector('.simulator-runtime__screen')).not.toBeNull();
                 if (Component === SimulatorPhoneDevice)
-                    expect(view.getByTestId('simulator-device-nav')).toBeTruthy();
+                    expect(view.getByTestId('simulator-device-nav')).toBeInstanceOf(HTMLElement);
                 expect(enter).toHaveBeenCalledTimes(1);
                 fireEvent.click(view.getByRole('button', { name: 'Return to previous screen' }));
                 expect(view.queryByRole('region', { name: 'Host settings' })).toBeNull();
-                expect(view.getByRole('button', { name: 'Settings' })).toBeTruthy();
+                expect(view.getByRole('button', { name: 'Settings' })).toBeInstanceOf(HTMLElement);
                 expect(exit).toHaveBeenCalledTimes(1);
                 expect(events).toHaveBeenLastCalledWith(
                     expect.objectContaining({ kind: 'back', disposition: 'delegated' }),

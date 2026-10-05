@@ -55,7 +55,7 @@ describe('renderPhoneIncomingCallHistoryExtra', () => {
         expect(getByTestId('simulator-incoming-call-history').className).toContain(
             'simulator-phone__incoming-call-history',
         );
-        expect(getByText('Previous calls')).toBeDefined();
-        expect(getByText('Today 9:15 AM')).toBeDefined();
+        expect(getByText('Previous calls')).toBeInstanceOf(HTMLElement);
+        expect(getByText('Today 9:15 AM')).toBeInstanceOf(HTMLElement);
     });
 });

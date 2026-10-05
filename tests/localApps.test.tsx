@@ -60,7 +60,7 @@ it('preserves the mounted draft while a call obscures the app', () => {
         </SimulatorCallBoundary>,
     );
     expect(view.getByLabelText('Draft').closest('[hidden]')).not.toBeNull();
-    expect(view.getByText('Call')).toBeTruthy();
+    expect(view.getByText('Call')).toBeInstanceOf(HTMLElement);
     view.rerender(
         <SimulatorCallBoundary active={false} call={<p>Call</p>}>
             <Draft />
@@ -76,17 +76,17 @@ it('exposes loading and failed-read recovery before any app can open', () => {
     data.data = null;
     const props = setup(data);
     const view = render(<SimulatorDeviceApps {...props} />);
-    expect(view.getByText('Loading simulated device…')).toBeTruthy();
+    expect(view.getByText('Loading simulated device…')).toBeInstanceOf(HTMLElement);
     fireEvent.click(view.getByRole('button', { name: 'Retry' }));
     expect(data.reload).toHaveBeenCalledOnce();
     data.error = 'Read failed';
     view.rerender(<SimulatorDeviceApps {...props} />);
-    expect(view.getByText('Read failed')).toBeTruthy();
+    expect(view.getByText('Read failed')).toBeInstanceOf(HTMLElement);
 });
 it('routes home tiles, settings, primary navigation and local app back actions', async () => {
     const props = setup();
     const view = render(<SimulatorDeviceApps {...props} homeHeader={<p>Host clock</p>} />);
-    expect(view.getByText('Host clock')).toBeTruthy();
+    expect(view.getByText('Host clock')).toBeInstanceOf(HTMLElement);
     expect(view.queryByRole('button', { name: 'Lock device' })).toBeNull();
     fireEvent.click(view.getByRole('button', { name: 'Settings' }));
     expect(props.openSettings).toHaveBeenCalledOnce();
@@ -113,7 +113,7 @@ it('keeps lock and persistence errors at the composition boundary', () => {
     fireEvent.click(view.getByRole('button', { name: 'Reload saved state' }));
     expect(data.reload).toHaveBeenCalledOnce();
     view.rerender(<SimulatorDeviceApps {...props} unlocked={false} />);
-    expect(view.getByRole('heading', { name: 'Device locked' })).toBeTruthy();
+    expect(view.getByRole('heading', { name: 'Device locked' })).toBeInstanceOf(HTMLElement);
 });
 it('supports the default mailbox, a host mailbox and host decoration', () => {
     const props = setup(store(), buildState({ activeApp: 'email' }));
@@ -132,19 +132,19 @@ it('supports the default mailbox, a host mailbox and host decoration', () => {
     fireEvent.click(view.getByRole('button', { name: 'Host mailbox back' }));
     expect(props.dispatch).toHaveBeenCalledWith({ type: 'SWITCH_APP', app: 'home' });
     view.rerender(<SimulatorDeviceApps {...props} state={buildState({ activeApp: 'phone' })} />);
-    expect(view.getByText('Host phone')).toBeTruthy();
+    expect(view.getByText('Host phone')).toBeInstanceOf(HTMLElement);
     view.rerender(
         <SimulatorDeviceApps
             {...props}
             state={buildState({ activeApp: 'home', home: { screen: 'settings' } })}
         />,
     );
-    expect(view.getByText('Host phone')).toBeTruthy();
+    expect(view.getByText('Host phone')).toBeInstanceOf(HTMLElement);
 });
 it('provides Internet composition and preserves host overrides in the shell provider', () => {
     const props = setup(store(), buildState({ activeApp: 'internet' }));
     const view = render(<SimulatorDeviceApps {...props} browserThemeCss='body { color: blue; }' />);
-    expect(view.getByRole('heading', { name: 'Internet' })).toBeTruthy();
+    expect(view.getByRole('heading', { name: 'Internet' })).toBeInstanceOf(HTMLElement);
     function Probe() {
         const { Shell, formatDate } = useSimulatorAppsHost();
         return (
@@ -158,6 +158,6 @@ it('provides Internet composition and preserves host overrides in the shell prov
             <Probe />
         </SimulatorDeviceAppsProvider>,
     );
-    expect(view.getByText('Host date')).toBeTruthy();
-    expect(view.getByText('Host nav')).toBeTruthy();
+    expect(view.getByText('Host date')).toBeInstanceOf(HTMLElement);
+    expect(view.getByText('Host nav')).toBeInstanceOf(HTMLElement);
 });

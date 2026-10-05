@@ -38,7 +38,9 @@ describe('SimulatorDevice', () => {
 
         const { getByTestId } = render(<SimulatorDevice value={buildHomeDeviceJson()} />);
 
-        await waitFor(() => expect(getByTestId('mock-simulator-phone-device')).toBeTruthy());
+        await waitFor(() =>
+            expect(getByTestId('mock-simulator-phone-device')).toBeInstanceOf(HTMLElement),
+        );
         expect(capturedPhoneDeviceProps.current).not.toBeNull();
     });
 
@@ -229,7 +231,7 @@ describe('SimulatorDevice', () => {
         render(<SimulatorDevice value={buildHomeDeviceJson()} onSimulatorEvent={vi.fn()} />);
 
         await waitFor(() => expect(capturedPhoneDeviceProps.current).not.toBeNull());
-        expect(phoneProps().state).toBeDefined();
+        expect(phoneProps().state).toHaveProperty('view');
         expect(phoneProps().dispatch).toBeTypeOf('function');
     });
 
@@ -241,7 +243,7 @@ describe('SimulatorDevice', () => {
             />,
         );
 
-        expect(getByTestId('custom-unsupported')).toBeTruthy();
+        expect(getByTestId('custom-unsupported')).toBeInstanceOf(HTMLElement);
         expect(queryByTestId('mock-simulator-phone-device')).toBeNull();
     });
 
@@ -250,7 +252,7 @@ describe('SimulatorDevice', () => {
             <SimulatorDevice value={buildDesktopDiscriminatedJson() as never} />,
         );
 
-        expect(getByTestId('simulator-device-unsupported')).toBeTruthy();
+        expect(getByTestId('simulator-device-unsupported')).toBeInstanceOf(HTMLElement);
         expect(queryByTestId('mock-simulator-phone-device')).toBeNull();
     });
 });
@@ -261,5 +263,7 @@ it('initializes a device when an unsupported value is replaced', async () => {
     );
     expect(queryByTestId('mock-simulator-phone-device')).toBeNull();
     rerender(<SimulatorDevice value={buildHomeDeviceJson()} />);
-    await waitFor(() => expect(getByTestId('mock-simulator-phone-device')).toBeTruthy());
+    await waitFor(() =>
+        expect(getByTestId('mock-simulator-phone-device')).toBeInstanceOf(HTMLElement),
+    );
 });

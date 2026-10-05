@@ -9,8 +9,10 @@ describe('SimulatorDevice integration', () => {
             <SimulatorDevice value={buildContactsDeviceJson()} />,
         );
 
-        await waitFor(() => expect(getByTestId('simulator-device-shell')).toBeTruthy());
-        expect(getByRole('button', { name: /IT Helpdesk/ })).toBeTruthy();
+        await waitFor(() =>
+            expect(getByTestId('simulator-device-shell')).toBeInstanceOf(HTMLElement),
+        );
+        expect(getByRole('button', { name: /IT Helpdesk/ })).toBeInstanceOf(HTMLElement);
     });
 
     it('host contact detail render prop receives contact context from JSON contacts', async () => {
@@ -27,11 +29,15 @@ describe('SimulatorDevice integration', () => {
             <SimulatorDevice value={buildContactsDeviceJson()} phone={{ renderContactDetail }} />,
         );
 
-        await waitFor(() => expect(getByRole('button', { name: /IT Helpdesk/ })).toBeTruthy());
+        await waitFor(() =>
+            expect(getByRole('button', { name: /IT Helpdesk/ })).toBeInstanceOf(HTMLElement),
+        );
         fireEvent.click(getByRole('button', { name: /IT Helpdesk/ }));
 
-        await waitFor(() => expect(getByTestId('host-contact-detail')).toBeTruthy());
-        expect(within(getByTestId('host-contact-detail')).getByText('IT Helpdesk')).toBeTruthy();
+        await waitFor(() => expect(getByTestId('host-contact-detail')).toBeInstanceOf(HTMLElement));
+        expect(within(getByTestId('host-contact-detail')).getByText('IT Helpdesk')).toBeInstanceOf(
+            HTMLElement,
+        );
         expect(renderContactDetail).toHaveBeenCalled();
     });
 
@@ -52,10 +58,14 @@ describe('SimulatorDevice integration', () => {
             />,
         );
 
-        await waitFor(() => expect(getByRole('button', { name: /IT Helpdesk/ })).toBeTruthy());
+        await waitFor(() =>
+            expect(getByRole('button', { name: /IT Helpdesk/ })).toBeInstanceOf(HTMLElement),
+        );
         fireEvent.click(getByRole('button', { name: /IT Helpdesk/ }));
 
-        await waitFor(() => expect(getByTestId('simulator-phone-contact-detail')).toBeTruthy());
+        await waitFor(() =>
+            expect(getByTestId('simulator-phone-contact-detail')).toBeInstanceOf(HTMLElement),
+        );
 
         fireEvent.change(getByLabelText('Display name'), { target: { value: 'Updated Helpdesk' } });
         fireEvent.click(getByRole('button', { name: 'Save' }));

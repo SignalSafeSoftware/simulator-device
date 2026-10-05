@@ -134,7 +134,7 @@ describe('source package consumer navigation compatibility', () => {
             const item = Array.from(nav.querySelectorAll('button')).find(
                 (button) => button.getAttribute('aria-label') === 'History',
             );
-            expect(item).toBeDefined();
+            expect(item).toBeInstanceOf(HTMLElement);
             if (item === undefined) throw new Error('missing History entry');
             fireEvent.click(item);
             expect(onNavigation).toHaveBeenCalledExactlyOnceWith(

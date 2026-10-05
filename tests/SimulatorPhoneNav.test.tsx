@@ -109,7 +109,7 @@ it('uses provider menu labels without changing navigation actions', async () => 
             <SimulatorPhoneNav state={buildState()} dispatch={dispatch} />
         </SimulatorLocaleProvider>,
     );
-    expect(getByRole('navigation', { name: 'Choose an app' })).toBeTruthy();
+    expect(getByRole('navigation', { name: 'Choose an app' })).toBeInstanceOf(HTMLElement);
     fireEvent.click(getByRole('button', { name: 'Calls and contacts' }));
     expect(dispatch).toHaveBeenCalledWith(switchChannelAction('contacts'));
 });

@@ -16,8 +16,8 @@ describe('SimulatorPhoneShell', () => {
         const sessionColumn = container.querySelector(
             `.${SIMULATOR_DEVICE_CLASS_NAMES.shellSessionColumn}`,
         );
-        expect(sessionColumn).toBeTruthy();
-        expect(sessionColumn?.querySelector('[data-testid="session-content"]')).toBeTruthy();
+        expect(sessionColumn).not.toBeNull();
+        expect(sessionColumn?.querySelector('[data-testid="session-content"]')).not.toBeNull();
     });
 });
 
@@ -62,7 +62,7 @@ it('moves contact actions into the shell footer and restores navigation when edi
         </SimulatorPhoneShell>,
     );
     expect(view.queryByRole('button', { name: 'Save contact' })).toBeNull();
-    expect(view.getByRole('button', { name: 'Contacts' })).toBeDefined();
+    expect(view.getByRole('button', { name: 'Contacts' })).toBeInstanceOf(HTMLElement);
 });
 
 it('keeps contact save availability and pending actions synchronized with the footer', () => {
@@ -110,7 +110,7 @@ it('keeps nested device action menus scoped to their own shell', () => {
             </SimulatorPhoneShell>
         </SimulatorPhoneShell>,
     );
-    expect(view.getByRole('button', { name: 'Outer navigation' })).toBeDefined();
+    expect(view.getByRole('button', { name: 'Outer navigation' })).toBeInstanceOf(HTMLElement);
     expect(view.queryByRole('button', { name: 'Inner navigation' })).toBeNull();
     expect(view.getAllByRole('button', { name: 'Save contact' })).toHaveLength(1);
 });

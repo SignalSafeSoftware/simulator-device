@@ -25,12 +25,12 @@ describe('SimulatorPhoneIncomingCallHistory', () => {
 
         const section = getByTestId('simulator-incoming-call-history');
         expect(section.className).toContain('simulator-phone__incoming-call-history');
-        expect(getByText('Previous calls')).toBeDefined();
-        expect(getByRole('columnheader', { name: 'Time' })).toBeDefined();
-        expect(getByRole('columnheader', { name: 'Duration' })).toBeDefined();
-        expect(getByRole('columnheader', { name: 'Status' })).toBeDefined();
-        expect(getByText('Today 9:15 AM')).toBeDefined();
-        expect(getByText('00:32')).toBeDefined();
-        expect(getByText('Incoming')).toBeDefined();
+        expect(getByText('Previous calls')).toBeInstanceOf(HTMLElement);
+        expect(getByRole('columnheader', { name: 'Time' })).toBeInstanceOf(HTMLElement);
+        expect(getByRole('columnheader', { name: 'Duration' })).toBeInstanceOf(HTMLElement);
+        expect(getByRole('columnheader', { name: 'Status' })).toBeInstanceOf(HTMLElement);
+        expect(getByText('Today 9:15 AM')).toBeInstanceOf(HTMLElement);
+        expect(getByText('00:32')).toBeInstanceOf(HTMLElement);
+        expect(getByText('Incoming')).toBeInstanceOf(HTMLElement);
     });
 });

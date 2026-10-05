@@ -32,9 +32,9 @@ describe('SimulatorPhoneContactDetailForm', () => {
             />,
         );
 
-        expect(getByText('Alice Chen')).toBeTruthy();
-        expect(getByText('+1-555-100-2000')).toBeTruthy();
-        expect(getByText('alice@example.com')).toBeTruthy();
+        expect(getByText('Alice Chen')).toBeInstanceOf(HTMLElement);
+        expect(getByText('+1-555-100-2000')).toBeInstanceOf(HTMLElement);
+        expect(getByText('alice@example.com')).toBeInstanceOf(HTMLElement);
     });
 
     it('read-only mode renders non-editable values', () => {
@@ -147,7 +147,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
             />,
         );
 
-        expect(getByTestId('extra-fields')).toBeTruthy();
+        expect(getByTestId('extra-fields')).toBeInstanceOf(HTMLElement);
         fireEvent.click(getByRole('button', { name: 'Patch name' }));
         expect(getByLabelText('Display name')).toHaveProperty('value', 'Extra Updated');
     });
@@ -164,7 +164,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
             />,
         );
 
-        expect(getByTestId('custom-actions')).toBeTruthy();
+        expect(getByTestId('custom-actions')).toBeInstanceOf(HTMLElement);
         expect(queryByRole('button', { name: 'Save' })).toBeNull();
     });
 });
@@ -187,9 +187,9 @@ it('renders each labeled number and its own host action', () => {
             renderPhoneAction={(phone) => <button>Call {phone.value}</button>}
         />,
     );
-    expect(getByText('Mobile')).toBeTruthy();
-    expect(getByText('CAR')).toBeTruthy();
-    expect(getByText('Unlabeled')).toBeTruthy();
+    expect(getByText('Mobile')).toBeInstanceOf(HTMLElement);
+    expect(getByText('CAR')).toBeInstanceOf(HTMLElement);
+    expect(getByText('Unlabeled')).toBeInstanceOf(HTMLElement);
     expect(getAllByRole('button', { name: /^Call/ })).toHaveLength(3);
 });
 
@@ -235,8 +235,8 @@ it('refreshes read-only values for the same contact', () => {
             context={context}
         />,
     );
-    expect(getByText('After')).toBeTruthy();
-    expect(getByText('222')).toBeTruthy();
+    expect(getByText('After')).toBeInstanceOf(HTMLElement);
+    expect(getByText('222')).toBeInstanceOf(HTMLElement);
     expect(queryByText('Before')).toBeNull();
 });
 
@@ -291,8 +291,8 @@ it('omits empty read-only contact sections and keeps editing controls', () => {
             context={context}
         />,
     );
-    expect(getByRole('button', { name: 'Add phone number' })).toBeTruthy();
-    expect(getByRole('button', { name: 'Add email' })).toBeTruthy();
+    expect(getByRole('button', { name: 'Add phone number' })).toBeInstanceOf(HTMLElement);
+    expect(getByRole('button', { name: 'Add email' })).toBeInstanceOf(HTMLElement);
 });
 
 it('keeps phone and email input kinds when visible labels are overridden', () => {
@@ -452,7 +452,7 @@ it('gives two editors of the same contact distinct stable label targets', () => 
     const inputs = Array.from(view.container.querySelectorAll('input'));
     expect(new Set(inputs.map((input) => input.id)).size).toBe(inputs.length);
     for (const label of view.container.querySelectorAll('label')) {
-        expect(label.control).toBeTruthy();
+        expect(label.control).toBeInstanceOf(HTMLElement);
         expect(label.control?.closest('form')).toBe(label.closest('form'));
     }
     const ids = inputs.map((input) => input.id);

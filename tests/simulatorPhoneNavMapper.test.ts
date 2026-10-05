@@ -143,7 +143,7 @@ describe('dispatchSimulatorPhoneNavItem', () => {
         }
 
         const emailItem = model.items.find((item) => item.label === 'Email');
-        expect(emailItem).toBeDefined();
+        expect(emailItem).toMatchObject({ label: 'Email' });
         dispatchSimulatorPhoneNavItem(dispatch, model, emailItem!);
 
         expect(dispatch).toHaveBeenCalledWith(switchChannelAction('email'));

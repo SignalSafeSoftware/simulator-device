@@ -24,7 +24,9 @@ it('rejects unsupported files and images above the size limit without changing t
         new File([new Uint8Array(2 * 1024 * 1024 + 1)], 'large.png', { type: 'image/png' }),
     ]) {
         fireEvent.change(getByLabelText('Background image'), { target: { files: [file] } });
-        expect(getByText('Choose a PNG, JPEG, or WebP image up to 2 MiB.')).toBeTruthy();
+        expect(getByText('Choose a PNG, JPEG, or WebP image up to 2 MiB.')).toBeInstanceOf(
+            HTMLElement,
+        );
     }
     expect(onChange).not.toHaveBeenCalled();
 });

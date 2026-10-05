@@ -21,7 +21,7 @@ it('tolerates a detached screen ref while returning from contact details', () =>
         <SimulatorPhoneDevice state={state} dispatch={dispatch} contactDetail={{}} />,
     );
     fireEvent.click(view.getByRole('button', { name: /IT Helpdesk/ }));
-    expect(view.getByTestId('simulator-phone-contact-detail')).toBeTruthy();
+    expect(view.getByTestId('simulator-phone-contact-detail')).toBeInstanceOf(HTMLElement);
     shell.attachScreen = false;
     try {
         view.rerender(

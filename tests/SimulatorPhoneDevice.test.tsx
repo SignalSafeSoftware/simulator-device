@@ -55,8 +55,8 @@ describe('SimulatorPhoneDevice', () => {
 
         const { getByTestId } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
-        expect(getByTestId('simulator-device-shell')).toBeTruthy();
-        expect(getByTestId('simulator-device-nav')).toBeTruthy();
+        expect(getByTestId('simulator-device-shell')).toBeInstanceOf(HTMLElement);
+        expect(getByTestId('simulator-device-nav')).toBeInstanceOf(HTMLElement);
     });
 
     it('renders SimulatorWithSession runtime content by default', () => {
@@ -65,8 +65,8 @@ describe('SimulatorPhoneDevice', () => {
 
         const { container } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
-        expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
-        expect(within(container).getByText('IT Helpdesk')).toBeTruthy();
+        expect(container.querySelector('[data-simulator-app]')).not.toBeNull();
+        expect(within(container).getByText('IT Helpdesk')).toBeInstanceOf(HTMLElement);
     });
 
     it('wires renderPhoneIncomingCallHistoryExtra as the default incoming-call history slot', () => {
@@ -86,8 +86,8 @@ describe('SimulatorPhoneDevice', () => {
 
         const { getByText } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
-        expect(getByText('Previous calls')).toBeTruthy();
-        expect(getByText('Today 9:15 AM')).toBeTruthy();
+        expect(getByText('Previous calls')).toBeInstanceOf(HTMLElement);
+        expect(getByText('Today 9:15 AM')).toBeInstanceOf(HTMLElement);
     });
 
     it('allows overriding renderIncomingCallExtra', () => {
@@ -104,7 +104,7 @@ describe('SimulatorPhoneDevice', () => {
         );
 
         expect(customExtra).toHaveBeenCalled();
-        expect(getByTestId('custom-incoming-extra')).toBeTruthy();
+        expect(getByTestId('custom-incoming-extra')).toBeInstanceOf(HTMLElement);
     });
 
     it('without renderContactDetail, package/default contact detail behavior remains active', () => {
@@ -115,7 +115,7 @@ describe('SimulatorPhoneDevice', () => {
 
         clickContactRow(container, 'IT Helpdesk');
 
-        expect(container.querySelector('.simulator-phone__contact-detail')).toBeTruthy();
+        expect(container.querySelector('.simulator-phone__contact-detail')).not.toBeNull();
     });
 
     it('with renderContactDetail, clicking a contact row renders custom contact detail content', () => {
@@ -139,8 +139,10 @@ describe('SimulatorPhoneDevice', () => {
 
         clickContactRow(container, 'HR');
 
-        expect(getByTestId('host-contact-detail')).toBeTruthy();
-        expect(within(getByTestId('host-contact-detail')).getByText('HR')).toBeTruthy();
+        expect(getByTestId('host-contact-detail')).toBeInstanceOf(HTMLElement);
+        expect(within(getByTestId('host-contact-detail')).getByText('HR')).toBeInstanceOf(
+            HTMLElement,
+        );
     });
 
     it('with renderContactDetail, package .simulator-phone__contact-detail is not rendered', () => {
@@ -179,7 +181,7 @@ describe('SimulatorPhoneDevice', () => {
         const back = getAllByRole('button', { name: 'Back' }).at(-1)!;
         fireEvent.click(back);
         expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
-        expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
+        expect(container.querySelector('[data-simulator-app]')).not.toBeNull();
         expect(dispatch).not.toHaveBeenCalled();
     });
 
@@ -203,12 +205,12 @@ describe('SimulatorPhoneDevice', () => {
         );
 
         clickContactRow(container, 'IT Helpdesk');
-        expect(getByTestId('host-contact-detail')).toBeTruthy();
+        expect(getByTestId('host-contact-detail')).toBeInstanceOf(HTMLElement);
 
         fireEvent.click(getByRole('button', { name: 'Back' }));
 
         expect(container.querySelector('[data-testid="host-contact-detail"]')).toBeNull();
-        expect(container.querySelector('[data-simulator-app]')).toBeTruthy();
+        expect(container.querySelector('[data-simulator-app]')).not.toBeNull();
     });
 
     it('screenClassNames include simulator-device-shell--screen-phone-contact-detail while custom contact detail is active', () => {
@@ -251,7 +253,9 @@ describe('SimulatorPhoneDevice', () => {
         expect(getByTestId('simulator-device-shell').className).toContain(
             'host-simulator-root--preview',
         );
-        expect(getByTestId('simulator-device-shell').closest('.host-simulator-root')).toBeTruthy();
+        expect(
+            getByTestId('simulator-device-shell').closest('.host-simulator-root'),
+        ).not.toBeNull();
     });
 
     it('exposes renderPhoneIncomingCallHistoryExtra for custom incoming-call slots', () => {
@@ -272,7 +276,7 @@ describe('SimulatorPhoneDevice', () => {
 
         clickContactRow(container, 'IT Helpdesk');
 
-        expect(getByTestId('simulator-phone-contact-detail')).toBeTruthy();
+        expect(getByTestId('simulator-phone-contact-detail')).toBeInstanceOf(HTMLElement);
         expect(container.querySelector('.simulator-phone__contact-detail')).toBeNull();
     });
 
@@ -293,7 +297,7 @@ describe('SimulatorPhoneDevice', () => {
 
         clickContactRow(container, 'HR');
 
-        expect(getByTestId('host-contact-detail')).toBeTruthy();
+        expect(getByTestId('host-contact-detail')).toBeInstanceOf(HTMLElement);
         expect(queryByTestId('simulator-phone-contact-detail')).toBeNull();
     });
 
@@ -306,7 +310,7 @@ describe('SimulatorPhoneDevice', () => {
 
         const { getByTestId } = render(<SimulatorPhoneDevice state={state} dispatch={dispatch} />);
 
-        expect(getByTestId('simulator-device-shell')).toBeTruthy();
+        expect(getByTestId('simulator-device-shell')).toBeInstanceOf(HTMLElement);
     });
 });
 

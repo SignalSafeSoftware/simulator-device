@@ -46,7 +46,7 @@ it('supports JSON and datasource consumers without services and preserves naviga
     const nav = getByRole('navigation', { name: 'Simulator channels' });
     fireEvent.click(within(nav).getByRole('button', { name: 'Phone' }));
     fireEvent.click(getByRole('button', { name: 'Contacts' }));
-    expect(getByText('Source Contact')).toBeTruthy();
+    expect(getByText('Source Contact')).toBeInstanceOf(HTMLElement);
     rerender(
         <SimulatorDevice
             datasource={createSimulatorDatasource({
@@ -55,8 +55,8 @@ it('supports JSON and datasource consumers without services and preserves naviga
             })}
         />,
     );
-    await waitFor(() => expect(getByText('Refreshed Contact')).toBeTruthy());
-    expect(getByRole('button', { name: 'Contacts' })).toBeTruthy();
+    await waitFor(() => expect(getByText('Refreshed Contact')).toBeInstanceOf(HTMLElement));
+    expect(getByRole('button', { name: 'Contacts' })).toBeInstanceOf(HTMLElement);
 });
 it('preserves a mounted contact editor draft across data refreshes', async () => {
     const onSave = vi.fn();
@@ -99,7 +99,7 @@ it.each([
     async (app, screen, content) => {
         const source = { ...value, entry_point: { app, screen } };
         const { container, rerender, getByText } = render(<SimulatorDevice value={source} />);
-        expect(getByText(content)).toBeTruthy();
+        expect(getByText(content)).toBeInstanceOf(HTMLElement);
         const before = container.textContent;
         rerender(<SimulatorDevice datasource={createSimulatorDatasource(source)} />);
         await waitFor(() => expect(container.textContent).toBe(before));

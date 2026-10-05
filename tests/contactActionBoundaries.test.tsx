@@ -83,8 +83,8 @@ it('blocks custom actions in read-only mode', () => {
             )}
         />,
     );
-    expect(view.getByText('work@example.com')).toBeTruthy();
-    expect(view.getByText(/Open editing mode/)).toBeTruthy();
+    expect(view.getByText('work@example.com')).toBeInstanceOf(HTMLElement);
+    expect(view.getByText(/Open editing mode/)).toBeInstanceOf(HTMLElement);
     fireEvent.click(view.getByRole('button', { name: 'Custom save' }));
     fireEvent.click(view.getByRole('button', { name: 'Custom delete' }));
     expect(onSave).not.toHaveBeenCalled();
@@ -106,7 +106,7 @@ it('disables contact edits when the host marks editing unavailable', () => {
         />,
     );
     fireEvent.click(view.getByRole('button', { name: /IT Helpdesk/ }));
-    expect(view.getByText('Read access only')).toBeTruthy();
+    expect(view.getByText('Read access only')).toBeInstanceOf(HTMLElement);
     fireEvent.click(view.getByRole('button', { name: 'Custom save' }));
     expect(onSave).not.toHaveBeenCalled();
 });

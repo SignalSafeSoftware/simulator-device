@@ -50,7 +50,7 @@ it('leaves save unwired when no persistence callback exists', () => {
         <SimulatorDevice value={buildContactsDeviceJson()} phone={{ contactDetail: {} }} />,
     );
     fireEvent.click(view.getByRole('button', { name: 'Save' }));
-    expect(view.getByRole('button', { name: 'Save' })).toBeTruthy();
+    expect(view.getByRole('button', { name: 'Save' })).toBeInstanceOf(HTMLElement);
 });
 
 it('ignores a retained dispatch callback after the value becomes unsupported', () => {
@@ -60,7 +60,7 @@ it('ignores a retained dispatch callback after the value becomes unsupported', (
     const unsupported = Object.assign(buildContactsDeviceJson(), { type: 'desktop' });
     view.rerender(<SimulatorDevice value={unsupported} />);
     act(() => dispatch({ type: 'BACK' }));
-    expect(view.getByTestId('simulator-device-unsupported')).toBeTruthy();
+    expect(view.getByTestId('simulator-device-unsupported')).toBeInstanceOf(HTMLElement);
 });
 
 it('rejects simultaneous JSON and datasource at the runtime boundary', () => {
