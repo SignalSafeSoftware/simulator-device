@@ -413,10 +413,10 @@
     "@signalsafe/tree-spec" "^0.4.1"
     zod "^4.0.0"
 
-"@signalsafe/simulator-react@0.20.1":
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.20.1.tgz#1b6b93dc799a4e4902ca7e2acf4a9fff4bd0544d"
-  integrity sha512-3Iuys6FMY8ZaJSmX80J4tvZuGzYLy4qQDtHIjKB479ON43M9DL4Ar2LLN2wHvJmU7y1yXyWcwmi3uVFAg/h6Jw==
+"@signalsafe/simulator-react@0.20.2":
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.20.2.tgz#ebb4bd90adccae9b17e18be143f6ca3ac8e2c517"
+  integrity sha512-3vfvDs+stU7sTyvAueV1DWVozT6RyaV5HmnZV9exZH2x5xdfbqN+emGE86ExvL1kmy+2qxN755OI5e6LtyRyxw==
   dependencies:
     "@signalsafe/simulator-core" "0.6.0"
     "@signalsafe/tree-spec" "^0.4.1"

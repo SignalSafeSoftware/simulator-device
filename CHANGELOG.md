@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.20.1 — October 5, 2026
+
+- Require simulator-react 0.20.2, which fixes `LoadMore` requesting an extra page when the loaded count changes, and 0.20.1's malformed-active-app fix. Use 0.20.1 instead of 0.20.0.
+
 ## 0.20.0 — October 4, 2026
 
 - Require simulator-react 0.20.1, core 0.6.0 and theme 0.12.1.
