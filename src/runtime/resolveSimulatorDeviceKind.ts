@@ -15,8 +15,7 @@ export function resolveSimulatorDeviceKind(value: unknown): SimulatorDeviceKind 
         return SimulatorDeviceKind.Unsupported;
     }
 
-    const record = value as Record<string, unknown>;
-    const discriminator = record.type;
+    const discriminator: unknown = Reflect.get(value, 'type');
 
     if (discriminator === 'desktop') {
         return SimulatorDeviceKind.Unsupported;
@@ -26,12 +25,12 @@ export function resolveSimulatorDeviceKind(value: unknown): SimulatorDeviceKind 
         return SimulatorDeviceKind.Unsupported;
     }
 
-    const entryPoint = record.entry_point;
+    const entryPoint: unknown = Reflect.get(value, 'entry_point');
     if (entryPoint == null || typeof entryPoint !== 'object') {
         return SimulatorDeviceKind.Unsupported;
     }
 
-    const app = (entryPoint as { app?: unknown }).app;
+    const app: unknown = Reflect.get(entryPoint, 'app');
     if (!isSimulatorApp(app)) {
         return SimulatorDeviceKind.Unsupported;
     }
