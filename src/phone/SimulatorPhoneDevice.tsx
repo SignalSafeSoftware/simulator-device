@@ -1,4 +1,3 @@
-import { SimulatorPhoneScreenId } from '@signalsafe/simulator-core/devicePayload';
 import {
     SimulatorDispatchActionType,
     type SimulatorDispatchAction,
@@ -6,7 +5,6 @@ import {
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import {
     useCallback,
-    useLayoutEffect,
     useMemo,
     useRef,
     useState,
@@ -62,6 +60,7 @@ import {
     SimulatorPhoneShellHostKind,
     resolveSimulatorPhoneShellScreenClasses,
 } from './simulatorPhoneShellScreenMapper.js';
+import { useContactListFocusRestore } from './useContactListFocusRestore.js';
 import { useSimulatorPhoneDeviceContactHost } from './useSimulatorPhoneDeviceContactHost.js';
 
 export interface SimulatorPhoneDeviceContactDetailRenderProps {
@@ -147,7 +146,6 @@ export default function SimulatorPhoneDevice({
         [composerState],
     );
     const inheritedEmail = useEmailComposeOptions();
-    const returnContactId = useRef<string | null>(null);
     const inheritedMessages = useMessageComposeOptions();
     const inheritedDial = usePhoneDialDraft();
     const inheritedCapabilities = useSimulatorCapabilities();
@@ -213,37 +211,13 @@ export default function SimulatorPhoneDevice({
         hostMode.kind === SimulatorPhoneShellHostKind.PhoneContactEdit &&
         contact != null;
 
-    const selectedContactId = contact?.id;
-    useLayoutEffect(() => {
-        if (showHostContactDetail && selectedContactId) {
-            returnContactId.current = selectedContactId;
-            screenRef.current
-                ?.querySelector<HTMLElement>('input:not([type="hidden"]), [tabindex="-1"], button')
-                ?.focus();
-        } else if (returnContactId.current) {
-            if (
-                state.view.activeApp === SimulatorApp.Phone &&
-                state.view.phone.screen === SimulatorPhoneScreenId.Contacts
-            ) {
-                const rows = Array.from(
-                    screenRef.current?.querySelectorAll<HTMLElement>(
-                        '[data-simulator-contact-id]',
-                    ) ?? [],
-                );
-                const row = rows.find(
-                    (item) => item.dataset.simulatorContactId === returnContactId.current,
-                );
-                const button = row?.matches('button')
-                    ? row
-                    : row?.querySelector<HTMLButtonElement>('button');
-                (
-                    button ??
-                    screenRef.current?.querySelector<HTMLInputElement>('input[type="search"]')
-                )?.focus();
-            }
-            returnContactId.current = null;
-        }
-    }, [showHostContactDetail, selectedContactId, state.view.activeApp, state.view.phone.screen]);
+    useContactListFocusRestore({
+        screenRef,
+        showHostContactDetail,
+        selectedContactId: contact?.id,
+        activeApp: state.view.activeApp,
+        phoneScreen: state.view.phone.screen,
+    });
 
     const resolvedRenderContactDetail = useMemo(() => {
         if (renderContactDetail != null) {

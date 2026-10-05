@@ -16,6 +16,7 @@ import {
     getEmailSecondaryActiveId,
 } from '@signalsafe/simulator-react/utils/navigation/simulatorSecondaryMenuHelpers';
 import { shouldHideSimulatorNavigation } from '@signalsafe/simulator-react/utils/navigation/simulatorNavigationPolicy';
+import { BACK_LABEL_KEY, primaryLabelKeys } from './phoneNavLabelKeys.js';
 import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react/i18n/catalog';
 import {
     SimulatorChannel,
@@ -26,8 +27,6 @@ import {
  * Host phone navigation model derived from @signalsafe/simulator-react session state.
  * Mirrors package PhoneSimulatorShell / useSimulatorSecondaryMenu behavior using dispatch actions.
  */
-
-const BACK_LABEL_KEY = 'nav.back';
 
 export const SimulatorPhoneNavAction = Object.freeze({
     Channel: 'channel',
@@ -90,14 +89,19 @@ export const SIMULATOR_PRIMARY_NAV_ITEMS: ReadonlyArray<{
     { channel: SimulatorChannel.Home, label: defaultLocale.t('nav.home'), icon: '🏠' },
 ];
 
-const primaryKeys = {
-    phone: 'nav.phone',
-    contacts: 'nav.phone',
-    email: 'nav.email',
-    browser: 'nav.internet',
-    sms: 'nav.messages',
-    home: 'nav.home',
-} as const;
+function toSecondaryNavItems(
+    items: ReadonlyArray<Pick<SimulatorPhoneNavItemModel, 'id' | 'label' | 'icon'>>,
+): SimulatorPhoneNavItemModel[] {
+    return items.map(({ id, label, icon }) => ({
+        id,
+        label,
+        icon,
+        action:
+            id === SimulatorPhoneNavAction.Back
+                ? SimulatorPhoneNavAction.Back
+                : SimulatorPhoneNavAction.Local,
+    }));
+}
 
 /** Host detail/composer navigation remains visible; scenarios use inline controls. */
 export function shouldHideHostPhoneNav(state: SimulatorSessionState): boolean {
@@ -232,15 +236,7 @@ export function resolveSimulatorPhoneNav(
             mode: SimulatorPhoneNavMode.Secondary,
             app: SimulatorApp.Phone,
             activeId: getPhoneSecondaryActiveId(view.phone.screen),
-            items: getPhoneSecondaryItems(locale).map((item) => ({
-                id: item.id,
-                label: item.label,
-                icon: item.icon,
-                action:
-                    item.id === SimulatorPhoneNavAction.Back
-                        ? SimulatorPhoneNavAction.Back
-                        : SimulatorPhoneNavAction.Local,
-            })),
+            items: toSecondaryNavItems(getPhoneSecondaryItems(locale)),
         };
     }
 
@@ -249,15 +245,7 @@ export function resolveSimulatorPhoneNav(
             mode: SimulatorPhoneNavMode.Secondary,
             app: SimulatorApp.Email,
             activeId: getEmailSecondaryActiveId(view.email.screen, view.email.stack),
-            items: getEmailSecondaryItems(locale).map((item) => ({
-                id: item.id,
-                label: item.label,
-                icon: item.icon,
-                action:
-                    item.id === SimulatorPhoneNavAction.Back
-                        ? SimulatorPhoneNavAction.Back
-                        : SimulatorPhoneNavAction.Local,
-            })),
+            items: toSecondaryNavItems(getEmailSecondaryItems(locale)),
         };
     }
 
@@ -267,7 +255,7 @@ export function resolveSimulatorPhoneNav(
         activeChannel,
         items: SIMULATOR_PRIMARY_NAV_ITEMS.map((item) => ({
             id: item.channel,
-            label: locale.t(primaryKeys[item.channel]),
+            label: locale.t(primaryLabelKeys[item.channel]),
             icon: item.icon,
             action: SimulatorPhoneNavAction.Channel,
             channel: item.channel,
