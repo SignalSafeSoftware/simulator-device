@@ -1,9 +1,5 @@
-import {} from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { useSimulatorCapabilities } from '@signalsafe/simulator-react/contract/capabilities';
-import {} from '@signalsafe/simulator-react/contract/phonePresentation';
-import {} from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
-import {} from '../simulatorDeviceClasses.js';
 import { useCallback, useRef, useState } from 'react';
 import {
     ContactDetailMode,

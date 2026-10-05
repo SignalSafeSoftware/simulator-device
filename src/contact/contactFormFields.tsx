@@ -5,9 +5,7 @@ import {
     SIM_PHONE_CONTACT_DETAIL_LABEL,
     SIM_PHONE_CONTACT_DETAIL_VALUE,
 } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
-import {} from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
-import {} from '@signalsafe/simulator-react/contract/capabilities';
 import { usePhoneNumberFormatter } from '@signalsafe/simulator-react/contract/phonePresentation';
 import { ContactValueKind } from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import ContactValueList from './ContactValueList.js';

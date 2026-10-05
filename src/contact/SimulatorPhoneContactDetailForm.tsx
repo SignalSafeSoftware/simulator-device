@@ -11,9 +11,6 @@ import {
 } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
-import {} from '@signalsafe/simulator-react/contract/capabilities';
-import {} from '@signalsafe/simulator-react/contract/phonePresentation';
-import {} from '@signalsafe/simulator-react/ui/contacts/ContactValuesEditor';
 import { SIMULATOR_DEVICE_CLASS_NAMES } from '../simulatorDeviceClasses.js';
 import { useId } from 'react';
 import { type SimulatorPhoneContactDetailFormProps } from './contactDetailTypes.js';
