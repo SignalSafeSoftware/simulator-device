@@ -186,11 +186,11 @@ const APPEARANCE_TEXT_COLORS = Object.freeze({
 /** Compare actual foreground colors, with a black fallback to guarantee 4.5:1. */
 export function appearanceTextColor(hex: string): string {
     const luminance = (color: string) => {
-        const linear = [1, 3, 5].map((start) => {
+        const linear = (start: number) => {
             const value = Number.parseInt(color.slice(start, start + 2), 16) / 255;
             return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-        });
-        return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+        };
+        return linear(1) * 0.2126 + linear(3) * 0.7152 + linear(5) * 0.0722;
     };
     const background = luminance(hex);
     const green = luminance(APPEARANCE_TEXT_COLORS.Dark);

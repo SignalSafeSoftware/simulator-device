@@ -10,7 +10,7 @@ export function splitContactDisplayName(displayName: string): {
 
     const parts = trimmed.split(/\s+/);
     if (parts.length === 1) {
-        return { firstName: parts[0], lastName: '' };
+        return { firstName: trimmed, lastName: '' };
     }
 
     return {
