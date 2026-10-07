@@ -47,18 +47,18 @@ The tests build the site, start a temporary preview server on port 5191 at
 `/simulator-device/`, and exercise package screens, draft preservation during a
 simulated call, starter data, reset and narrow widths. No real email or call is sent.
 
-Verification on October 6, 2026: strict types and the production build passed.
-The Chromium suite covers local message replies and new conversations, recipient
-matching, reset, all seeded mail folders, attachments, photo metadata, readable
-vault notes, shared call/contact screens and 320/430px layouts at 100/200% text.
-Default-data and gallery checks observed no external HTTP requests. Focused
-Oxlint and formatting checks pass for the changed demo sources and new tests.
-The build still reports the existing large-chunk and Lucide `use client` warnings;
-these do not prevent this client-only build.
+Verification on October 7, 2026: strict types and the production build passed,
+and the Chromium suite (`npm run test:browser`) passes. It covers local message
+replies and new conversations, recipient matching, reset, all seeded mail
+folders, attachments, photo capture details, contact add/edit/delete with the
+shared editor, readable incoming-call times, readable vault notes, shared
+call/contact screens and 320/430px layouts at 100/200% text. Default-data and
+gallery checks observed no external HTTP requests. The build still reports the
+existing large-chunk and Lucide `use client` warnings; these do not prevent this
+client-only build.
 
-The workflow has not run on GitHub and the site has not been published. Other
-browser engines and a complete package gallery/DeliveryPlus/PhoneMe visual matrix
-are tracked in DeliveryPlus docs/quality/simulator-ui/home-default.md. The current Home change also updates the owning packages and host integrations.
+Other browser engines and a complete package gallery/DeliveryPlus/PhoneMe visual
+matrix are tracked in DeliveryPlus docs/quality/simulator-ui/home-default.md.
 
 ## GitHub Pages
 
@@ -66,7 +66,7 @@ The repository's `Simulator demo` workflow checks the production example on pull
 requests touching the demo or workflow. It deploys only on a manual run from `main`.
 Package publication and the package CI workflow remain separate.
 
-After reviewing and committing the changes, an owner can publish it:
+To publish it, an owner can:
 
 1. Push the demo and workflow to `main`.
 2. In the repository's **Settings → Pages**, choose **GitHub Actions** as Source.
@@ -74,7 +74,11 @@ After reviewing and committing the changes, an owner can publish it:
 4. Open the URL returned by the deployment job. With the default organization
    domain, the expected address is `https://signalsafesoftware.github.io/simulator-device/`.
 
-This setup does not enable Pages, push, or publish by itself. The current Home preview uses versioned, checksum-recorded local prerelease tarballs in `vendor/npm`. Replace these pins with the published package versions and regenerate `package-lock.json` when releasing a new demo. The demo starts with the original blue layered-wave wallpaper in `wallpaper-strata.webp` (generated artwork, no third-party image) on the Night palette, plus the shared clock and layout. Reset demo restores it; Settings > Appearance can replace it with a PNG, JPEG or WebP up to 2 MiB.
+The demo depends on the released package versions pinned in `package.json`
+(core 0.7.0, react 0.21.0, theme-bootstrap 0.13.0 and device 0.21.0), which the
+workflow installs from npm with `npm ci`. After releasing new packages, update
+the pins, run `npm install` to regenerate `package-lock.json`, and re-run the
+workflow. This setup does not publish packages by itself. The demo starts with the original blue layered-wave wallpaper in `wallpaper-strata.webp` (generated artwork, no third-party image) on the Night palette, plus the shared clock and layout. Reset demo restores it; Settings > Appearance can replace it with a PNG, JPEG or WebP up to 2 MiB.
 Never add credentials or real user records to a public demo.
 
 ### Settings
