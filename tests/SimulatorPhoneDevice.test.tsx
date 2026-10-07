@@ -420,3 +420,79 @@ it('sets and releases a mutable host screen ref', () => {
     view.unmount();
     expect(screenRef.current).toBeNull();
 });
+
+it.each([
+    { name: 'default', contactDetail: undefined },
+    { name: 'configured read-only', contactDetail: {} },
+])(
+    '$name contact Back restores the list and focus without leaving Contacts',
+    ({ contactDetail }) => {
+        const state = buildContactsScreenState();
+        state.view.showPrimaryMenu = false;
+        const dispatch = vi.fn();
+        const onNavigation = vi.fn();
+        const onNavigationEvent = vi.fn();
+        const view = render(
+            <SimulatorPhoneDevice
+                state={state}
+                dispatch={dispatch}
+                contactDetail={contactDetail}
+                onNavigation={onNavigation}
+                onNavigationEvent={onNavigationEvent}
+            />,
+        );
+        clickContactRow(view.container, 'HR');
+        expect(view.getByTestId('simulator-phone-contact-detail')).toBeInstanceOf(HTMLElement);
+        expect(document.activeElement).toBe(
+            view.container.querySelector('.simulator-phone-contact-detail__title'),
+        );
+        expect(view.queryByRole('button', { name: 'Back to list' })).toBeNull();
+        expect(view.queryByRole('button', { name: 'Back to contacts list' })).toBeNull();
+        expect(view.queryByRole('textbox')).toBeNull();
+        dispatch.mockClear();
+        onNavigation.mockClear();
+        onNavigationEvent.mockClear();
+
+        fireEvent.click(view.getByRole('button', { name: 'Back' }));
+
+        expect(view.queryByTestId('simulator-phone-contact-detail')).toBeNull();
+        expect(document.activeElement).toBe(view.getByRole('button', { name: /HR/ }));
+        expect(view.getByRole('button', { name: /IT Helpdesk/ })).toBeInstanceOf(HTMLElement);
+        expect(dispatch).not.toHaveBeenCalled();
+        const location = { app: 'phone', screen: 'contacts', primaryMenu: false };
+        expect(onNavigation).toHaveBeenCalledWith({ kind: 'back', from: location, to: location });
+        expect(onNavigationEvent).toHaveBeenCalledWith({
+            kind: 'back',
+            from: location,
+            to: location,
+            disposition: 'delegated',
+        });
+    },
+);
+
+it('keeps default contact details open when the host handles Back', () => {
+    const state = buildContactsScreenState();
+    state.view.showPrimaryMenu = false;
+    const dispatch = vi.fn();
+    const onNavigation = vi.fn(() => 'handled' as const);
+    const onNavigationEvent = vi.fn();
+    const view = render(
+        <SimulatorPhoneDevice
+            state={state}
+            dispatch={dispatch}
+            onNavigation={onNavigation}
+            onNavigationEvent={onNavigationEvent}
+        />,
+    );
+    clickContactRow(view.container, 'HR');
+    dispatch.mockClear();
+    fireEvent.click(view.getByRole('button', { name: 'Back' }));
+    expect(view.getByTestId('simulator-phone-contact-detail')).toBeInstanceOf(HTMLElement);
+    expect(dispatch).not.toHaveBeenCalled();
+    expect(onNavigationEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+            disposition: 'handled',
+            to: { app: 'phone', screen: 'contacts', primaryMenu: false },
+        }),
+    );
+});

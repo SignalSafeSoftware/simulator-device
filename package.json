@@ -1,6 +1,6 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.20.1",
+  "version": "0.21.0",
   "type": "module",
   "description": "Reusable full phone/device simulator UI composition on top of @signalsafe/simulator-react.",
   "license": "MIT",
@@ -130,7 +130,12 @@
       "import": "./dist/phone/simulatorPhoneShellScreenMapper.js",
       "default": "./dist/phone/simulatorPhoneShellScreenMapper.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./apps/SimulatorDeviceSettings": {
+      "types": "./dist/apps/SimulatorDeviceSettings.d.ts",
+      "import": "./dist/apps/SimulatorDeviceSettings.js",
+      "default": "./dist/apps/SimulatorDeviceSettings.js"
+    }
   },
   "files": [
     "dist",
@@ -138,9 +143,7 @@
     "LICENSE",
     "gallery-dist",
     "CHANGELOG.md",
-    "RELEASING.md",
-    "examples/local-apps",
-    "MIGRATION.md"
+    "docs"
   ],
   "engines": {
     "node": ">=19.0.0"
@@ -162,8 +165,8 @@
     "preview:gallery": "vite --config gallery/vite.config.ts",
     "build:gallery": "vite build --config gallery/vite.config.ts",
     "check:gallery": "tsc -p tsconfig.gallery.json",
-    "format": "oxfmt src tests examples gallery scripts vitest.config.ts",
-    "format:check": "oxfmt --check src tests examples gallery scripts vitest.config.ts",
+    "format": "oxfmt src tests docs/examples gallery scripts vitest.config.ts",
+    "format:check": "oxfmt --check src tests docs/examples gallery scripts vitest.config.ts",
     "check:artifacts": "node scripts/check-package-artifacts.mjs",
     "check:release": "node scripts/check-package-artifacts.mjs --release",
     "check:modules": "node scripts/check-module-boundaries.mjs",
@@ -172,16 +175,16 @@
     "check:duplication": "jscpd src --min-lines 8 --min-tokens 70 --threshold 0 --reporters console --silent"
   },
   "dependencies": {
-    "@signalsafe/simulator-core": "0.6.0",
-    "@signalsafe/simulator-react": "0.20.2",
-    "lucide-react": "^1.31.0"
+    "@signalsafe/simulator-core": "0.7.0",
+    "@signalsafe/simulator-react": "0.21.0",
+    "lucide-react": "^1.31.0",
+    "@signalsafe/simulator-theme-bootstrap": "0.13.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@signalsafe/simulator-theme-bootstrap": "0.12.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
     "@types/node": "22.17.0",

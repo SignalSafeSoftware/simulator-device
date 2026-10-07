@@ -22,6 +22,6 @@ it('restores focus to the originating contact after closing details', () => {
         getByRole('button', { name: /Synthetic Contact/ }).closest('[data-simulator-contact-id]'),
     ).not.toBeNull();
     fireEvent.click(getByRole('button', { name: /Synthetic Contact/ }));
-    fireEvent.click(getByRole('button', { name: 'Back to contacts list' }));
+    fireEvent.click(getByRole('button', { name: 'Back' }));
     expect(document.activeElement).toBe(getByRole('button', { name: /Synthetic Contact/ }));
 });

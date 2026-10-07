@@ -1,5 +1,6 @@
 import { SIM_PHONE_INCOMING_CALL_HISTORY } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
+import { useTimestampFormatter } from '@signalsafe/simulator-react/contract/regionalPresentation';
 import type { ReactNode } from 'react';
 import type { PhoneIncomingCallHistoryRow } from './phoneIncomingCallHistoryHelpers.js';
 
@@ -11,6 +12,7 @@ export function SimulatorPhoneIncomingCallHistory({
     recentCalls,
 }: Readonly<SimulatorPhoneIncomingCallHistoryProps>): ReactNode {
     const screenLocale = useSimulatorLocale();
+    const formatTimestamp = useTimestampFormatter();
 
     if (recentCalls.length === 0) {
         return null;
@@ -40,7 +42,7 @@ export function SimulatorPhoneIncomingCallHistory({
                 <tbody>
                     {recentCalls.map((call) => (
                         <tr key={call.id}>
-                            <td>{call.timeLabel}</td>
+                            <td>{formatTimestamp(call.timeLabel)}</td>
                             <td>{call.durationLabel}</td>
                             <td>{call.statusLabel}</td>
                         </tr>

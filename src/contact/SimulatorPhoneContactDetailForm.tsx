@@ -9,11 +9,15 @@ import {
     SIM_PHONE_CONTACT_DETAIL_TITLE,
     SIM_PHONE_CONTACT_DETAIL_VALUE,
 } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
+import { ContactDetailPanel } from '@signalsafe/simulator-react/views/contacts/ContactDetailPanel';
 import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { SIMULATOR_DEVICE_CLASS_NAMES } from '../simulatorDeviceClasses.js';
 import { useId } from 'react';
-import { type SimulatorPhoneContactDetailFormProps } from './contactDetailTypes.js';
+import {
+    ContactDetailMode,
+    type SimulatorPhoneContactDetailFormProps,
+} from './contactDetailTypes.js';
 import {
     fieldId,
     ContactActions,
@@ -57,6 +61,58 @@ export default function SimulatorPhoneContactDetailForm({
         onDelete,
     });
 
+    const actions = renderActions ? (
+        renderActions({
+            contact: draft,
+            onBack: back,
+            onSave: onSave != null ? handleSave : undefined,
+            onDelete: onDelete != null ? handleDelete : undefined,
+            context,
+        })
+    ) : (
+        <ContactActions
+            editable={editable}
+            pending={pending}
+            conflict={conflict}
+            unavailable={unavailable}
+            onSave={onSave}
+            onDelete={onDelete}
+            handleSave={handleSave}
+            handleDelete={handleDelete}
+            back={back}
+        />
+    );
+
+    if (mode === ContactDetailMode.ReadOnly) {
+        return (
+            <ContactDetailPanel
+                contact={draft}
+                onBack={back}
+                titleOnly
+                identityImage={renderIdentityImage?.(draft)}
+                renderPhoneAction={renderPhoneAction}
+                actions={actions}
+                notice={
+                    <>
+                        {unavailable && <output>{unavailable}</output>}
+                        {onDelete && (
+                            <p>
+                                {screenLocale.t(
+                                    'screen.simulatorPhoneContactDetailForm.open.editing.mode.to.delete.this.contact',
+                                )}
+                            </p>
+                        )}
+                    </>
+                }
+                additionalDetails={renderExtraFields?.({
+                    contact: draft,
+                    updateContact: updateField,
+                    context,
+                })}
+            />
+        );
+    }
+
     return (
         <SimulatorPage
             className={SIMULATOR_DEVICE_CLASS_NAMES.contactDetail}
@@ -78,13 +134,6 @@ export default function SimulatorPhoneContactDetailForm({
             )}
             {error && <p role='alert'>{error}</p>}
             {unavailable && <output>{unavailable}</output>}
-            {onDelete && !editable && (
-                <p>
-                    {screenLocale.t(
-                        'screen.simulatorPhoneContactDetailForm.open.editing.mode.to.delete.this.contact',
-                    )}
-                </p>
-            )}
             {conflict && (
                 <output>
                     {screenLocale.t(
@@ -150,25 +199,7 @@ export default function SimulatorPhoneContactDetailForm({
                     })}
                 </fieldset>
 
-                {renderActions?.({
-                    contact: draft,
-                    onBack: back,
-                    onSave: onSave != null ? handleSave : undefined,
-                    onDelete: onDelete != null ? handleDelete : undefined,
-                    context,
-                }) ?? (
-                    <ContactActions
-                        editable={editable}
-                        pending={pending}
-                        conflict={conflict}
-                        unavailable={unavailable}
-                        onSave={onSave}
-                        onDelete={onDelete}
-                        handleSave={handleSave}
-                        handleDelete={handleDelete}
-                        back={back}
-                    />
-                )}
+                {actions}
             </div>
         </SimulatorPage>
     );

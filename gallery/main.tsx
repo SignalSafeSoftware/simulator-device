@@ -1,3 +1,18 @@
+import { ContactDetailMode } from '../src/contact/contactDetailTypes.js';
+import RegionalSettings from '@signalsafe/simulator-react/apps/settings/RegionalSettings';
+import { SimulatorLocaleProvider } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
+import { SimulatorRegionalPresentationProvider } from '@signalsafe/simulator-react/contract/regionalPresentation';
+import {
+    RegionalDateFormat,
+    RegionalTimeFormat,
+    regionalLocale,
+    type RegionalPreferences,
+} from '@signalsafe/simulator-react/apps/settings/regionalFormats';
+import {
+    appearanceStyle,
+    defaultAppearance,
+    type SimulatorAppearance,
+} from '@signalsafe/simulator-theme-bootstrap/appearance';
 import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -67,11 +82,21 @@ function EditContact({ onBack }: Readonly<SimulatorScreenOverrideProps>) {
     );
 }
 function Gallery() {
+    const [appearance, setAppearance] = useState<SimulatorAppearance>();
+    const [regional, setRegional] = useState<RegionalPreferences>({
+        country: 'US',
+        language: 'en',
+        currency: 'USD',
+        dateFormat: RegionalDateFormat.Locale,
+        timeFormat: RegionalTimeFormat.TwelveHour,
+        timeZone: 'UTC',
+    });
     const [surface, setSurface] = useState('scenario');
+    const [editableContacts, setEditableContacts] = useState(false);
     const [unlocked, setUnlocked] = useState(true);
     const [mode, setMode] = useState<GalleryState>('populated');
     const [state, setState] = useState(() => fixture('populated'));
-    const [theme, setTheme] = useState('light');
+    const [theme, setTheme] = useState('default');
     const [width, setWidth] = useState('375');
     const [scale, setScale] = useState('100');
     const [message, setMessage] = useState({ phoneNumber: '', messageBody: '' });
@@ -126,7 +151,7 @@ function Gallery() {
                 }
             }}
             contactDetail={{
-                mode: 'editable',
+                mode: editableContacts ? ContactDetailMode.Editable : ContactDetailMode.ReadOnly,
                 onSave: () => setStatus('Contact accepted in preview only.'),
             }}
             screenOverrides={{ phone: { add_contact: EditContact } }}
@@ -153,6 +178,14 @@ function Gallery() {
             </p>
             <div className='gallery-controls'>
                 <label>
+                    <input
+                        type='checkbox'
+                        checked={editableContacts}
+                        onChange={(event) => setEditableContacts(event.target.checked)}
+                    />
+                    Editable contact details
+                </label>
+                <label>
                     Surface{' '}
                     <select value={surface} onChange={(event) => setSurface(event.target.value)}>
                         <option>scenario</option>
@@ -178,7 +211,7 @@ function Gallery() {
                 <label>
                     Theme{' '}
                     <select value={theme} onChange={(event) => setTheme(event.target.value)}>
-                        <option>light</option>
+                        <option>default</option>
                         <option>dark</option>
                         <option>night mint</option>
                         <option>high contrast</option>
@@ -265,48 +298,78 @@ function Gallery() {
             )}
             <div
                 className='simulator-root simulator-host-device'
-                style={{ width: `${width}px`, maxWidth: '100%' }}
+                style={{
+                    ...(appearance ? appearanceStyle(appearance) : {}),
+                    width: `${width}px`,
+                    maxWidth: '100%',
+                }}
             >
-                <SimulatorCapabilitiesContext.Provider value={capabilities}>
-                    <SimulatorListLoadingContext.Provider value={mode === 'loading'}>
-                        <MessageComposeContext.Provider value={messageCompose}>
-                            {surface === 'device apps' ? (
-                                <SimulatorDeviceApps
-                                    homeHeader={
-                                        <time
-                                            className='prototype-home-clock'
-                                            dateTime='2026-10-03T16:30:00Z'
+                <SimulatorLocaleProvider
+                    locale={regionalLocale(regional)}
+                    timeZone={regional.timeZone}
+                >
+                    <SimulatorRegionalPresentationProvider value={regional}>
+                        <SimulatorCapabilitiesContext.Provider value={capabilities}>
+                            <SimulatorListLoadingContext.Provider value={mode === 'loading'}>
+                                <MessageComposeContext.Provider value={messageCompose}>
+                                    {surface === 'device apps' ? (
+                                        <SimulatorDeviceApps
+                                            homeClock={{
+                                                locale: regionalLocale(regional),
+                                                timeZone: regional.timeZone,
+                                                hour12:
+                                                    regional.timeFormat ===
+                                                    RegionalTimeFormat.TwelveHour,
+                                            }}
+                                            settings={{
+                                                appearance: {
+                                                    value: appearance ?? defaultAppearance,
+                                                    onApply: setAppearance,
+                                                    onReset: () => setAppearance(undefined),
+                                                    resetValue: defaultAppearance,
+                                                },
+                                                regional: (
+                                                    <RegionalSettings
+                                                        value={regional}
+                                                        countries={[
+                                                            { value: 'US', label: 'United States' },
+                                                            {
+                                                                value: 'GB',
+                                                                label: 'United Kingdom',
+                                                            },
+                                                        ]}
+                                                        onSave={setRegional}
+                                                    />
+                                                ),
+                                            }}
+                                            store={store}
+                                            unlocked={unlocked}
+                                            onUnlock={() => setUnlocked(true)}
+                                            onLock={() => setUnlocked(false)}
+                                            state={state}
+                                            dispatch={(action) =>
+                                                setState((current) =>
+                                                    simulatorSessionReducer(current, action),
+                                                )
+                                            }
+                                            openSettings={() =>
+                                                navigate({
+                                                    type: SimulatorDispatchActionType.NavLocal,
+                                                    app: 'home',
+                                                    screen: 'settings',
+                                                })
+                                            }
                                         >
-                                            <span>Saturday, October 3, 2026</span>
-                                            <strong>4:30:00 PM</strong>
-                                        </time>
-                                    }
-                                    store={store}
-                                    unlocked={unlocked}
-                                    onUnlock={() => setUnlocked(true)}
-                                    onLock={() => setUnlocked(false)}
-                                    state={state}
-                                    dispatch={(action) =>
-                                        setState((current) =>
-                                            simulatorSessionReducer(current, action),
-                                        )
-                                    }
-                                    openSettings={() =>
-                                        navigate({
-                                            type: SimulatorDispatchActionType.NavLocal,
-                                            app: 'home',
-                                            screen: 'settings',
-                                        })
-                                    }
-                                >
-                                    {scenario}
-                                </SimulatorDeviceApps>
-                            ) : (
-                                scenario
-                            )}
-                        </MessageComposeContext.Provider>
-                    </SimulatorListLoadingContext.Provider>
-                </SimulatorCapabilitiesContext.Provider>
+                                            {scenario}
+                                        </SimulatorDeviceApps>
+                                    ) : (
+                                        scenario
+                                    )}
+                                </MessageComposeContext.Provider>
+                            </SimulatorListLoadingContext.Provider>
+                        </SimulatorCapabilitiesContext.Provider>
+                    </SimulatorRegionalPresentationProvider>
+                </SimulatorLocaleProvider>
             </div>
         </main>
     );

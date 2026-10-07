@@ -14,6 +14,13 @@ This package provides the complete reusable device UI composition:
 It does **not** include routing, API calls, template management, auth, or CSS. Hosts style the
 semantic classes from this package and `@signalsafe/simulator-react` in their own stylesheets.
 
+## Standalone demo
+
+The [local-apps example](docs/examples/local-apps/README.md) runs the published packages
+with fictional starter data, the shared theme and a Reset demo control. It requires
+no backend or credentials and includes a manual GitHub Pages deployment workflow.
+See its README for local commands, browser checks and publication steps.
+
 ## Install
 
 ```bash
@@ -93,7 +100,7 @@ When `onChange` is provided, contact save/delete updates `value.contacts` immuta
 `onChange(nextValue)` **before** host `onSave` / `onDelete` callbacks. If `onChange` is omitted,
 callbacks still fire but no JSON persistence occurs inside the package.
 
-Omit `contactDetail` to keep the built-in `@signalsafe/simulator-react` contact detail view.
+Omit `contactDetail` to use React's shared `ContactDetailPanel`. The same photo card and value groups also render `contactDetail` in read-only mode. The device owns the single bottom Back action and restores focus to the originating contact row; standalone forms retain their own Back action. `renderActions={() => null}` explicitly omits default form actions.
 Use `renderContactDetail` as a full escape hatch when you need completely custom UI (it takes
 precedence over `contactDetail` when both are set).
 
@@ -380,6 +387,8 @@ The history table uses the semantic class `simulator-phone__incoming-call-histor
 
 When no matching recent calls exist for the active caller, the slot returns `null` (no empty wrappers).
 
+Each row's time is formatted with the host's regional preferences (date and time format, via simulator-react `contract/regionalPresentation`) instead of showing the raw ISO timestamp.
+
 ## Development
 
 ```bash
@@ -493,7 +502,7 @@ The npm archive includes `gallery-dist/`, a self-contained static build that can
 
 ## Release records
 
-See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md). Runtime dependencies are pinned in package.json, with React 18 peers. The local audit build uses checksummed vendor artifacts; release checks require published dependencies. No sibling source checkout is required.
+See [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](docs/RELEASING.md). Runtime dependencies are pinned in package.json, with React 18 peers. Release checks require published dependencies (no `file:` or `link:` pins). No sibling source checkout is required.
 
 Development tooling requires Node 22.22.2+ or Node 24.15+ (jsdom 30); CI selects current Node 22/24. The published runtime retains its Node >=19.0.0 contract and React 18 peers. TypeScript 7, Vite 8 and Vitest 5 are build/test tools, not runtime dependencies.
 
@@ -504,7 +513,7 @@ Node 22/24 (use Node 24.16+ locally). A separate CI job installs packed artifact
 with strict engine checks and tests runtime behavior on Node 19.0.0 and 19–24.
 
 The compatibility job builds this package and installs its declared dependencies
-from npm with strict engine checks. For local audit integration use the pinned vendor artifacts. Before publication, replace file dependencies with released versions and run `yarn check:release`.
+from npm with strict engine checks. Before publication, confirm every dependency is a released version and run `yarn check:release`.
 Regenerate each downstream lockfile after its upstream releases are available.
 No sibling source overrides are used in the runtime matrix.
 
@@ -525,7 +534,7 @@ branches, functions, and lines across the existing source coverage scope.
 - Require core 0.4.1 and React 0.17.0; retain React 18 peers. Theme 0.10.0 is used by the gallery/example.
 
 Use the matching registry version after its release workflow completes. See
-[RELEASING.md](RELEASING.md) for the coordinated release order and consumer
+[RELEASING.md](docs/RELEASING.md) for the coordinated release order and consumer
 validation. Installed package files are never patched.
 
 ### Shared app identifiers
@@ -538,3 +547,9 @@ values stay compatible. Use `isSimulatorApp(value)` at untrusted boundaries and
 channels (`sms`, `browser`, `contacts`), screen names, or contact/input field kinds.
 
 See [AGENTS.md](./AGENTS.md) for module ownership and verification rules. Root imports were removed in the local audit prerelease; use the explicit owner paths shown in the examples.
+
+## Shared device settings
+
+`SimulatorDeviceApps.settings` opts into the shared Settings page. Pass controlled appearance props and a regional adapter that renders `simulator-react/apps/settings/RegionalSettings`; the device supplies its store, locking and Back-to-Home navigation. `SimulatorDeviceSettings` is also available directly at `./apps/SimulatorDeviceSettings`, with optional `onBack` when a surrounding host does not already own navigation. Screen-password controls are included automatically; `children` accepts explicit host features. PhoneMe adds the shared `simulator-react/apps/settings/DeviceBackup` form through this slot alongside its blocking and contact-merge tools. These three sections are absent from the portable demo. Preference persistence stays with the host.
+
+The appearance form defaults to localized shared presets and Reset restores Night. Supply `resetValue` when using host-defined presets with a different reset policy. Palette values and custom CSS-variable mapping live in `simulator-theme-bootstrap/appearance`; that pure data entry imports no CSS. Hosts still import the theme stylesheet explicitly.

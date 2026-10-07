@@ -1,12 +1,13 @@
+import {
+    appearanceTextColor,
+    appearancePresets,
+    defaultAppearance,
+    type SimulatorAppearance,
+} from '@signalsafe/simulator-theme-bootstrap/appearance';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import BackgroundImageField from './BackgroundImageField.js';
 import { useState, type CSSProperties } from 'react';
 
-export interface SimulatorAppearance {
-    background: string;
-    accent: string;
-    backgroundImage?: string;
-}
 export interface SimulatorAppearancePreset extends SimulatorAppearance {
     id: string;
     label: string;
@@ -15,16 +16,27 @@ export interface SimulatorAppearancePreset extends SimulatorAppearance {
 /** Controlled host persistence; preview changes never modify the device until Apply. */
 export default function SimulatorAppearanceSettings({
     value,
-    presets,
+    presets: suppliedPresets,
     onApply,
     onReset,
+    resetValue,
 }: Readonly<{
     value: SimulatorAppearance;
-    presets: readonly SimulatorAppearancePreset[];
+    presets?: readonly SimulatorAppearancePreset[];
     onApply: (value: SimulatorAppearance) => void;
     onReset: () => void;
+    resetValue?: SimulatorAppearance;
 }>) {
     const screenLocale = useSimulatorLocale();
+    const presetLabels = {
+        sage: screenLocale.t('settings.appearance.sage'),
+        ocean: screenLocale.t('settings.appearance.ocean'),
+        sand: screenLocale.t('settings.appearance.sand'),
+        night: screenLocale.t('settings.appearance.night'),
+    };
+    const presets =
+        suppliedPresets ??
+        appearancePresets.map((preset) => ({ ...preset, label: presetLabels[preset.id] }));
 
     const [draft, setDraft] = useState<SimulatorAppearance>(() => ({
         background: value.background,
@@ -159,7 +171,9 @@ export default function SimulatorAppearanceSettings({
                     onClick={() => {
                         setImageReset((current) => current + 1);
                         onReset();
-                        const preset = presets[0];
+                        const preset =
+                            resetValue ??
+                            (suppliedPresets ? suppliedPresets[0] : defaultAppearance);
                         if (preset)
                             setDraft({ background: preset.background, accent: preset.accent });
                         setMessage(
@@ -175,30 +189,4 @@ export default function SimulatorAppearanceSettings({
             <output>{message}</output>
         </section>
     );
-}
-
-const APPEARANCE_TEXT_COLORS = Object.freeze({
-    Dark: '#17211c',
-    Light: '#ffffff',
-    Fallback: '#000000',
-} as const);
-
-/** Compare actual foreground colors, with a black fallback to guarantee 4.5:1. */
-export function appearanceTextColor(hex: string): string {
-    const luminance = (color: string) => {
-        const linear = (start: number) => {
-            const value = Number.parseInt(color.slice(start, start + 2), 16) / 255;
-            return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-        };
-        return linear(1) * 0.2126 + linear(3) * 0.7152 + linear(5) * 0.0722;
-    };
-    const background = luminance(hex);
-    const green = luminance(APPEARANCE_TEXT_COLORS.Dark);
-    const greenContrast =
-        (Math.max(background, green) + 0.05) / (Math.min(background, green) + 0.05);
-    const whiteContrast = 1.05 / (background + 0.05);
-    if (Math.max(greenContrast, whiteContrast) < 4.5) return APPEARANCE_TEXT_COLORS.Fallback;
-    return greenContrast > whiteContrast
-        ? APPEARANCE_TEXT_COLORS.Dark
-        : APPEARANCE_TEXT_COLORS.Light;
 }

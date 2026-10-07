@@ -30,6 +30,7 @@ runSmokePackage({
                 ],
                 './phone/SimulatorPhoneDevice': ['default'],
                 './SimulatorDevice': ['default'],
+                './apps/SimulatorDeviceSettings': ['default'],
                 './apps/SimulatorDeviceApps': ['SimulatorDeviceApps'],
                 './apps/SimulatorDeviceAppsProvider': ['SimulatorDeviceAppsProvider'],
                 './runtime/SimulatorCallBoundary': ['SimulatorCallBoundary'],

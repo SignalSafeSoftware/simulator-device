@@ -42,7 +42,7 @@ it('moves contact actions into the shell footer and restores navigation when edi
         within(menu)
             .getAllByRole('button')
             .map((button) => button.getAttribute('aria-label')),
-    ).toEqual(['Save contact', 'Cancel']);
+    ).toEqual(['Save contact', 'Back']);
     expect(menu.closest('.simulator-device-shell__screen')).toBeNull();
     const save = within(menu).getByRole('button', { name: 'Save contact' });
     expect(save.getAttribute('type')).toBe('submit');
@@ -54,7 +54,7 @@ it('moves contact actions into the shell footer and restores navigation when edi
     fireEvent.change(view.getByLabelText('Name'), { target: { value: 'Synthetic person' } });
     fireEvent.click(within(menu).getByRole('button', { name: 'Save contact' }));
     expect(submit).toHaveBeenCalledExactlyOnceWith('Synthetic person');
-    fireEvent.click(within(menu).getByRole('button', { name: 'Cancel' }));
+    fireEvent.click(within(menu).getByRole('button', { name: 'Back' }));
     expect(cancel).toHaveBeenCalledOnce();
     view.rerender(
         <SimulatorPhoneShell useHostNav nav={<button>Contacts</button>}>
@@ -83,7 +83,7 @@ it('keeps contact save availability and pending actions synchronized with the fo
     );
     const view = render(screen(false, true));
     expect(view.getByRole('button', { name: 'Save contact' }).hasAttribute('disabled')).toBe(true);
-    expect(view.getByRole('button', { name: 'Cancel' }).hasAttribute('disabled')).toBe(false);
+    expect(view.getByRole('button', { name: 'Back' }).hasAttribute('disabled')).toBe(false);
     view.rerender(screen(true, false));
     for (const button of within(view.getByRole('navigation')).getAllByRole('button')) {
         expect(button.hasAttribute('disabled')).toBe(true);

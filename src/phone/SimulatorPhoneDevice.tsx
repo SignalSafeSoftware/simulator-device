@@ -44,11 +44,17 @@ import {
     updateSimulatorPayload,
     type SimulatorDatasource,
 } from '@signalsafe/simulator-react/datasource/datasource';
-import { createSimulatorNavigationDispatch } from '@signalsafe/simulator-react/contract/navigation';
+import {
+    createSimulatorNavigationDispatch,
+    SimulatorNavigationKind,
+    SimulatorNavigationDisposition,
+} from '@signalsafe/simulator-react/contract/navigation';
+import { ContactDetailPanel } from '@signalsafe/simulator-react/views/contacts/ContactDetailPanel';
 import type { SimulatorPhoneIncomingCallExtraRenderProps } from '@signalsafe/simulator-react/ui/renderSlots';
-import type {
-    SimulatorSessionContact,
-    SimulatorSessionState,
+import {
+    getCurrentScreenForApp,
+    type SimulatorSessionContact,
+    type SimulatorSessionState,
 } from '@signalsafe/simulator-react/types/session';
 import { renderPackageContactDetail } from '../contact/renderPackageContactDetail.js';
 import type { SimulatorPhoneDeviceContactDetailOptions } from '../contact/contactDetailTypes.js';
@@ -102,7 +108,7 @@ export interface SimulatorPhoneDeviceProps extends Omit<
      * Takes precedence over {@link contactDetail} when both are set.
      */
     renderContactDetail?: (props: SimulatorPhoneDeviceContactDetailRenderProps) => ReactNode;
-    /** Package generic contact detail form options; omitted uses simulator-react built-in detail. */
+    /** Optional editing or host detail slots; the device defaults to the shared read-only contact panel. */
     contactDetail?: SimulatorPhoneDeviceContactDetailOptions;
     /** Incoming-call slot below Answer/Ignore; defaults to caller history from this package. */
     renderIncomingCallExtra?: (props: SimulatorPhoneIncomingCallExtraRenderProps) => ReactNode;
@@ -171,35 +177,50 @@ export default function SimulatorPhoneDevice({
     );
     const stateRef = useRef(state);
     stateRef.current = state;
-    const hostContactEnabled = renderContactDetail != null || contactDetail != null;
     const { hostMode, contact, clearSelection, onPhoneContactOpen } =
-        useSimulatorPhoneDeviceContactHost(state, hostContactEnabled);
+        useSimulatorPhoneDeviceContactHost(state, true);
     const hideNav = shouldHideHostPhoneNav(state);
 
     const dispatchAndClear = useCallback(
         (action: SimulatorDispatchAction) => {
-            if (action.type === SimulatorDispatchActionType.Back && contact) {
-                clearSelection();
-                return;
-            }
-            if (hostContactEnabled && shouldClearHostContactSelection(action)) {
+            if (shouldClearHostContactSelection(action)) {
                 clearSelection();
             }
             rawDispatch(action);
         },
-        [rawDispatch, clearSelection, hostContactEnabled, contact],
+        [rawDispatch, clearSelection],
     );
 
-    const dispatchWithHostClear = useMemo(
-        () =>
-            createSimulatorNavigationDispatch({
-                getState: () => stateRef.current,
-                dispatch: dispatchAndClear,
-                onNavigation,
-                onNavigationEvent,
-            }),
-        [dispatchAndClear, onNavigation, onNavigationEvent],
-    );
+    const dispatchWithHostClear = useMemo(() => {
+        const dispatchNavigation = createSimulatorNavigationDispatch({
+            getState: () => stateRef.current,
+            dispatch: dispatchAndClear,
+            onNavigation,
+            onNavigationEvent,
+        });
+        return (action: SimulatorDispatchAction) => {
+            if (action.type !== SimulatorDispatchActionType.Back || !contact) {
+                dispatchNavigation(action);
+                return;
+            }
+            // Detail selection belongs to this device; Back returns to the same Contacts route.
+            const current = stateRef.current;
+            const location = {
+                app: current.view.activeApp,
+                screen: getCurrentScreenForApp(current.view),
+                primaryMenu: current.view.showPrimaryMenu,
+            };
+            const request = { kind: SimulatorNavigationKind.Back, from: location, to: location };
+            const handled = onNavigation?.(request) === 'handled';
+            if (!handled) clearSelection();
+            onNavigationEvent?.({
+                ...request,
+                disposition: handled
+                    ? SimulatorNavigationDisposition.Handled
+                    : SimulatorNavigationDisposition.Delegated,
+            });
+        };
+    }, [dispatchAndClear, onNavigation, onNavigationEvent, contact, clearSelection]);
 
     const screenClassNames = [
         ...resolveSimulatorPhoneShellScreenClasses(state, hostMode),
@@ -207,9 +228,7 @@ export default function SimulatorPhoneDevice({
     ];
 
     const showHostContactDetail =
-        hostContactEnabled &&
-        hostMode.kind === SimulatorPhoneShellHostKind.PhoneContactEdit &&
-        contact != null;
+        hostMode.kind === SimulatorPhoneShellHostKind.PhoneContactEdit && contact != null;
 
     useContactListFocusRestore({
         screenRef,
@@ -219,19 +238,11 @@ export default function SimulatorPhoneDevice({
         phoneScreen: state.view.phone.screen,
     });
 
-    const resolvedRenderContactDetail = useMemo(() => {
-        if (renderContactDetail != null) {
-            return renderContactDetail;
-        }
-        if (contactDetail == null) {
-            return undefined;
-        }
-        return (props: SimulatorPhoneDeviceContactDetailRenderProps) =>
-            renderPackageContactDetail({
-                ...props,
-                contactDetail,
-            });
-    }, [renderContactDetail, contactDetail]);
+    const resolvedRenderContactDetail = (props: SimulatorPhoneDeviceContactDetailRenderProps) => {
+        if (renderContactDetail != null) return renderContactDetail(props);
+        if (contactDetail != null) return renderPackageContactDetail({ ...props, contactDetail });
+        return <ContactDetailPanel contact={props.contact} onBack={props.onBack} titleOnly />;
+    };
 
     const runtime = (
         <SimulatorWithSession
@@ -240,21 +251,20 @@ export default function SimulatorPhoneDevice({
             state={state}
             dispatch={dispatchWithHostClear}
             renderIncomingCallExtra={renderIncomingCallExtra}
-            hostOwnsPhoneContactDetail={hostContactEnabled ? true : undefined}
-            onPhoneContactOpen={hostContactEnabled ? onPhoneContactOpen : undefined}
+            hostOwnsPhoneContactDetail
+            onPhoneContactOpen={onPhoneContactOpen}
         />
     );
 
-    const screenContent =
-        showHostContactDetail && resolvedRenderContactDetail != null
-            ? resolvedRenderContactDetail({
-                  contactId: contact.id,
-                  contact,
-                  onBack: clearSelection,
-                  state,
-                  dispatch: dispatchWithHostClear,
-              })
-            : runtime;
+    const screenContent = showHostContactDetail
+        ? resolvedRenderContactDetail({
+              contactId: contact.id,
+              contact,
+              onBack: clearSelection,
+              state,
+              dispatch: dispatchWithHostClear,
+          })
+        : runtime;
 
     const shell = (
         <ComposerStateContext.Provider value={composerContext}>

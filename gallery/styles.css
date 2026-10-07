@@ -49,7 +49,7 @@ main[data-theme='high contrast'] .simulator-root {
 }
 
 /* Explicit gallery appearances override the default package palette as one set. */
-main:not([data-theme='light']) .simulator-root {
+main:not([data-theme='default']) .simulator-root {
     --simulator-nav-bg: var(--bs-body-bg);
     --simulator-nav-color: var(--bs-body-color);
     --simulator-screen-header-bg: var(--bs-tertiary-bg);

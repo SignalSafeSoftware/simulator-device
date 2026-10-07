@@ -1,3 +1,6 @@
+import SimulatorDeviceSettings, {
+    type SimulatorDeviceSettingsProps,
+} from './SimulatorDeviceSettings.js';
 import {
     SimulatorButtonTone,
     simBtnToneClass,
@@ -11,6 +14,7 @@ import {
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { useState, type ReactNode } from 'react';
 import DeviceHome from '@signalsafe/simulator-react/apps/home/DeviceHome';
+import type { HomeClockOptions } from '@signalsafe/simulator-react/apps/home/HomeClock';
 import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 import SimulatorPhoneShell from '../phone/SimulatorPhoneShell.js';
 import SimulatorPhoneNav from '../phone/SimulatorPhoneNav.js';
@@ -26,7 +30,9 @@ const DeviceAppsPage = Object.freeze({ Vault: 'vault', Photos: 'photos' } as con
 type DeviceAppsPage = (typeof DeviceAppsPage)[keyof typeof DeviceAppsPage];
 
 interface DeviceAppsContentProps {
+    settings?: Omit<SimulatorDeviceSettingsProps, 'store' | 'onLock' | 'onBack'>;
     homeHeader?: ReactNode;
+    homeClock?: HomeClockOptions;
     renderMailbox?: (onBack: () => void) => ReactNode;
     decorate?: (content: ReactNode) => ReactNode;
     browserThemeCss?: string;
@@ -72,6 +78,7 @@ function HomeContent({
     page,
     setPage,
     homeHeader,
+    homeClock,
     openSettings,
     onLock,
 }: Readonly<{
@@ -79,6 +86,7 @@ function HomeContent({
     page: DeviceAppsPage | null;
     setPage: (page: DeviceAppsPage | null) => void;
     homeHeader?: ReactNode;
+    homeClock?: HomeClockOptions;
     openSettings: () => void;
     onLock: () => void;
 }>) {
@@ -87,6 +95,7 @@ function HomeContent({
         return <Photos store={store} onBack={() => setPage(null)} />;
     return (
         <DeviceHome
+            homeClock={homeClock}
             homeHeader={homeHeader}
             onOpenSettings={openSettings}
             onOpenVault={() => setPage(DeviceAppsPage.Vault)}
@@ -106,6 +115,8 @@ function DeviceAppsContent({
     openSettings,
     browserThemeCss = '',
     homeHeader,
+    homeClock,
+    settings,
     renderMailbox,
     decorate = (content) => content,
     children,
@@ -127,9 +138,30 @@ function DeviceAppsContent({
                 store={store}
                 page={page}
                 setPage={setPage}
+                homeClock={homeClock}
                 homeHeader={homeHeader}
                 openSettings={openSettings}
                 onLock={onLock}
+            />
+        );
+    } else if (
+        activeApp === SimulatorApp.Home &&
+        homeView.screen === SimulatorHomeScreenId.Settings &&
+        settings
+    ) {
+        content = (
+            <SimulatorDeviceSettings
+                {...settings}
+                store={store}
+                onLock={onLock}
+                onBack={() => {
+                    setPage(null);
+                    dispatch({
+                        type: SimulatorDispatchActionType.NavLocal,
+                        app: SimulatorApp.Home,
+                        screen: SimulatorHomeScreenId.Home,
+                    });
+                }}
             />
         );
     } else if (activeApp === SimulatorApp.Email) {

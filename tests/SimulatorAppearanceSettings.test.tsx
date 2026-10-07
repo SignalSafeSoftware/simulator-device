@@ -1,8 +1,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import SimulatorAppearanceSettings, {
-    appearanceTextColor,
-} from '../src/appearance/SimulatorAppearanceSettings.js';
+import SimulatorAppearanceSettings from '../src/appearance/SimulatorAppearanceSettings.js';
+import { appearanceTextColor } from '@signalsafe/simulator-theme-bootstrap/appearance';
 
 it('previews a preset without applying it until requested and can reset', () => {
     const onApply = vi.fn(),

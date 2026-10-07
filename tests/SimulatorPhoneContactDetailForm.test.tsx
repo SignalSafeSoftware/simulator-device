@@ -1,3 +1,4 @@
+import { SimulatorCapabilitiesContext } from '@signalsafe/simulator-react/contract/capabilities';
 import { SimulatorLocaleProvider } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render } from '@testing-library/react';
@@ -33,7 +34,7 @@ describe('SimulatorPhoneContactDetailForm', () => {
         );
 
         expect(getByText('Alice Chen')).toBeInstanceOf(HTMLElement);
-        expect(getByText('+1-555-100-2000')).toBeInstanceOf(HTMLElement);
+        expect(getByText('+1 555 100 2000')).toBeInstanceOf(HTMLElement);
         expect(getByText('alice@example.com')).toBeInstanceOf(HTMLElement);
     });
 
@@ -460,4 +461,70 @@ it('gives two editors of the same contact distinct stable label targets', () => 
     expect(Array.from(view.container.querySelectorAll('input')).map((input) => input.id)).toEqual(
         ids,
     );
+});
+
+it('uses the shared contact card in read-only mode including postal values', () => {
+    const { container, getByRole, getByText } = render(
+        <SimulatorPhoneContactDetailForm
+            contact={{
+                id: 'postal',
+                displayName: 'Postal contact',
+                postalAddresses: [{ label: 'Work', value: '10 Example Street' }],
+            }}
+            mode='read-only'
+            onBack={vi.fn()}
+            context={context}
+        />,
+    );
+    expect(container.querySelector('.simulator-contact-detail .contact-detail-card')).toBeTruthy();
+    expect(getByRole('heading', { name: 'Postal addresses' })).toBeTruthy();
+    expect(getByText('10 Example Street')).toBeTruthy();
+});
+
+it('lets an explicit null action renderer leave navigation to the surrounding device', () => {
+    const renderActions = vi.fn(() => null);
+    const view = render(
+        <SimulatorPhoneContactDetailForm
+            contact={context.originalContact}
+            mode='read-only'
+            onBack={vi.fn()}
+            context={context}
+            renderActions={renderActions}
+        />,
+    );
+    expect(renderActions).toHaveBeenCalledWith(
+        expect.objectContaining({ onBack: expect.any(Function), context }),
+    );
+    expect(view.queryByRole('button', { name: 'Back to contacts list' })).toBeNull();
+    expect(view.container.querySelector('.contact-detail-card__actions')).toBeNull();
+});
+
+it('explains an unavailable capability in read-only mode', () => {
+    const view = render(
+        <SimulatorCapabilitiesContext.Provider
+            value={{ editContact: { state: 'unavailable', reason: 'Read access only' } }}
+        >
+            <SimulatorPhoneContactDetailForm
+                contact={context.originalContact}
+                mode='read-only'
+                onBack={vi.fn()}
+                context={context}
+            />
+        </SimulatorCapabilitiesContext.Provider>,
+    );
+    expect(view.getByText('Read access only')).toBeTruthy();
+});
+
+it('renders plain text fields for a mode value that is not editable at runtime', () => {
+    const view = render(
+        <SimulatorPhoneContactDetailForm
+            contact={context.originalContact}
+            mode={'preview' as never}
+            onBack={vi.fn()}
+            context={context}
+        />,
+    );
+    expect(view.getByText('Contact')).toBeTruthy();
+    expect(view.getByText('Alice Chen')).toBeTruthy();
+    expect(view.queryByRole('textbox')).toBeNull();
 });

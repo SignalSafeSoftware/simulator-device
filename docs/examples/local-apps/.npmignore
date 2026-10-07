@@ -1,0 +1,6 @@
+# Local integration artifacts must not be nested inside the simulator-device package.
+vendor/
+node_modules/
+dist/
+test-results/
+playwright-report/

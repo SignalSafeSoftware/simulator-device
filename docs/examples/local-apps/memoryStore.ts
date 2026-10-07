@@ -1,4 +1,3 @@
-import { emptySimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
 import { summarizeDevice } from '@signalsafe/simulator-core/apps/deviceData';
 import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
 import type {
@@ -6,14 +5,25 @@ import type {
     DeviceRecords,
     DeviceQuery,
 } from '@signalsafe/simulator-core/apps/deviceData';
-import type { SimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
+import type { Photo, SimulatorStore } from '@signalsafe/simulator-core/apps/contracts';
+import { createDemoStore } from './demoData';
 
 /** Runs synchronous work and reports thrown errors as rejections, like an async method. */
 const settle = <T>(run: () => T): Promise<T> => Promise.resolve().then(run);
 
+/** Capture time when readable, otherwise when the photo was added. */
+const photoTime = ({ metadata, createdAt }: Photo): number => {
+    const captured = Date.parse(metadata.capturedAt);
+    return Number.isFinite(captured) ? captured : Date.parse(createdAt);
+};
+const newestFirst = (a: DeviceRecords[DeviceCollection], b: DeviceRecords[DeviceCollection]) =>
+    'metadata' in a && 'metadata' in b
+        ? photoTime(b) - photoTime(a) || a.id.localeCompare(b.id)
+        : 0;
+
 /** Example-only host adapter. The packages neither choose nor own persistence. */
 export function createMemoryStore(changed: () => void): DeviceStore {
-    let state = emptySimulatorStore();
+    let state = createDemoStore();
     const records = <K extends DeviceCollection>(collection: K): DeviceRecords[K][] => {
         const collections: { [P in DeviceCollection]: DeviceRecords[P][] } = state;
         return collections[collection];
@@ -55,6 +65,7 @@ export function createMemoryStore(changed: () => void): DeviceStore {
         page: (collection, query) =>
             settle(() => {
                 const matches = filtered(collection, query);
+                if (collection === 'photos') matches.sort(newestFirst);
                 const offset = query.offset ?? 0;
                 return {
                     records: matches.slice(offset, offset + (query.limit ?? 20)),

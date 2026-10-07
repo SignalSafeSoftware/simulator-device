@@ -20,3 +20,7 @@ Migrate exported persisted data before loading it through the new packages. Prod
 ## Supported APIs retained
 
 Editable `value` and immutable `datasource` inputs have different update/reset semantics. `onSimulatorEvent` carries interaction telemetry; `onNavigation` controls navigation and `onNavigationEvent` observes it. Numeric IDs and optional authored SMS message IDs are valid inputs. None of these is a forwarding alias or a deprecated screen implementation.
+
+## Shared settings extraction (local prerelease)
+
+Import `SimulatorAppearance` and `appearanceTextColor` from `@signalsafe/simulator-theme-bootstrap/appearance`, their defining owner, instead of `simulator-device/appearance/SimulatorAppearanceSettings`. The controlled form retains its existing subpath. No compatibility exports are supplied. Hosts must install the matching theme artifact as well as React/device artifacts.

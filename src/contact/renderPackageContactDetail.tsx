@@ -27,6 +27,7 @@ export function renderPackageContactDetail({
     contactDetail: SimulatorPhoneDeviceContactDetailOptions;
 }): ReactNode {
     const values = contactSnapshotFromSessionContact(contact);
+    const mode = contactDetail.mode ?? ContactDetailMode.ReadOnly;
     const context = {
         state,
         dispatch,
@@ -36,7 +37,7 @@ export function renderPackageContactDetail({
     return (
         <SimulatorPhoneContactDetailForm
             contact={{ ...values, id: contactId }}
-            mode={contactDetail.mode ?? ContactDetailMode.ReadOnly}
+            mode={mode}
             onBack={onBack}
             onSave={
                 contactDetail.onSave
@@ -52,7 +53,10 @@ export function renderPackageContactDetail({
             renderIdentityImage={contactDetail.renderIdentityImage}
             renderPhoneAction={contactDetail.renderPhoneAction}
             renderExtraFields={contactDetail.renderExtraFields}
-            renderActions={contactDetail.renderActions}
+            renderActions={
+                contactDetail.renderActions ??
+                (mode === ContactDetailMode.ReadOnly ? () => null : undefined)
+            }
             context={context}
         />
     );

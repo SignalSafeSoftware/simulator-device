@@ -26,7 +26,6 @@ describe('package boundaries', () => {
             /from ['"]@shared\//,
             /from ['"]@\/shared\//,
             /DeliveryPlus/,
-            /bootstrap/,
             /@mui\//,
             /material-ui/,
             /MutationObserver/,
@@ -35,6 +34,20 @@ describe('package boundaries', () => {
         const violations: string[] = [];
         for (const file of listSourceFiles(path.join(packageRoot, 'src'))) {
             const content = readFileSync(file, 'utf8');
+            // Pure palette/contrast data belongs to the shared theme. The device
+            // still must not import Bootstrap components, runtime, or stylesheets.
+            for (const [, specifier] of content.matchAll(
+                /(?:from\s*|import\s*\(\s*|import\s*)['"]([^'"]+)['"]/g,
+            )) {
+                if (
+                    specifier?.includes('bootstrap') &&
+                    specifier !== '@signalsafe/simulator-theme-bootstrap/appearance'
+                ) {
+                    violations.push(
+                        `${path.relative(packageRoot, file)}: forbidden Bootstrap import ${specifier}`,
+                    );
+                }
+            }
             for (const pattern of forbidden) {
                 if (pattern.test(content)) {
                     violations.push(`${path.relative(packageRoot, file)}: ${pattern}`);

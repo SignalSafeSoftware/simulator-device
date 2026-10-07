@@ -1,0 +1,59 @@
+/* Surrounding demo page only. Simulator presentation belongs to the shared theme. */
+body {
+    margin: 0;
+    background: #f6f6f0;
+    color: #243a32;
+    font-family: system-ui, sans-serif;
+}
+.demo-page {
+    max-width: 60rem;
+    margin-inline: auto;
+    padding: 1.5rem 0.5rem 3rem;
+}
+.demo-intro {
+    overflow-wrap: anywhere;
+    max-width: 42rem;
+    margin-inline: auto;
+    text-align: center;
+}
+.demo-intro h1 {
+    margin-block: 0 0.75rem;
+}
+.demo-intro p {
+    line-height: 1.6;
+}
+.demo-intro a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+}
+.demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-block: 1rem;
+}
+.demo-controls button {
+    font: inherit;
+    color: inherit;
+    background: white;
+    border: 1px solid #85958c;
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    cursor: pointer;
+}
+.demo-controls button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+.demo-controls :focus-visible {
+    outline: 3px solid #236b57;
+    outline-offset: 3px;
+}
+.demo-preview {
+    display: flex;
+    justify-content: center;
+    max-width: 430px;
+    margin: 1.5rem auto 0;
+}

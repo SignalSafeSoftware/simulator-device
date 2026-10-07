@@ -32,11 +32,14 @@ it('handles single-token names and independently copies contact endpoint arrays'
         displayName: 'Ada',
         phoneNumbers: [{ label: 'Home', value: '123' }],
         emailAddresses: [{ label: 'Work', value: 'ada@example.test' }],
+        postalAddresses: [{ label: 'Office', value: '10 Example Street' }],
     };
     const result = contactSnapshotFromSessionContact(contact);
     expect(result.phoneNumbers).toEqual(contact.phoneNumbers);
     expect(result.phoneNumbers?.[0]).not.toBe(contact.phoneNumbers[0]);
     expect(result.emailAddresses?.[0]).not.toBe(contact.emailAddresses[0]);
+    expect(result.postalAddresses).toEqual(contact.postalAddresses);
+    expect(result.postalAddresses?.[0]).not.toBe(contact.postalAddresses[0]);
 });
 it('inserts into missing contact lists and removes without mutating the source', () => {
     const original = { entry_point: { app: 'phone' as const, screen: 'contacts' } };

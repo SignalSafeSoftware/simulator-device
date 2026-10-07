@@ -1,6 +1,7 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import SimulatorAppearanceSettings from '../src/appearance/SimulatorAppearanceSettings';
+import { defaultAppearance } from '@signalsafe/simulator-theme-bootstrap/appearance';
 import BackgroundImageField from '../src/appearance/BackgroundImageField';
 
 it('previews individual colors and removes a background before applying', () => {
@@ -67,6 +68,20 @@ it('resets without a preset while retaining the current colors', () => {
     fireEvent.click(view.getByRole('button', { name: 'Apply appearance' }));
     expect(onReset).toHaveBeenCalledOnce();
     expect(onApply).toHaveBeenCalledWith(value);
+});
+
+it('falls back to the default appearance when neither presets nor a reset value are supplied', () => {
+    const onApply = vi.fn();
+    const view = render(
+        <SimulatorAppearanceSettings
+            value={{ background: '#010203', accent: '#ffffff' }}
+            onApply={onApply}
+            onReset={vi.fn()}
+        />,
+    );
+    fireEvent.click(view.getByRole('button', { name: 'Reset appearance' }));
+    fireEvent.click(view.getByRole('button', { name: 'Apply appearance' }));
+    expect(onApply).toHaveBeenCalledWith(defaultAppearance);
 });
 
 it('ignores stale file readers and non-string results', () => {

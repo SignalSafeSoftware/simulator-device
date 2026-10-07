@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.21.0 — October 7, 2026
+
+- Require simulator-react 0.21.0, core 0.7.0 and theme 0.13.0.
+- Format incoming-call history times with the host's regional preferences instead of showing the raw timestamp.
+- Add the shared Settings page (`apps/SimulatorDeviceSettings`) with Appearance, Region and formats, and Screen password sections; extend the synthetic UI gallery with these screens and the shared contact editor.
+- Route call history, call details and the contact editor through the shared simulator-react components used by PhoneMe.
+- Demo (`docs/examples/local-apps`): use real sample photos with capture dates and locations, add, edit and delete contacts with the shared editor, show the shared Home clock, and deploy to GitHub Pages with the `Simulator demo` workflow. Browser tests cover contacts, data, messages, thread scrolling, layout and the demo screens.
+- Move `MIGRATION.md`, `RELEASING.md` and `examples/` into `docs/` (`docs/examples/local-apps`), still shipped in the package.
+
 ## 0.20.1 — October 5, 2026
 
 - Require simulator-react 0.20.2, which fixes `LoadMore` requesting an extra page when the loaded count changes, and 0.20.1's malformed-active-app fix. Use 0.20.1 instead of 0.20.0.
