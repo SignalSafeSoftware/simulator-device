@@ -15,7 +15,10 @@ import {
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
-import { SimulatorHomeScreenId } from '@signalsafe/simulator-core/devicePayload';
+import {
+    SimulatorHomeScreenId,
+    SimulatorPhoneScreenId,
+} from '@signalsafe/simulator-core/devicePayload';
 import { SimulatorDispatchActionType } from '@signalsafe/simulator-react/state/simulatorDispatchActions';
 import PhoneCallView, {
     PhoneCallPhase,
@@ -25,7 +28,6 @@ import { SimulatorCallBoundary } from '@signalsafe/simulator-device/runtime/Simu
 import SimulatorPhoneDevice from '@signalsafe/simulator-device/phone/SimulatorPhoneDevice';
 import SimulatorPhoneShell from '@signalsafe/simulator-device/phone/SimulatorPhoneShell';
 import ContactDetailActions from '@signalsafe/simulator-react/views/contacts/ContactDetailActions';
-import { SimulatorPhoneScreenId } from '@signalsafe/simulator-core/devicePayload';
 import { DemoContactsContext, demoScreenOverrides } from './demoContactsScreen';
 import '@signalsafe/simulator-theme-bootstrap/styles.css';
 import { createMemoryStore } from './memoryStore';

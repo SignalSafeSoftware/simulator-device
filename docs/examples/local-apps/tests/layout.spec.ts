@@ -2,6 +2,23 @@ import { expect, test } from '@playwright/test';
 
 test.use({ timezoneId: 'UTC' });
 
+function homeTilesFit(tiles: Element[]) {
+    return (
+        tiles.length === 3 &&
+        tiles.every((tile) => {
+            const screen = tile.closest('.simulator-device-shell__screen');
+            if (!screen) return false;
+            const bounds = screen.getBoundingClientRect();
+            const rect = tile.getBoundingClientRect();
+            return (
+                rect.left >= bounds.left &&
+                rect.right <= bounds.right &&
+                tile.scrollWidth <= tile.clientWidth
+            );
+        })
+    );
+}
+
 test('demo controls and package headers remain usable at narrow widths and enlarged text', async ({
     page,
 }) => {
@@ -34,21 +51,9 @@ test('demo controls and package headers remain usable at narrow widths and enlar
                     `${name} header at ${width}px / ${scale}%`,
                 ).toBeLessThanOrEqual(1);
                 if (name === 'Home') {
-                    const tilesFit = await page.locator('.prototype-home button').evaluateAll(
-                        (tiles) =>
-                            tiles.length === 3 &&
-                            tiles.every((tile) => {
-                                const screen = tile.closest('.simulator-device-shell__screen');
-                                if (!screen) return false;
-                                const bounds = screen.getBoundingClientRect();
-                                const rect = tile.getBoundingClientRect();
-                                return (
-                                    rect.left >= bounds.left &&
-                                    rect.right <= bounds.right &&
-                                    tile.scrollWidth <= tile.clientWidth
-                                );
-                            }),
-                    );
+                    const tilesFit = await page
+                        .locator('.prototype-home button')
+                        .evaluateAll(homeTilesFit);
                     expect(tilesFit, `Home tiles at ${width}px / ${scale}%`).toBe(true);
                     const clockFits = await page
                         .locator('.prototype-home-clock')

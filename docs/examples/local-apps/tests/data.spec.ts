@@ -112,7 +112,7 @@ test('gallery photos show their own capture details without external requests', 
         );
         await page.getByRole('button', { name: 'Edit photo', exact: true }).click();
         await expect(page.getByLabel('Capture date and time', { exact: true })).toHaveValue(
-            new RegExp(`^${photo.captured.replace(' ', 'T').slice(0, 16)}(?::\\d{2})?$`),
+            new RegExp(String.raw`^${photo.captured.replace(' ', 'T').slice(0, 16)}(?::\d{2})?$`),
         );
         await expect(
             page.getByLabel('Capture time zone or UTC offset (blank if unknown)'),

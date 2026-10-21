@@ -182,7 +182,7 @@ function Gallery() {
                         type='checkbox'
                         checked={editableContacts}
                         onChange={(event) => setEditableContacts(event.target.checked)}
-                    />
+                    />{' '}
                     Editable contact details
                 </label>
                 <label>
