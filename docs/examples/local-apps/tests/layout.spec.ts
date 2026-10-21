@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 test.use({ timezoneId: 'UTC' });
 
@@ -17,6 +17,15 @@ function homeTilesFit(tiles: Element[]) {
             );
         })
     );
+}
+
+async function returnToHome(page: Page, name: string) {
+    if (name === 'Home') return;
+    if (name === 'Internet') {
+        await page.getByRole('button', { name: 'Home', exact: true }).click();
+        return;
+    }
+    await page.getByRole('button', { name: 'Back', exact: true }).click();
 }
 
 test('demo controls and package headers remain usable at narrow widths and enlarged text', async ({
@@ -92,12 +101,8 @@ test('demo controls and package headers remain usable at narrow widths and enlar
                             });
                         });
                     expect(controlsFit, `Settings controls at ${width}px / ${scale}%`).toBe(true);
-                    await page.getByRole('button', { name: 'Back', exact: true }).click();
-                } else if (name === 'Internet') {
-                    await page.getByRole('button', { name: 'Home', exact: true }).click();
-                } else {
-                    await page.getByRole('button', { name: 'Back', exact: true }).click();
                 }
+                await returnToHome(page, name);
                 await expect(
                     page.getByRole('heading', { name: 'Home', exact: true }),
                 ).toBeVisible();
