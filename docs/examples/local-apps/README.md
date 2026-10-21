@@ -74,17 +74,18 @@ To publish it, an owner can:
 4. Open the URL returned by the deployment job. With the default organization
    domain, the expected address is `https://signalsafesoftware.github.io/simulator-device/`.
 
-The demo currently depends on the released package versions pinned in `package.json`
-(core 0.7.0, react 0.21.0, theme-bootstrap 0.13.0 and device 0.21.0), which the
-workflow installs from npm with `npm ci`. After releasing new packages, update
-the pins, run `npm install` to regenerate `package-lock.json`, and re-run the
-workflow. This setup does not publish packages by itself. The demo starts with the original blue layered-wave wallpaper in `wallpaper-strata.webp` (generated artwork, no third-party image) on the Night palette, plus the shared clock and layout. Reset demo restores it; Settings > Appearance can replace it with a PNG, JPEG or WebP up to 2 MiB.
-The coordinated release candidate is core `0.7.1`, React/device `0.21.1` and
-theme `0.13.1`. Its packed-artifact rehearsal uses all four archives together in
-an isolated copy. Keep the committed registry pins and lock unchanged until all
-four approved artifacts are available from npm; then update every pin and
-regenerate this separate npm lock using the package manager. An archive rehearsal
-is not proof that `npm ci` can resolve unpublished versions.
+The demo pins the published coordinated releases: core `0.7.1`, React/device
+`0.21.1` and theme `0.13.1`. Its separate npm lock resolves the shared TreeSpec
+`0.4.4` through an explicit override, with patched Zod `4.6.7`. Regenerate this
+lock with npm only after upstream versions are available from the registry;
+`npm ci` installs those verified public artifacts. The package release archive
+retains the earlier demo lock as publication-time history; this source follow-up
+does not republish or modify that immutable package version.
+
+The demo starts with the original blue layered-wave wallpaper in
+`wallpaper-strata.webp` (generated artwork, no third-party image) on the Night
+palette, plus the shared clock and layout. Reset demo restores it; Settings >
+Appearance can replace it with a PNG, JPEG or WebP up to 2 MiB.
 
 Never add credentials or real user records to a public demo.
 

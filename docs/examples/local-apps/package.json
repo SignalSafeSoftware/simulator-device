@@ -9,10 +9,10 @@
         "test:browser": "playwright test"
     },
     "dependencies": {
-        "@signalsafe/simulator-core": "0.7.0",
-        "@signalsafe/simulator-device": "0.21.0",
-        "@signalsafe/simulator-react": "0.21.0",
-        "@signalsafe/simulator-theme-bootstrap": "0.13.0",
+        "@signalsafe/simulator-core": "0.7.1",
+        "@signalsafe/simulator-device": "0.21.1",
+        "@signalsafe/simulator-react": "0.21.1",
+        "@signalsafe/simulator-theme-bootstrap": "0.13.1",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "libphonenumber-js": "1.13.14"
@@ -32,6 +32,7 @@
         "@signalsafe/simulator-device": "$@signalsafe/simulator-device",
         "@signalsafe/simulator-react": "$@signalsafe/simulator-react",
         "@signalsafe/simulator-theme-bootstrap": "$@signalsafe/simulator-theme-bootstrap",
-        "@signalsafe/simulator-core": "$@signalsafe/simulator-core"
+        "@signalsafe/simulator-core": "$@signalsafe/simulator-core",
+        "@signalsafe/tree-spec": "0.4.4"
     }
 }
