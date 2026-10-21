@@ -191,7 +191,7 @@ jobs:
 
     publish:
         name: Publish
-        needs: [checks, tests, smoke-package, runtime-compatibility]
+        needs: [checks, tests, scan, smoke-package, runtime-compatibility]
         if: |
             startsWith(github.ref, 'refs/tags/v') &&
             needs.checks.result == 'success' &&

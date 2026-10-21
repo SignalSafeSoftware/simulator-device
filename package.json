@@ -1,6 +1,6 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "type": "module",
   "description": "Reusable full phone/device simulator UI composition on top of @signalsafe/simulator-react.",
   "license": "MIT",
@@ -175,10 +175,10 @@
     "check:duplication": "jscpd src --min-lines 8 --min-tokens 70 --threshold 0 --reporters console --silent"
   },
   "dependencies": {
-    "@signalsafe/simulator-core": "0.7.0",
-    "@signalsafe/simulator-react": "0.21.0",
+    "@signalsafe/simulator-core": "0.7.1",
+    "@signalsafe/simulator-react": "0.21.1",
     "lucide-react": "^1.31.0",
-    "@signalsafe/simulator-theme-bootstrap": "0.13.0"
+    "@signalsafe/simulator-theme-bootstrap": "0.13.1"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -200,5 +200,8 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
+  },
+  "resolutions": {
+    "@signalsafe/tree-spec": "0.4.4"
   }
 }
