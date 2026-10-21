@@ -7,7 +7,7 @@ function threadScrollBody(page: Page): Locator {
     return page.locator('.simulator-messages__thread-detail > .simulator-overflow-auto');
 }
 
-async function scrollMetrics(body: Locator) {
+function scrollMetrics(body: Locator) {
     return body.evaluate((element) => ({
         top: element.scrollTop,
         maximum: element.scrollHeight - element.clientHeight,
