@@ -1,5 +1,31 @@
 # @signalsafe/simulator-device
 
+## Coordinated release — approved 2026-10-21
+
+| Package | Prepared version | Required simulator dependencies |
+| --- | --- | --- |
+| `@signalsafe/simulator-core` | `0.7.1` | none |
+| `@signalsafe/simulator-theme-bootstrap` | `0.13.1` | none |
+| `@signalsafe/simulator-react` | `0.21.1` | core `0.7.1`; optional default theme `^0.13.1` |
+| `@signalsafe/simulator-device` | `0.21.1` | core `0.7.1`, React `0.21.1`, theme `0.13.1` (exact) |
+
+These compatible patches preserve the existing public runtime API and shared UI.
+React and the default theme must be adopted together: the corrected frame markup
+requires the matching CSS. A custom theme remains an explicit host responsibility.
+The optional theme peer does not install or require the default theme for unstyled
+integrations. Node runtime support remains `>=19.0.0`; build tools use Node 22/24.
+
+Publish core and theme first, then React, then device, only after explicit approval
+and successful gated tag workflows. Download and verify each upstream registry
+artifact before refreshing downstream Yarn locks and the device demo npm lock.
+Future registry integrity values must never be fabricated. Before upstream
+publication, coherent packed-artifact installs provide candidate evidence only;
+frozen standalone registry installs remain a separate release gate.
+
+Existing local host archives retain their recorded provenance until the approved
+registry artifacts pass all host checks. Historical release notes below describe
+their original checkpoints and do not authorize publication or host replacement.
+
 Reusable full phone/device simulator UI for hosts building on
 [`@signalsafe/simulator-react`](https://www.npmjs.com/package/@signalsafe/simulator-react) and
 [`@signalsafe/simulator-core`](https://www.npmjs.com/package/@signalsafe/simulator-core).
@@ -417,7 +443,7 @@ simulator-react, without artificial history/contacts screen hops.
 The full contract and release sequence are in simulator-react's
 `docs/navigation-contract.md`. Release simulator-react first and raise this
 package's dependency minimum to that new version before releasing device.
-The local audit candidate pins simulator-react and simulator-core artifacts in package.json. No host-specific Settings implementation is included.
+The package manifest declares the compatible simulator-core, simulator-react and default theme versions. Hosts own provider-specific Settings controls through slots.
 
 ### Host screen content
 
@@ -519,14 +545,14 @@ No sibling source overrides are used in the runtime matrix.
 
 ### Dependency revisions and coverage
 
-Use the core and React versions pinned in package.json for this local migration.
+Use the exact simulator versions declared in package.json and adopt React with its matching default theme.
 The runtime matrix installs these registry releases through the packed device
 manifest, including their TreeSpec dependency.
 
 Run `yarn test:coverage` to check the unit suite. CI requires 100% statements,
 branches, functions, and lines across the existing source coverage scope.
 
-## Local app migration (0.17.0, release candidate)
+## Historical local app migration (0.17.0, release candidate)
 
 - Export `SimulatorDeviceApps`, `SimulatorDeviceAppsProvider` and `SimulatorCallBoundary` for Home, local apps, locking and call overlays that preserve mounted drafts.
 - Delegate app navigation items to the shared React primitive while preserving existing device CSS hooks.
@@ -546,7 +572,7 @@ values stay compatible. Use `isSimulatorApp(value)` at untrusted boundaries and
 `Object.values(SimulatorApp)` when enumerating all apps. Do not confuse app IDs with
 channels (`sms`, `browser`, `contacts`), screen names, or contact/input field kinds.
 
-See [AGENTS.md](./AGENTS.md) for module ownership and verification rules. Root imports were removed in the local audit prerelease; use the explicit owner paths shown in the examples.
+See [AGENTS.md](./AGENTS.md) for module ownership and verification rules. Use the explicit declaring-module paths shown in the examples; root imports are not supported. Historical local archive adoption remains recorded by each host.
 
 ## Shared device settings
 

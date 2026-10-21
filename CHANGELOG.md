@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.1] - Release approved 2026-10-21
+
+Publication now waits for the existing hosted Sonar scan; the matching-tag-only publication condition is unchanged.
+
+Composes core `0.7.1`, React `0.21.1` and theme `0.13.1` through exact dependencies. Preserves the shared screens, gallery and portable demo, including the separate demo dependency lock and patched Zod closure.
+
 ## 0.21.0 — October 7, 2026
 
 - Require simulator-react 0.21.0, core 0.7.0 and theme 0.13.0.
