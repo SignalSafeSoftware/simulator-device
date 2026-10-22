@@ -1,5 +1,15 @@
 # @signalsafe/simulator-device
 
+## 0.21.2 — email layout dependency patch approved 2026-10-21
+
+This approved metadata-only patch adopts exact theme 0.13.2 so hosts use one
+shared theme copy with the corrected email field/body/attachment scroll flow.
+Core 0.7.1, React 0.21.1, public exports and device runtime behavior are unchanged.
+The gallery is rebuilt with the approved theme. Publication requires genuine
+registry lock finalization after theme publication, all existing quality/Sonar/
+packed/gallery gates, and public artifact verification.
+
+
 ## Coordinated release — approved 2026-10-21
 
 | Package | Prepared version | Required simulator dependencies |

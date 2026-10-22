@@ -1,5 +1,23 @@
 # Releasing `@signalsafe/simulator-device`
 
+## Email layout dependency patch — approved 2026-10-21
+
+Publish and verify theme 0.13.2 first, then finalize Device 0.21.2 with that exact
+registry dependency. Core 0.7.1 and React 0.21.1 remain unchanged. The isolated
+candidate rehearsal uses the verified local theme archive only in its disposable
+installation; the release manifest retains registry version 0.13.2.
+
+The genuine Yarn lock resolves the verified public theme 0.13.2 archive. Only
+that theme dependency record changes; all other lock bytes remain unchanged.
+Require frozen installation/full owner quality/Sonar/packed/gallery checks before
+any Device tag/publication. Never fabricate future registry metadata. The portable demo manifest and
+npm lock remain coherently on the last published Device/theme pair until Device
+0.21.2 is public, avoiding a circular unpublished self-dependency. Then update both
+demo files from genuine registry metadata and run its full CI without dispatching
+manual deployment. Hosts adopt Device 0.21.2 and theme 0.13.2 together without
+overrides or duplicate themes.
+
+
 ## Coordinated release — approved 2026-10-21
 
 | Package | Prepared version | Required simulator dependencies |
