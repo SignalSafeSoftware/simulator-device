@@ -74,13 +74,14 @@ To publish it, an owner can:
 4. Open the URL returned by the deployment job. With the default organization
    domain, the expected address is `https://signalsafesoftware.github.io/simulator-device/`.
 
-The demo pins the published coordinated releases: core `0.7.1`, React/device
-`0.21.1` and theme `0.13.1`. Its separate npm lock resolves the shared TreeSpec
+The demo pins the published coordinated releases: core `0.7.1`, React
+`0.21.1`, device `0.21.2` and theme `0.13.2`. Its separate npm lock resolves the shared TreeSpec
 `0.4.4` through an explicit override, with patched Zod `4.6.7`. Regenerate this
 lock with npm only after upstream versions are available from the registry;
 `npm ci` installs those verified public artifacts. The package release archive
-retains the earlier demo lock as publication-time history; this source follow-up
-does not republish or modify that immutable package version.
+for device `0.21.2` retains the previous device `0.21.1` / theme `0.13.1` demo
+lock as publication-time history; this source follow-up uses the verified public
+patch pair without republishing or modifying that immutable package version.
 
 The demo starts with the original blue layered-wave wallpaper in
 `wallpaper-strata.webp` (generated artwork, no third-party image) on the Night
