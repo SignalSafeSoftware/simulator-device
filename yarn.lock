@@ -423,10 +423,10 @@
     libphonenumber-js "^1.13.13"
     lucide-react "^1.31.0"
 
-"@signalsafe/simulator-theme-bootstrap@0.13.1":
-  version "0.13.1"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.13.1.tgz#79e2615631ffbc8ba7e6e9388e6955e84907d715"
-  integrity sha512-YtSXfz1FHt4As9c3PCQ650QCMRnViTra4OvBy9GlNA8LabdZ4n9bpgUgpQAzA176uT3Ia/eMU8nRWkvqoKiH6w==
+"@signalsafe/simulator-theme-bootstrap@0.13.2":
+  version "0.13.2"
+  resolved "https://registry.npmjs.org/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.13.2.tgz#7fb53063b30592f283e3fafe8d892273040a9214"
+  integrity sha512-JGRed2Wi+NjKQnewI67Fmo00cArSEZGbVqQ7RYIGer1FxvMiP7kvwox775LYeRceK7v9w3qNXV9L5pOJAzhg1A==
 
 "@signalsafe/tree-spec@0.4.4", "@signalsafe/tree-spec@^0.4.1":
   version "0.4.4"

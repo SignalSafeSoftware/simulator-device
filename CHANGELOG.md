@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.21.2 — release approved 2026-10-21
+
+- Adopt exact simulator-theme-bootstrap 0.13.2 for the shared email layout fix.
+- Rebuild the gallery with the same theme; update the portable demo only after the new Device version is public.
+- Preserve device runtime/declarations and public exports unchanged.
+
+
 ## [0.21.1] - Release approved 2026-10-21
 
 Publication now waits for the existing hosted Sonar scan; the matching-tag-only publication condition is unchanged.
