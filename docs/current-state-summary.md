@@ -1,39 +1,27 @@
-# simulator-device current-state summary
+# Current state
 
-Prepared source version: **0.21.3** (updated 2026-11-11). This is not a claim of npm publication.
+Published npm version **0.21.4**, released through the fully gated GitHub tag workflow on November 11, 2026.
 
-- Own default mailbox route initialization and email selection callbacks so hosts need no duplicate mailbox composition.
-- Load authored starting targets through the shared store, including photos and Vault folders/entries.
-- Synchronize appearance settings when authored values change while retaining unapplied local edits on unrelated renders.
-- Preserve unified call history, contact routing and scenario Home widgets.
-- Retain the merged public email-layout/demo lock fixes.
+## Coordinated public references
 
-## Coordinated versions
-
-| Package | Prepared version |
+| Package | Registry version |
 | --- | --- |
-| `@signalsafe/simulator-core` | `0.7.2` |
-| `@signalsafe/simulator-react` | `0.21.2` |
-| `@signalsafe/simulator-device` | `0.21.3` |
-| `@signalsafe/simulator-theme-bootstrap` | `0.13.3` |
-| `@signalsafe/simulator-editor-react` | `0.1.0` |
+| Core | 0.7.2 |
+| React | 0.21.2 |
+| Device | 0.21.4 |
+| Theme | 0.13.4 |
 
-The source includes the current GitHub main branch plus the reviewed local simulator work. Existing merged release fixes are preserved. Source manifests and packaged declarations use the coordinated version set. See [release preparation](release-2026-11-10.md) for dependency and verification status.
+Package manifests and examples select these public registry versions. The private editor example keeps only the editor itself as a checked archive. Historical candidate reports remain in the release/verification documents; they describe prior states, not current dependency requirements.
 
-## Current verification and examples
+## Verification
 
-273 package tests pass; all four executable-source coverage metrics are 100%. See [November 11 verification](verification-2026-11-11.md) for the coordinated 1,465-test result, public examples and remaining registry-release gates.
+273 executable-source tests pass with 100% statements, branches, functions and lines. Strict types, lint, formatting, build and packed-consumer checks pass where applicable. Theme additionally passes real Chromium layout checks. The device example passes 16 browser tests and the private editor example passes 4.
 
+Device 0.21.3 was blocked by a stale local Yarn lock resolution; its tag was retained. Device 0.21.4 was verified from a fresh checkout and empty cache, and its release guard rejects file/link lock resolutions. Theme 0.13.4 preserves the existing scrollbar patch without reverting newer shared layout fixes.
 
-### CI and demo dependency verification — November 11
+## Links
 
-Frozen CI installs now use checksum-verified candidate archives through the existing artifact validator. The standalone demo also uses the matching four candidates: its unified `phone.calls` fixture was incompatible with its old registry-pinned core. Browser assertions follow grouped history and related informational rows; browser search covers the real address flow and Back/Forward rather than assuming a search form on the authored welcome page. Shared Home prop declarations reuse the existing contract to remove duplication without changing behavior.
-
-Clean-checkout package validation passes lint, formatting, module boundaries, import cycles, zero duplication, strict source/test types, builds, all 273 tests at 100% statements/branches/functions/lines, and packed runtime/type smoke checks. Release validation still rejects candidate file references until registry publication migration.
-
-
-## Authorized registry release — November 11
-
-Publication is authorized for core 0.7.2, theme 0.13.4 (including the scrollbar preservation patch), React 0.21.2 and device 0.21.3, in dependency order. Root package dependencies/resolutions use published registry versions, replacing candidate file references. The private editor remains unpublished. Historical candidate reports above describe earlier verification states. Registry lock generation and frozen installation must succeed before the dependent release tag is pushed.
-
-Device release target is now 0.21.4. CI blocked 0.21.3 because of a stale local lock resolution; the replacement is validated with an empty cache and preserves the existing tag.
+- [Repository](https://github.com/SignalSafeSoftware/simulator-device)
+- [Editor example](https://signalsafesoftware.github.io/simulator-editor-react/)
+- [Device example](https://signalsafesoftware.github.io/simulator-device/)
+- [Related packages](links.md)
