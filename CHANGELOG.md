@@ -2,6 +2,8 @@
 
 ## 0.21.3 — prepared 2026-11-10
 
+- Add repository, live example and related-package links; document the coordinated 100% coverage verification and synthetic editor example.
+
 - Own default mailbox route initialization and email selection callbacks so hosts need no duplicate mailbox composition.
 - Load authored starting targets through the shared store, including photos and Vault folders/entries.
 - Synchronize appearance settings when authored values change while retaining unapplied local edits on unrelated renders.
