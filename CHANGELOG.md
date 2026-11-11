@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.21.4
+
+- Replace the stale core tarball resolution with a registry-generated lock entry verified with an empty cache. The 0.21.3 publication was blocked by CI; its tag remains immutable.
+
+
 ## 0.21.3 — prepared 2026-11-10
 
 - Add repository, live example and related-package links; document the coordinated 100% coverage verification and synthetic editor example.

@@ -1,6 +1,6 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "type": "module",
   "description": "Reusable full phone/device simulator UI composition on top of @signalsafe/simulator-react.",
   "license": "MIT",
@@ -177,8 +177,8 @@
   "dependencies": {
     "@signalsafe/simulator-core": "0.7.2",
     "@signalsafe/simulator-react": "0.21.2",
-    "lucide-react": "^1.31.0",
-    "@signalsafe/simulator-theme-bootstrap": "0.13.4"
+    "@signalsafe/simulator-theme-bootstrap": "0.13.4",
+    "lucide-react": "^1.31.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",
