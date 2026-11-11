@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.21.3 — prepared 2026-11-10
+
+- Own default mailbox route initialization and email selection callbacks so hosts need no duplicate mailbox composition.
+- Load authored starting targets through the shared store, including photos and Vault folders/entries.
+- Synchronize appearance settings when authored values change while retaining unapplied local edits on unrelated renders.
+- Preserve unified call history, contact routing and scenario Home widgets.
+- Retain the merged public email-layout/demo lock fixes.
+
+Prepared source version; npm publication and downstream registry-lock refresh are separate steps.
+
 ## 0.21.2 — release approved 2026-10-21
 
 - Adopt exact simulator-theme-bootstrap 0.13.2 for the shared email layout fix.

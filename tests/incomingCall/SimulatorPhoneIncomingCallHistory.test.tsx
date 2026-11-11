@@ -14,7 +14,7 @@ describe('SimulatorPhoneIncomingCallHistory', () => {
         expect(container.firstChild).toBeNull();
     });
 
-    it('renders previous calls table with semantic class and test id', () => {
+    it('keeps readable informational history visible without a disclosure', () => {
         const { getByTestId, getByRole, getByText } = render(
             <SimulatorPhoneIncomingCallHistory
                 recentCalls={[
@@ -31,9 +31,10 @@ describe('SimulatorPhoneIncomingCallHistory', () => {
         const section = getByTestId('simulator-incoming-call-history');
         expect(section.className).toContain('simulator-phone__incoming-call-history');
         expect(getByText('Previous calls')).toBeInstanceOf(HTMLElement);
-        expect(getByRole('columnheader', { name: 'Time' })).toBeInstanceOf(HTMLElement);
-        expect(getByRole('columnheader', { name: 'Duration' })).toBeInstanceOf(HTMLElement);
-        expect(getByRole('columnheader', { name: 'Status' })).toBeInstanceOf(HTMLElement);
+        expect(section.querySelector('details')).toBeNull();
+        expect(getByRole('list')).toBeInstanceOf(HTMLElement);
+        expect(section.querySelector('table')).toBeNull();
+        expect(section.querySelector('button')).toBeNull();
         expect(getByText('Today 9:15 AM')).toBeInstanceOf(HTMLElement);
         expect(getByText('00:32')).toBeInstanceOf(HTMLElement);
         expect(getByText('Incoming')).toBeInstanceOf(HTMLElement);

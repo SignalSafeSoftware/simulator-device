@@ -1,5 +1,7 @@
 # Releasing `@signalsafe/simulator-device`
 
+Current prepared version: **0.21.3**. Follow [the November 10 release plan](release-2026-11-10.md). Earlier approvals below are historical. No new publication is authorized by this source update.
+
 ## Email layout dependency patch — approved 2026-10-21
 
 Publish and verify theme 0.13.2 first, then finalize Device 0.21.2 with that exact
@@ -18,7 +20,7 @@ manual deployment. Hosts adopt Device 0.21.2 and theme 0.13.2 together without
 overrides or duplicate themes.
 
 
-## Coordinated release — approved 2026-10-21
+## Historical coordinated release — approved 2026-10-21
 
 | Package | Prepared version | Required simulator dependencies |
 | --- | --- | --- |

@@ -6,7 +6,7 @@ import {
 } from '@signalsafe/simulator-theme-bootstrap/appearance';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import BackgroundImageField from './BackgroundImageField.js';
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 
 export interface SimulatorAppearancePreset extends SimulatorAppearance {
     id: string;
@@ -45,6 +45,15 @@ export default function SimulatorAppearanceSettings({
     }));
     const [imageReset, setImageReset] = useState(0);
     const [message, setMessage] = useState('');
+    useEffect(() => {
+        setDraft({
+            background: value.background,
+            accent: value.accent,
+            ...(value.backgroundImage ? { backgroundImage: value.backgroundImage } : {}),
+        });
+        setImageReset((previous) => previous + 1);
+        setMessage('');
+    }, [value.background, value.accent, value.backgroundImage]);
     const selected =
         presets.find((item) => item.background === draft.background && item.accent === draft.accent)
             ?.id ?? '';

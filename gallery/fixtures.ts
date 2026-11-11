@@ -1,3 +1,5 @@
+import { fullDeviceToPayload } from '@signalsafe/simulator-react/adapters/deviceToSession';
+import { createDemoPhone } from '../docs/examples/local-apps/demoPhone.js';
 import { emptySimulatorStore, emptyMetadata } from '@signalsafe/simulator-core/apps/contracts';
 import { newMail } from '@signalsafe/simulator-core/apps/mail';
 import { summarizeDevice } from '@signalsafe/simulator-core/apps/deviceData';
@@ -62,36 +64,10 @@ export function fixture(mode: GalleryState) {
               ],
         phone: empty
             ? null
-            : {
-                  content: {
-                      caller_name: 'Taylor Example',
-                      phone_number: '+12025550123',
-                      transcript: 'Synthetic call',
-                      choices: [],
-                  },
-                  chosenIndex: null,
-                  voicemailTranscript: 'Synthetic voicemail transcript.',
-                  voicemailCallerName: 'Taylor Example',
-                  callHistory: empty
-                      ? []
-                      : [
-                            {
-                                id: 'call-1',
-                                name: 'Taylor Example',
-                                number: '+12025550123',
-                                numberLabel: 'Mobile',
-                                kind: 'incoming',
-                                timestamp: 'Sep 16, 2026',
-                                durationSeconds: 0,
-                            },
-                            {
-                                id: 'call-2',
-                                number: '+442083661177',
-                                kind: 'missed',
-                                timestamp: 'Sep 15, 2026',
-                            },
-                        ],
-              },
+            : fullDeviceToPayload({
+                  entry_point: { app: 'phone', screen: 'history' },
+                  phone: createDemoPhone(),
+              }).phone,
         email: {
             inbox: empty
                 ? []

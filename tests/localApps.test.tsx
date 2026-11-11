@@ -161,3 +161,30 @@ it('provides Internet composition and preserves host overrides in the shell prov
     expect(view.getByText('Host date')).toBeInstanceOf(HTMLElement);
     expect(view.getByText('Host nav')).toBeInstanceOf(HTMLElement);
 });
+
+it('supports host-controlled Home app navigation without forking screens', () => {
+    const props = setup();
+    const change = vi.fn();
+    const view = render(
+        <SimulatorDeviceApps {...props} homePage='photos' onHomePageChange={change} />,
+    );
+    expect(view.getByRole('heading', { name: 'Photos' })).toBeTruthy();
+    view.rerender(<SimulatorDeviceApps {...props} homePage={null} onHomePageChange={change} />);
+    fireEvent.click(view.getByRole('button', { name: 'Vault' }));
+    expect(change).toHaveBeenCalledWith('vault');
+    view.rerender(<SimulatorDeviceApps {...props} homePage='vault' onHomePageChange={change} />);
+    expect(view.getByRole('heading', { name: 'Vault folders' })).toBeTruthy();
+});
+
+it.each([
+    ['compose', 'New email'],
+    ['trash', 'Trash'],
+    ['outbox', 'Sent'],
+] as const)('initializes the shared mailbox from the %s session route', (route, title) => {
+    const props = setup();
+    props.state.view.activeApp = 'email';
+    props.state.view.email.screen = route;
+    const view = render(<SimulatorDeviceApps {...props} />);
+    expect(view.getAllByText(title).length).toBeGreaterThan(0);
+    expect(view.container.querySelector('.prototype-mail-folders')).toBeNull();
+});

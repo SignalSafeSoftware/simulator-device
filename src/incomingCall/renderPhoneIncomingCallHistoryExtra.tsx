@@ -10,7 +10,7 @@ import {
 export function renderPhoneIncomingCallHistoryExtra(
     props: SimulatorPhoneIncomingCallExtraRenderProps,
 ): ReactNode {
-    const caller = resolveIncomingCallCaller(props.state);
+    const caller = resolveIncomingCallCaller(props.state, props.content);
     const recentCalls = getRecentCallsForCaller(props.state, caller);
     if (recentCalls.length === 0) {
         return null;

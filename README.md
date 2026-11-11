@@ -1,5 +1,7 @@
 # @signalsafe/simulator-device
 
+Prepared source: **0.21.3**. See [current summary](docs/current-state-summary.md), [changelog](CHANGELOG.md) and [coordinated release preparation](docs/release-2026-11-10.md). Publication status and installed host versions are tracked separately.
+
 ## 0.21.2 — email layout dependency patch approved 2026-10-21
 
 This approved metadata-only patch adopts exact theme 0.13.2 so hosts use one
@@ -10,7 +12,7 @@ registry lock finalization after theme publication, all existing quality/Sonar/
 packed/gallery gates, and public artifact verification.
 
 
-## Coordinated release — approved 2026-10-21
+## Historical coordinated release — approved 2026-10-21
 
 | Package | Prepared version | Required simulator dependencies |
 | --- | --- | --- |
@@ -36,6 +38,8 @@ Existing local host archives retain their recorded provenance until the approved
 registry artifacts pass all host checks. Historical release notes below describe
 their original checkpoints and do not authorize publication or host replacement.
 
+Current source and planned customer-subdomain impact: [current-state summary](docs/current-state-summary.md).
+
 Reusable full phone/device simulator UI for hosts building on
 [`@signalsafe/simulator-react`](https://www.npmjs.com/package/@signalsafe/simulator-react) and
 [`@signalsafe/simulator-core`](https://www.npmjs.com/package/@signalsafe/simulator-core).
@@ -47,8 +51,10 @@ This package provides the complete reusable device UI composition:
 - `SimulatorPhoneShell` / `SimulatorPhoneNav` — lower-level primitives for custom layouts
 - Nav, screen-class, host-mode, and incoming-call history helpers
 
-It does **not** include routing, API calls, template management, auth, or CSS. Hosts style the
-semantic classes from this package and `@signalsafe/simulator-react` in their own stylesheets.
+It does **not** include routing, API calls, template management, auth, or CSS.
+`@signalsafe/simulator-theme-bootstrap` owns shared styling and tokens, including the default
+PhoneMe Night palette. Hosts own surrounding page layout and explicit saved appearance; do not
+copy package screens or add local CSS skins.
 
 ## Standalone demo
 
@@ -406,7 +412,7 @@ function DevicePreview({ state, dispatch }: { state: SimulatorSessionState; disp
 | `resolveSimulatorPhoneShellHostMode` | Host overlay mode (e.g. phone contact edit) from session + selected contact id |
 | `SimulatorPhoneShellHostMode` | Host overlay mode type |
 | `SimulatorPhoneNavModel`, `SimulatorPhoneNavItemModel` | Nav model types |
-| `SimulatorPhoneIncomingCallHistory` | Previous-calls table for incoming-call screen |
+| `SimulatorPhoneIncomingCallHistory` | Expandable previous-call context for incoming-call screen |
 | `renderPhoneIncomingCallHistoryExtra` | Drop-in `renderIncomingCallExtra` slot for `@signalsafe/simulator-react` |
 | `normalizePhoneNumber`, `resolveIncomingCallCaller`, `getRecentCallsForCaller` | Incoming-call history helpers |
 | `PhoneIncomingCallHistoryRow`, `PhoneIncomingCallCaller` | History row and caller types |
@@ -418,8 +424,7 @@ Types for session state and dispatch actions come from `@signalsafe/simulator-re
 `SimulatorPhoneDevice` passes `renderPhoneIncomingCallHistoryExtra` to `SimulatorWithSession` by default.
 Override with `renderIncomingCallExtra` when needed.
 
-The history table uses the semantic class `simulator-phone__incoming-call-history` from `@signalsafe/simulator-react`.
-**Host apps style that class in their own CSS** — this package does not ship stylesheets.
+Previous calls remain visible below the call controls. Informational rows keep the date on one line of content and status/duration below it, without row actions. The shared `@signalsafe/simulator-theme-bootstrap` owns the `simulator-phone__incoming-call-history` presentation; host CSS overrides are not needed.
 
 When no matching recent calls exist for the active caller, the slot returns `null` (no empty wrappers).
 
@@ -589,3 +594,7 @@ See [AGENTS.md](./AGENTS.md) for module ownership and verification rules. Use th
 `SimulatorDeviceApps.settings` opts into the shared Settings page. Pass controlled appearance props and a regional adapter that renders `simulator-react/apps/settings/RegionalSettings`; the device supplies its store, locking and Back-to-Home navigation. `SimulatorDeviceSettings` is also available directly at `./apps/SimulatorDeviceSettings`, with optional `onBack` when a surrounding host does not already own navigation. Screen-password controls are included automatically; `children` accepts explicit host features. PhoneMe adds the shared `simulator-react/apps/settings/DeviceBackup` form through this slot alongside its blocking and contact-merge tools. These three sections are absent from the portable demo. Preference persistence stays with the host.
 
 The appearance form defaults to localized shared presets and Reset restores Night. Supply `resetValue` when using host-defined presets with a different reset policy. Palette values and custom CSS-variable mapping live in `simulator-theme-bootstrap/appearance`; that pure data entry imports no CSS. Hosts still import the theme stylesheet explicitly.
+
+### Controlled Home child navigation
+
+`SimulatorDeviceApps` accepts optional `homePage` (`vault`, `photos`, or `null`) and `onHomePageChange`. Omit `homePage` to retain internal navigation. Authoring hosts can select a Home child page and follow tile/Back navigation without mounting duplicate app screens. Settings continues to use the typed Home settings route.

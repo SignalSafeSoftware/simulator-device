@@ -1,3 +1,4 @@
+import { SimulatorCallType } from '@signalsafe/simulator-core/phoneCalls';
 import { formatPhoneCallDuration } from '@signalsafe/simulator-react/views/phone/PhoneCallView';
 import { createTranslator, simulatorEnglish } from '@signalsafe/simulator-react/i18n/catalog';
 import type {
@@ -90,8 +91,10 @@ function entryMatchesCaller(
 }
 
 /** Resolve the active incoming caller from session payload. */
-export function resolveIncomingCallCaller(state: SimulatorSessionState): PhoneIncomingCallCaller {
-    const content = state.payload.phone?.content;
+export function resolveIncomingCallCaller(
+    state: SimulatorSessionState,
+    content = state.payload.phone?.content,
+): PhoneIncomingCallCaller {
     const callerName = content?.caller_name;
     const phoneNumber = content?.phone_number;
     const contacts = state.payload.contacts ?? [];
@@ -142,14 +145,19 @@ export function getRecentCallsForCaller(
     const contactNumber = normalizePhoneNumber(contact?.number);
     const contactName = (contact?.displayName ?? '').trim().toLowerCase();
 
-    const matching = history.filter((entry) =>
-        entryMatchesCaller(entry, caller, contactNumber, contactName),
+    const matching = history.filter(
+        (entry) =>
+            entry.callType !== SimulatorCallType.Incoming &&
+            entry.callType !== SimulatorCallType.Calling &&
+            entryMatchesCaller(entry, caller, contactNumber, contactName),
     );
 
     return matching.slice(0, limit).map((entry) => ({
         id: entry.id,
         timeLabel: resolveTimeLabel(entry),
         durationLabel: resolveDurationLabel(entry),
-        statusLabel: kindToLabel(entry.kind, locale),
+        statusLabel: entry.callType
+            ? locale.t(`calls.type.${entry.callType}`)
+            : kindToLabel(entry.kind, locale),
     }));
 }
