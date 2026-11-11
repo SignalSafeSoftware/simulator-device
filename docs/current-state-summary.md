@@ -30,3 +30,8 @@ The source includes the current GitHub main branch plus the reviewed local simul
 Frozen CI installs now use checksum-verified candidate archives through the existing artifact validator. The standalone demo also uses the matching four candidates: its unified `phone.calls` fixture was incompatible with its old registry-pinned core. Browser assertions follow grouped history and related informational rows; browser search covers the real address flow and Back/Forward rather than assuming a search form on the authored welcome page. Shared Home prop declarations reuse the existing contract to remove duplication without changing behavior.
 
 Clean-checkout package validation passes lint, formatting, module boundaries, import cycles, zero duplication, strict source/test types, builds, all 273 tests at 100% statements/branches/functions/lines, and packed runtime/type smoke checks. Release validation still rejects candidate file references until registry publication migration.
+
+
+## Authorized registry release — November 11
+
+Publication is authorized for core 0.7.2, theme 0.13.4 (including the scrollbar preservation patch), React 0.21.2 and device 0.21.3, in dependency order. Root package dependencies/resolutions use published registry versions, replacing candidate file references. The private editor remains unpublished. Historical candidate reports above describe earlier verification states. Registry lock generation and frozen installation must succeed before the dependent release tag is pushed.

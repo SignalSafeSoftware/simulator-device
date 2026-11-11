@@ -113,3 +113,8 @@ all four approved versions are published, update the demo source pins and npm
 lock in a separate documentation change, run a clean install and browser suite,
 and verify its hosted workflow. This followup gates Step 7/8 completion, not the
 approval of the root device archive. Never modify or republish an existing tag.
+
+
+## Authorized registry release — November 11
+
+Publication is authorized for core 0.7.2, theme 0.13.4 (including the scrollbar preservation patch), React 0.21.2 and device 0.21.3, in dependency order. Root package dependencies/resolutions use published registry versions, replacing candidate file references. The private editor remains unpublished. Historical candidate reports above describe earlier verification states. Registry lock generation and frozen installation must succeed before the dependent release tag is pushed.

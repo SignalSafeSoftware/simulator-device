@@ -405,25 +405,27 @@
   resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz#e3fcee093fbb5ce765e1ad088ff4de2889f6f9be"
   integrity sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==
 
-"@signalsafe/simulator-core@0.7.2", "@signalsafe/simulator-core@file:vendor/npm/signalsafe-simulator-core-0.7.2.tgz":
+"@signalsafe/simulator-core@0.7.2":
   version "0.7.2"
   resolved "file:vendor/npm/signalsafe-simulator-core-0.7.2.tgz#511989318b35e1b52979d3404a79f673eab8a684"
   dependencies:
     "@signalsafe/tree-spec" "^0.4.1"
     zod "^4.6.7"
 
-"@signalsafe/simulator-react@file:vendor/npm/signalsafe-simulator-react-0.21.2.tgz":
+"@signalsafe/simulator-react@0.21.2":
   version "0.21.2"
-  resolved "file:vendor/npm/signalsafe-simulator-react-0.21.2.tgz#2eae0dfe27027f9c9ccf6596616921bfc395c265"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-react/-/simulator-react-0.21.2.tgz#45ea61834c3f66cbb55df6f5a942c7676c5c85a1"
+  integrity sha512-arB7mHF7dfuFBDdMDnxhMJgKGW8R82WC4K/D6YS9A89YXsTeEXXwGZvVhnVKb1qdOrCo7vUoea+4uKd24vAM5Q==
   dependencies:
     "@signalsafe/simulator-core" "0.7.2"
     "@signalsafe/tree-spec" "^0.4.1"
     libphonenumber-js "^1.13.13"
     lucide-react "^1.31.0"
 
-"@signalsafe/simulator-theme-bootstrap@file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.13.3.tgz":
-  version "0.13.3"
-  resolved "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.13.3.tgz#142124d47ccb200ca92ac5249c0e5d812a228b8f"
+"@signalsafe/simulator-theme-bootstrap@0.13.4":
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.13.4.tgz#cf0e82945ae889ad06674997823b9f4f2d00c6b2"
+  integrity sha512-nu2cUPMVLfZc0scaA/LA0nWDjzEuC/l8Za5D4fdhLOVXcZePvlxzH76GGRHKI1VTyMKmv/szQXB2034XG5hc3Q==
 
 "@signalsafe/tree-spec@0.4.4", "@signalsafe/tree-spec@^0.4.1":
   version "0.4.4"
