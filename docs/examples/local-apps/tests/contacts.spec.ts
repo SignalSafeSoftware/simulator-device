@@ -39,13 +39,17 @@ test('contacts can be added, edited and deleted with the shared editor', async (
     expect(errors).toEqual([]);
 });
 
-test('incoming call history shows readable times', async ({ page }) => {
+test('saved call history shows readable related times', async ({ page }) => {
     await page.goto('./');
     const channels = page.getByRole('navigation', { name: 'Simulator channels' });
     await channels.getByRole('button', { name: 'Phone', exact: true }).click();
-    await page.getByRole('button', { name: 'Incoming call', exact: true }).click();
-    const history = page.getByRole('region', { name: 'Previous calls' });
-    await expect(history).toBeVisible();
-    await expect(history).not.toContainText('T12:00:00.000Z');
-    await expect(history.getByRole('cell').first()).toContainText(/\d{1,2}\/\d{1,2}\/\d{4}/);
+    await page.locator('button[data-simulator-history-id="demo-call"]').click();
+    const detail = page.locator('.simulator-history-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail).not.toContainText('T12:00:00.000Z');
+    await expect(detail.locator('.simulator-history-detail__time')).toContainText(
+        /\d{1,2}\/\d{1,2}\/\d{4}/,
+    );
+    await expect(page.locator('.simulator-phone-history-screen')).toContainText('Missed');
+    await expect(page.locator('button[data-simulator-history-id]')).toHaveCount(0);
 });

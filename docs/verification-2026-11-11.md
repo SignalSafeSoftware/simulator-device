@@ -24,3 +24,10 @@ The editor example carries exact local review archives and a SHA-256 manifest. I
 The coordinated versions are absent from npm. Registry dependency lock entries, public-device-demo pins and host registry requirements retain their last real published versions until dependency-order npm publication is authorized and succeeds. Local review artifacts and the editor example explicitly opt into the prepared versions. No registry integrity values were fabricated, release tags created or npm publication performed. Registry/frozen-lock CI and Sonar release certification remain separate gates; draft PRs must not be represented as publish-ready.
 
 Earlier November 10 reports retain their historical results. This report supersedes their package coverage findings.
+
+
+### CI and demo dependency verification — November 11
+
+Frozen CI installs now use checksum-verified candidate archives through the existing artifact validator. The standalone demo also uses the matching four candidates: its unified `phone.calls` fixture was incompatible with its old registry-pinned core. Browser assertions follow grouped history and related informational rows; browser search covers the real address flow and Back/Forward rather than assuming a search form on the authored welcome page. Shared Home prop declarations reuse the existing contract to remove duplication without changing behavior.
+
+Clean-checkout package validation passes lint, formatting, module boundaries, import cycles, zero duplication, strict source/test types, builds, all 273 tests at 100% statements/branches/functions/lines, and packed runtime/type smoke checks. Release validation still rejects candidate file references until registry publication migration.

@@ -75,23 +75,27 @@ function HomeContent({
     onVaultSecretDraftChange,
     onSelectedVaultFolderChange,
     onSelectedVaultSecretChange,
-}: Readonly<{
-    store: DeviceStore;
-    page: DeviceAppsPage | null;
-    setPage: (page: DeviceAppsPage | null) => void;
-    homeHeader?: ReactNode;
-    homeClock?: HomeClockOptions;
-    scenarioHome: SimulatorHomePayload | null;
-    openSettings: () => void;
-    photoNavigation?: PhotoNavigation;
-    onSelectedPhotoChange?: (id: string | undefined) => void;
-    vaultNavigation?: VaultNavigation;
-    vaultSecretDraft?: Secret | null;
-    onVaultSecretDraftChange?: (draft: Secret | null) => void;
-    onSelectedVaultFolderChange?: (folder: string | null) => void;
-    onSelectedVaultSecretChange?: (id: string) => void;
-    onLock: () => void;
-}>) {
+}: Readonly<
+    Pick<
+        DeviceAppsContentProps,
+        | 'store'
+        | 'homeHeader'
+        | 'homeClock'
+        | 'openSettings'
+        | 'onLock'
+        | 'photoNavigation'
+        | 'onSelectedPhotoChange'
+        | 'vaultNavigation'
+        | 'vaultSecretDraft'
+        | 'onVaultSecretDraftChange'
+        | 'onSelectedVaultFolderChange'
+        | 'onSelectedVaultSecretChange'
+    > & {
+        page: DeviceAppsPage | null;
+        setPage: (page: DeviceAppsPage | null) => void;
+        scenarioHome: SimulatorHomePayload | null;
+    }
+>) {
     if (page === DeviceAppsPage.Vault)
         return (
             <Vault

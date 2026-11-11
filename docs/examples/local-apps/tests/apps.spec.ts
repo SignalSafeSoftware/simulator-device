@@ -63,14 +63,17 @@ test('standalone packages preserve drafts across calls and support local apps', 
     await expect(page.getByRole('button', { name: /Standalone photo/ })).toBeVisible();
     await page.getByRole('button', { name: 'Back', exact: true }).click();
     await channels.getByRole('button', { name: 'Internet', exact: true }).click();
-    await page.frameLocator('iframe').getByLabel('Search', { exact: true }).fill('bridge search');
-    await page.frameLocator('iframe').getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(
-        page.frameLocator('iframe').getByText('You searched for: bridge search'),
-    ).toBeVisible();
     const address = page.getByRole('searchbox', { name: 'Search or enter address' });
     await address.fill('standalone search');
     await address.press('Enter');
+    await expect(
+        page.frameLocator('iframe').getByText('You searched for: standalone search'),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Back page', exact: true }).click();
+    await expect(
+        page.frameLocator('iframe').getByRole('heading', { name: 'Demo welcome page' }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Forward page', exact: true }).click();
     await expect(
         page.frameLocator('iframe').getByText('You searched for: standalone search'),
     ).toBeVisible();

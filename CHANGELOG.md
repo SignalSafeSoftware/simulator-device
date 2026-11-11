@@ -111,3 +111,5 @@ Remove legacy conversion, wire and presentation aliases; migrate consumers to ca
 - Depend on simulator-react ^0.3.0; keep React 18 compatibility.
 - Include reviewed portable navigation, Settings and contact composition previously adopted through PhoneMe local prereleases.
 - Verify equivalent JSON/datasource rendering across calls, contacts, SMS and email, and preservation of contact drafts on refresh.
+
+- Repair candidate CI and standalone demo dependency locks, unify duplicate Home props, and align browser regression navigation with unified call history.
