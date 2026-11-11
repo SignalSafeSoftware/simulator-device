@@ -16,6 +16,14 @@ if (process.argv.includes('--release') && local.size) {
         'Local file dependencies must be replaced with published versions before release.',
     );
 }
+if (
+    process.argv.includes('--release') &&
+    /^\s+resolved "(?:file:|link:)/m.test(readFileSync(resolve(root, 'yarn.lock'), 'utf8'))
+) {
+    throw new Error(
+        'Release lockfile must resolve registry artifacts, not local file or link sources.',
+    );
+}
 const expected = local.size
     ? JSON.parse(readFileSync(resolve(root, 'vendor/npm/manifest.json'), 'utf8'))
     : {};
