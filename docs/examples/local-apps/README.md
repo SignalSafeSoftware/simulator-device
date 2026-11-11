@@ -93,3 +93,7 @@ Never add credentials or real user records to a public demo.
 ### Settings
 
 The Home Settings tile opens the package-owned Appearance, Region and formats, and Screen password sections. Appearance and regional choices stay in the current demo session and reset on reload or Reset demo. The shared regional form receives a representative country list from this demo; PhoneMe supplies its complete country list. Time-zone/time-format changes update the Home clock; date-format changes apply to device-app timestamps and call history. Call-history numbers use the selected country, and both lists and details use the selected date order, timezone and time format. The starter history includes a fictional 184-second call. Simulated device data (email identity, backup/restore/reset), blocked numbers and contact merging are PhoneMe-only settings sections. There are no Twilio credentials, microphone requests or server imports in the static demo.
+
+## November 10 prepared package set
+
+This example deliberately remains pinned to the last published registry versions. The next coordinated versions and required lock refresh are in [the release plan](../../../release-2026-11-10.md); no unpublished version or invented integrity has been substituted into its working lock.

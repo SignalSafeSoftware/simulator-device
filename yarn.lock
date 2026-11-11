@@ -405,28 +405,25 @@
   resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz#e3fcee093fbb5ce765e1ad088ff4de2889f6f9be"
   integrity sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==
 
-"@signalsafe/simulator-core@0.7.1":
-  version "0.7.1"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-core/-/simulator-core-0.7.1.tgz#b81419bed7cc00d36e4c6db855edaf34e3898b0a"
-  integrity sha512-RKEL/bsRnpgMeKYUIAM6DTUj5krP76f8ZB2G3byf9Y/b2xoR4EJ1o4OFFidxr3dlvPj4aMgSeTAstqkhFkinnA==
+"@signalsafe/simulator-core@0.7.2", "@signalsafe/simulator-core@file:vendor/npm/signalsafe-simulator-core-0.7.2.tgz":
+  version "0.7.2"
+  resolved "file:vendor/npm/signalsafe-simulator-core-0.7.2.tgz#511989318b35e1b52979d3404a79f673eab8a684"
   dependencies:
     "@signalsafe/tree-spec" "^0.4.1"
     zod "^4.6.7"
 
-"@signalsafe/simulator-react@0.21.1":
-  version "0.21.1"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-react/-/simulator-react-0.21.1.tgz#1e5498bcdf763da1d6305d8698f286e5f3a34fd8"
-  integrity sha512-qmxPcm2K9pGMRF6gYC5xt5S/Alo7YbOjSMNba89qrO9Q70de7CYCltnGis24PYN9HLgHre/vRgfxRaqIl230KA==
+"@signalsafe/simulator-react@file:vendor/npm/signalsafe-simulator-react-0.21.2.tgz":
+  version "0.21.2"
+  resolved "file:vendor/npm/signalsafe-simulator-react-0.21.2.tgz#2eae0dfe27027f9c9ccf6596616921bfc395c265"
   dependencies:
-    "@signalsafe/simulator-core" "0.7.1"
+    "@signalsafe/simulator-core" "0.7.2"
     "@signalsafe/tree-spec" "^0.4.1"
     libphonenumber-js "^1.13.13"
     lucide-react "^1.31.0"
 
-"@signalsafe/simulator-theme-bootstrap@0.13.2":
-  version "0.13.2"
-  resolved "https://registry.npmjs.org/@signalsafe/simulator-theme-bootstrap/-/simulator-theme-bootstrap-0.13.2.tgz#7fb53063b30592f283e3fafe8d892273040a9214"
-  integrity sha512-JGRed2Wi+NjKQnewI67Fmo00cArSEZGbVqQ7RYIGer1FxvMiP7kvwox775LYeRceK7v9w3qNXV9L5pOJAzhg1A==
+"@signalsafe/simulator-theme-bootstrap@file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.13.3.tgz":
+  version "0.13.3"
+  resolved "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.13.3.tgz#142124d47ccb200ca92ac5249c0e5d812a228b8f"
 
 "@signalsafe/tree-spec@0.4.4", "@signalsafe/tree-spec@^0.4.1":
   version "0.4.4"

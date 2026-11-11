@@ -1,3 +1,4 @@
+import { SIM_VISUALLY_HIDDEN } from '@signalsafe/simulator-react/ui/styles/simulatorClasses';
 import { SIM_PHONE_INCOMING_CALL_HISTORY } from '@signalsafe/simulator-react/ui/styles/semanticSimulatorClasses';
 import { useSimulatorLocale } from '@signalsafe/simulator-react/i18n/SimulatorLocale';
 import { useTimestampFormatter } from '@signalsafe/simulator-react/contract/regionalPresentation';
@@ -24,31 +25,35 @@ export function SimulatorPhoneIncomingCallHistory({
             aria-label={screenLocale.t('screen.simulatorPhoneIncomingCallHistory.previous.calls')}
             data-testid='simulator-incoming-call-history'
         >
-            <h3>{screenLocale.t('screen.simulatorPhoneIncomingCallHistory.previous.calls')}</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th scope='col'>
-                            {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.time')}
-                        </th>
-                        <th scope='col'>
-                            {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.duration')}
-                        </th>
-                        <th scope='col'>
-                            {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.status')}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {recentCalls.map((call) => (
-                        <tr key={call.id}>
-                            <td>{formatTimestamp(call.timeLabel)}</td>
-                            <td>{call.durationLabel}</td>
-                            <td>{call.statusLabel}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <h3>
+                {screenLocale.t('screen.simulatorPhoneIncomingCallHistory.previous.calls')}
+                <span aria-hidden='true'> ({recentCalls.length})</span>
+            </h3>
+            <ul>
+                {recentCalls.map((call) => (
+                    <li key={call.id}>
+                        <p>{formatTimestamp(call.timeLabel)}</p>
+                        <dl>
+                            <div>
+                                <dt className={SIM_VISUALLY_HIDDEN}>
+                                    {screenLocale.t(
+                                        'screen.simulatorPhoneIncomingCallHistory.status',
+                                    )}
+                                </dt>
+                                <dd>{call.statusLabel}</dd>
+                            </div>
+                            <div>
+                                <dt className={SIM_VISUALLY_HIDDEN}>
+                                    {screenLocale.t(
+                                        'screen.simulatorPhoneIncomingCallHistory.duration',
+                                    )}
+                                </dt>
+                                <dd>{call.durationLabel}</dd>
+                            </div>
+                        </dl>
+                    </li>
+                ))}
+            </ul>
         </section>
     );
 }

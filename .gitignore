@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 dist/
 coverage/
 *.tgz
@@ -6,3 +6,7 @@ coverage/
 
 /gallery-dist/
 
+
+# Verified development candidate artifacts
+!vendor/npm/*.tgz
+!docs/examples/local-apps/vendor/npm/*.tgz

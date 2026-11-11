@@ -5,6 +5,7 @@ import {
 import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import {
     useCallback,
+    useEffect,
     useMemo,
     useRef,
     useState,
@@ -97,6 +98,8 @@ export interface SimulatorPhoneDeviceProps extends Omit<
 > {
     /** Ref to this device’s actual scrollable screen; internal focus handling is preserved. */
     screenRef?: RefCallback<HTMLDivElement> | MutableRefObject<HTMLDivElement | null>;
+    /** Reports the selected shared contact panel without persisting preview navigation. */
+    onSelectedContactChange?: (id: string | undefined) => void;
     onEmailAction?: NonNullable<SimulatorPhoneNavProps['onEmailAction']>;
     datasource?: SimulatorDatasource;
     emailCompose?: EmailComposeOptions;
@@ -129,6 +132,7 @@ function shouldClearHostContactSelection(action: SimulatorDispatchAction): boole
 /** Full reusable phone device UI: shell, nav, runtime, and default incoming-call history. */
 export default function SimulatorPhoneDevice({
     state: hostState,
+    onSelectedContactChange,
     screenRef: hostScreenRef,
     datasource,
     onEmailAction,
@@ -179,6 +183,9 @@ export default function SimulatorPhoneDevice({
     stateRef.current = state;
     const { hostMode, contact, clearSelection, onPhoneContactOpen } =
         useSimulatorPhoneDeviceContactHost(state, true);
+    useEffect(() => {
+        onSelectedContactChange?.(contact?.id);
+    }, [contact?.id, onSelectedContactChange]);
     const hideNav = shouldHideHostPhoneNav(state);
 
     const dispatchAndClear = useCallback(

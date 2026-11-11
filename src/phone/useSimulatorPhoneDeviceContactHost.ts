@@ -27,7 +27,10 @@ export function useSimulatorPhoneDeviceContactHost(
     clearSelection: () => void;
     onPhoneContactOpen: (props: SimulatorPhoneContactOpenProps) => void;
 } {
-    const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+    const [selectedContactId, setSelectedContactId] = useState<string | null>(() => {
+        const target = state.payload.entryPoint?.target;
+        return target?.kind === 'contact' ? target.id : null;
+    });
     const onContactsScreen = isPhoneContactsScreen(state);
 
     useEffect(() => {

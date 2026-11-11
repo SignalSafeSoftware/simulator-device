@@ -1,6 +1,6 @@
 {
   "name": "@signalsafe/simulator-device",
-  "version": "0.21.2",
+  "version": "0.21.3",
   "type": "module",
   "description": "Reusable full phone/device simulator UI composition on top of @signalsafe/simulator-react.",
   "license": "MIT",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/SignalSafeSoftware/simulator-device/issues"
   },
-  "homepage": "https://github.com/SignalSafeSoftware/simulator-device#readme",
+  "homepage": "https://signalsafesoftware.github.io/simulator-device/",
   "keywords": [
     "react",
     "simulator",
@@ -175,10 +175,10 @@
     "check:duplication": "jscpd src --min-lines 8 --min-tokens 70 --threshold 0 --reporters console --silent"
   },
   "dependencies": {
-    "@signalsafe/simulator-core": "0.7.1",
-    "@signalsafe/simulator-react": "0.21.1",
+    "@signalsafe/simulator-core": "file:vendor/npm/signalsafe-simulator-core-0.7.2.tgz",
+    "@signalsafe/simulator-react": "file:vendor/npm/signalsafe-simulator-react-0.21.2.tgz",
     "lucide-react": "^1.31.0",
-    "@signalsafe/simulator-theme-bootstrap": "0.13.2"
+    "@signalsafe/simulator-theme-bootstrap": "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.13.3.tgz"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -202,6 +202,9 @@
     "vitest": "^5.0.1"
   },
   "resolutions": {
-    "@signalsafe/tree-spec": "0.4.4"
+    "@signalsafe/tree-spec": "0.4.4",
+    "@signalsafe/simulator-core": "file:vendor/npm/signalsafe-simulator-core-0.7.2.tgz",
+    "@signalsafe/simulator-react": "file:vendor/npm/signalsafe-simulator-react-0.21.2.tgz",
+    "@signalsafe/simulator-theme-bootstrap": "file:vendor/npm/signalsafe-simulator-theme-bootstrap-0.13.3.tgz"
   }
 }

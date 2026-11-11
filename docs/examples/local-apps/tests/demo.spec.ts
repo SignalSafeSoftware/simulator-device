@@ -236,8 +236,8 @@ test('saved history shares regional formatting in Call History and Call Details'
     await expect(title).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'Call History', exact: true })).toHaveCount(1);
     await expect(historyRow).toBeFocused();
-    await expect(page.getByRole('button', { name: 'Incoming call', exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Voicemail', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Incoming call', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Voicemail', exact: true })).toHaveCount(0);
 
     await page.setViewportSize({ width: 390, height: 844 });
     await page.evaluate(() => {

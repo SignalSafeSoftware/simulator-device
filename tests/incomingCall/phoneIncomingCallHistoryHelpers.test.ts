@@ -242,3 +242,27 @@ describe('phoneIncomingCallHistoryHelpers', () => {
         expect(getRecentCallsForCaller(state, resolveIncomingCallCaller(state))).toEqual([]);
     });
 });
+
+it('uses compact authored status labels and excludes calls that are still ringing', () => {
+    const state = buildIncomingCallState({
+        callHistory: [
+            {
+                id: 'active',
+                number: '+15551002000',
+                name: 'Alice Chen',
+                kind: 'incoming',
+                callType: 'incoming',
+            },
+            {
+                id: 'past',
+                number: '+15551002000',
+                name: 'Alice Chen',
+                kind: 'incoming',
+                callType: 'received',
+            },
+        ],
+    });
+    expect(getRecentCallsForCaller(state, resolveIncomingCallCaller(state))).toMatchObject([
+        { id: 'past', statusLabel: 'Received' },
+    ]);
+});
