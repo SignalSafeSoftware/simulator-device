@@ -1,10 +1,12 @@
 # Current state
 
-## November 15 release scope — 0.22.0
+## Published registry release — 0.22.0 (2026-11-15)
 
-The device composition uses core 0.7.3, React 0.22.0 and theme 0.13.5. It preserves scenario action capabilities and forwards the optional logical conversation clock through the shared runtime; hosts still own time, data, events and persistence. Exact semantic targets and mailbox content are package-owned, without a second presentation layer.
+The immutable `v0.22.0` [tag workflow](https://github.com/SignalSafeSoftware/simulator-device/actions/runs/43801368251) passed all required verification and provenance publication. The actual npm archive has 149 files, all byte-identical to the reviewed candidate. SHA-256: `f7f0e197e265d484ec93da90d574150bd6d72eb56eacdc3d441da9c593b0f7de`; release commit `3b58decad1e609a83c85d507715383f3111c5cf1`.
 
-The reviewed candidate passes 277 tests with 100% executable-source coverage, strict source/test types, lint/module checks, formatting, cycle/duplication checks, gallery checks and builds. Refresh the genuine registry lock after upstream publication, validate a clean install and packed consumers, and publish only through immutable-tag CI. The portable example adopts the new device archive after it exists in npm; its real registry lock and existing Pages deployment are separate follow-up checks. Earlier local review versions/counts below are historical checkpoints.
+Normal registry development and portable example locks use core 0.7.3, React 0.22.0, device 0.22.0, theme 0.13.5 and TreeSpec 0.4.5. The device retains host-owned time, data, actions and persistence. All 277 tests pass with 100% executable-source coverage, strict source/test types, lint/module/format/cycle/duplication checks, gallery builds and packed consumers. The production portable example passes all 16 Chromium cases against these public packages; its existing Pages deployment is recorded separately.
+
+The normal-registry gallery additionally passes real 320px viewport/200% text contact-overlay acceptance: all nested controls fit horizontally, the body scrolls to its final content, and the footer remains fixed and reachable. Its explicit accessible gallery labels and contact-overlay action change only the development gallery.
 
 ## Historical local review — 2026-11-15
 
