@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.22.0 — 2026-11-15
+
+- Compose core 0.7.3, React 0.22.0 and theme 0.13.5 through exact runtime dependencies.
+- Forward the optional scripted-conversation logical clock through existing typed session props and expose shared semantic anchors for timed navigation/cursor targeting.
+- Keep scenario Forward/Dispose unavailable without a host action callback; retain accessible reasons without adding visible footer prose.
+- Preserve shared compose submission/navigation, saved starting positions and the default PhoneMe theme.
+
+The user-authorized release follows the existing gated immutable-tag workflow. Earlier local review evidence remains historical; successful publication and registry adoption have separate receipts.
+
+## Unreleased — local review 2026-11-15
+
+- Keep scenario Forward/Dispose unavailable without a host action callback. Their reason remains connected through aria-describedby and visually hidden; full-device mailbox capabilities remain separate. Compose navigation uses the shared fields and one submission path.
+- Verified as unpublished review artifact `0.21.5-mail-ui.0`. Registry version `0.21.4` and release authorization are separate from this checkpoint.
+
+
 ## 0.21.4
 
 - Replace the stale core tarball resolution with a registry-generated lock entry verified with an empty cache. The 0.21.3 publication was blocked by CI; its tag remains immutable.

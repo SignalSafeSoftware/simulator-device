@@ -79,7 +79,7 @@ it('shares email validity and pending state with shell Send and Back', async () 
         <SimulatorPhoneDevice state={state} dispatch={dispatch} emailCompose={{ onSend }} />,
     );
     expect(view.getByRole('button', { name: 'Send' }).hasAttribute('disabled')).toBe(true);
-    fireEvent.change(view.getByLabelText('Recipient'), {
+    fireEvent.change(view.getByLabelText('TO'), {
         target: { value: 'recipient@example.test' },
     });
     fireEvent.click(view.getByRole('button', { name: 'Send' }));

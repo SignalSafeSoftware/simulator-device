@@ -1,3 +1,4 @@
+import { simulatorAnchorAttributes } from '@signalsafe/simulator-react/contract/semanticAnchors';
 import { useState, type ReactNode, type Ref } from 'react';
 import { ScreenActionMenuContext } from '@signalsafe/simulator-react/contract/screenActionMenu';
 import { SimulatorPage } from '@signalsafe/simulator-react/ui/layout/SimulatorPage';
@@ -34,7 +35,11 @@ export default function SimulatorPhoneShell({
                 data-testid='simulator-device-shell'
                 footer={screenMenu ?? nav}
             >
-                <div className={cls.shellScreen} ref={screenRef}>
+                <div
+                    className={cls.shellScreen}
+                    ref={screenRef}
+                    {...simulatorAnchorAttributes({ kind: 'simulator', anchor: 'screen' })}
+                >
                     <div className={cls.shellSessionColumn}>{children}</div>
                 </div>
             </SimulatorPage>

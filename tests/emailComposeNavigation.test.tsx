@@ -17,14 +17,14 @@ it.each([true, false])(
         const { getByRole, getByLabelText } = render(
             <SimulatorPhoneDevice state={state} dispatch={vi.fn()} emailCompose={{ onSend }} />,
         );
-        fireEvent.change(getByLabelText('Recipient'), {
+        fireEvent.change(getByLabelText('TO'), {
             target: { value: 'recipient@example.test' },
         });
-        fireEvent.change(getByLabelText('Bcc'), { target: { value: 'private@example.test' } });
+        fireEvent.change(getByLabelText('BCC'), { target: { value: 'private@example.test' } });
         fireEvent.change(getByLabelText('Body'), { target: { value: 'Message' } });
         fireEvent.click(getByRole('button', { name: 'Send' }));
         await waitFor(() => expect(getByRole('alert').textContent).toBe('Try again'));
-        expect(getByLabelText('Bcc')).toHaveProperty('value', 'private@example.test');
+        expect(getByLabelText('BCC')).toHaveProperty('value', 'private@example.test');
         fireEvent.click(getByRole('button', { name: 'Send' }));
         await waitFor(() => expect(onSend).toHaveBeenCalledTimes(2));
         expect(onSend).toHaveBeenLastCalledWith({

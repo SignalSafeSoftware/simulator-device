@@ -135,6 +135,14 @@ it('emits forward and dispose intent once, and disables unconfigured actions', (
     fireEvent.click(view.getByRole('button', { name: 'Dispose' }));
     expect(dispatch).not.toHaveBeenCalled();
     expect(view.getByRole('button', { name: 'Forward' }).hasAttribute('disabled')).toBe(true);
+    for (const name of ['Forward', 'Dispose']) {
+        const button = view.getByRole('button', { name });
+        const reasonId = button.getAttribute('aria-describedby');
+        expect(reasonId).toBeTruthy();
+        const reason = reasonId ? document.getElementById(reasonId) : null;
+        expect(reason?.textContent).toMatch(/unavailable/i);
+        expect(reason?.className).toBe('simulator-visually-hidden');
+    }
     view.rerender(
         <SimulatorPhoneNav state={state} dispatch={dispatch} onEmailAction={onEmailAction} />,
     );

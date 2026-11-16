@@ -124,6 +124,11 @@ export default function SimulatorPhoneNav({
                     <li key={item.id} className={cls.navItem}>
                         <SimulatorPhoneNavItem
                             label={item.label}
+                            semanticAnchor={
+                                model.mode === SimulatorPhoneNavMode.Primary && item.id === 'home'
+                                    ? 'home-control'
+                                    : undefined
+                            }
                             disabled={
                                 composer?.pending ||
                                 ((item.action === SimulatorPhoneNavAction.Forward ||
@@ -181,7 +186,7 @@ export default function SimulatorPhoneNav({
                         item.action === SimulatorPhoneNavAction.Forward ||
                         item.action === SimulatorPhoneNavAction.Dispose,
                 ) && (
-                    <small id={reasonId} className={SIM_ACTION_REASON}>
+                    <small id={reasonId} className={SIM_VISUALLY_HIDDEN}>
                         {locale.t('app.mail.actionsUnavailable')}
                     </small>
                 )}

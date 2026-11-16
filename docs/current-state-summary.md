@@ -1,5 +1,32 @@
 # Current state
 
+## November 15 release scope — 0.22.0
+
+The device composition uses core 0.7.3, React 0.22.0 and theme 0.13.5. It preserves scenario action capabilities and forwards the optional logical conversation clock through the shared runtime; hosts still own time, data, events and persistence. Exact semantic targets and mailbox content are package-owned, without a second presentation layer.
+
+The reviewed candidate passes 277 tests with 100% executable-source coverage, strict source/test types, lint/module checks, formatting, cycle/duplication checks, gallery checks and builds. Refresh the genuine registry lock after upstream publication, validate a clean install and packed consumers, and publish only through immutable-tag CI. The portable example adopts the new device archive after it exists in npm; its real registry lock and existing Pages deployment are separate follow-up checks. Earlier local review versions/counts below are historical checkpoints.
+
+## Historical local review — 2026-11-15
+
+Keep scenario Forward/Dispose unavailable without a host action callback. Their reason remains connected through aria-describedby and visually hidden; full-device mailbox capabilities remain separate. Compose navigation uses the shared fields and one submission path.
+
+Local review artifact: **0.21.5-mail-ui.0**. This is not an npm release or a package.json version bump. The coordinated set is core `0.7.3-mail-ui.0`, React `0.21.3-mail-ui.0`, device `0.21.5-mail-ui.0`, theme `0.13.5-mail-ui.0`; DeliveryPlus records their checksums in its opt-in vendor manifest. Production registry references remain separate.
+
+273 tests passed at the implementation checkpoint; disabled-action accessibility assertions are strengthened in this follow-up.
+
+Coordinated live verification covered administration lesson playback, the full simulator authoring editor, PhoneMe with an isolated synthetic database, and workspace's saved lesson reader. The gallery exercised 144 unique screen/state/width/text combinations. DeliveryPlus additionally passed 48 narrow layout cases after fixing its host wrapper (three sizes, two positions, four widths, editor and reader). No real messages or calls were sent. Existing test lessons were restored or archived.
+
+For detailed receipts and limitations see DeliveryPlus `docs/quality/simulator-ui/verification.md` and the coordinated project summary dated 2026-11-15. Historical release coverage below belongs to the November 11 checkpoint; it is not a fresh coverage claim for these changes. Publication, registry adoption and release-gate reruns remain separate work.
+
+### Documentation and regression follow-up
+
+273 tests, with added assertions that both unavailable mail actions reference their visually hidden accessible reason; source/test strict types and lint pass.
+
+The review archives were not rebuilt for these documentation/test-only changes. Rebuild and rerun publication gates before a release.
+
+## Published checkpoint — 2026-11-11
+
+
 Published npm version **0.21.4**, released through the fully gated GitHub tag workflow on November 11, 2026.
 
 ## Coordinated public references
