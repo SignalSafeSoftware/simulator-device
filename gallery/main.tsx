@@ -32,6 +32,7 @@ import type { SimulatorScreenOverrideProps } from '@signalsafe/simulator-react/c
 import SimulatorPhoneDevice from '../src/phone/SimulatorPhoneDevice.js';
 import { SimulatorDeviceApps } from '../src/apps/SimulatorDeviceApps.js';
 import { fixture, createGalleryStore, type GalleryState } from './fixtures.js';
+import { GalleryControls } from './GalleryControls.js';
 import '@signalsafe/simulator-theme-bootstrap/styles.css';
 import './styles.css';
 
@@ -176,122 +177,37 @@ function Gallery() {
                 Synthetic fixtures only. Actions stay in this page; no calls, messages, or API
                 requests are made.
             </p>
-            <div className='gallery-controls'>
-                <label>
-                    <input
-                        type='checkbox'
-                        checked={editableContacts}
-                        onChange={(event) => setEditableContacts(event.target.checked)}
-                    />{' '}
-                    Editable contact details
-                </label>
-                <label>
-                    Surface{' '}
-                    <select value={surface} onChange={(event) => setSurface(event.target.value)}>
-                        <option>scenario</option>
-                        <option>device apps</option>
-                    </select>
-                </label>
-                <label>
-                    State{' '}
-                    <select
-                        value={mode}
-                        onChange={(event) => {
-                            const next = event.target.value as GalleryState;
-                            setMode(next);
-                            setState(fixture(next));
-                            setStatus('');
-                        }}
-                    >
-                        {['populated', 'empty', 'loading', 'disabled', 'error'].map((value) => (
-                            <option key={value}>{value}</option>
-                        ))}
-                    </select>
-                </label>
-                <label>
-                    Theme{' '}
-                    <select value={theme} onChange={(event) => setTheme(event.target.value)}>
-                        <option>default</option>
-                        <option>dark</option>
-                        <option>night mint</option>
-                        <option>high contrast</option>
-                    </select>
-                </label>
-                <label>
-                    Width{' '}
-                    <select value={width} onChange={(event) => setWidth(event.target.value)}>
-                        {['320', '375', '430', '520'].map((value) => (
-                            <option key={value}>{value}</option>
-                        ))}
-                    </select>
-                </label>
-                <label>
-                    Text size{' '}
-                    <select value={scale} onChange={(event) => setScale(event.target.value)}>
-                        {['100', '150', '200'].map((value) => (
-                            <option key={value}>{value}</option>
-                        ))}
-                    </select>
-                </label>
-            </div>
-            <div className='gallery-controls' aria-label='Preview screens'>
-                <button
-                    onClick={() => {
-                        setSurface('device apps');
-                        setUnlocked(false);
-                    }}
-                >
-                    Device lock screen
-                </button>
-                <button onClick={() => setUnlocked(true)}>Unlock preview</button>
-                {(
-                    [
-                        'dial',
-                        'contacts',
-                        'history',
-                        'incoming_call',
-                        'add_contact',
-                        'voicemail',
-                        'directory',
-                    ] as const
-                ).map((screen) => (
-                    <button
-                        key={screen}
-                        onClick={() =>
-                            navigate({
-                                type: SimulatorDispatchActionType.NavLocal,
-                                app: 'phone',
-                                screen,
-                            })
-                        }
-                    >
-                        {screen.replace('_', ' ')}
-                    </button>
-                ))}
-                {(
-                    [
-                        { app: 'messages', screen: 'threads' },
-                        { app: 'messages', screen: 'new_thread' },
-                        { app: 'messages', screen: 'thread_detail' },
-                        { app: 'email', screen: 'list' },
-                        { app: 'email', screen: 'detail' },
-                        { app: 'email', screen: 'compose' },
-                        { app: 'internet', screen: 'landing' },
-                        { app: 'home', screen: 'home' },
-                        { app: 'home', screen: 'settings' },
-                        { app: 'home', screen: 'store' },
-                    ] as const
-                ).map(({ app, screen }) => (
-                    <button
-                        key={`${app}:${screen}`}
-                        onClick={() =>
-                            navigate({ type: SimulatorDispatchActionType.NavLocal, app, screen })
-                        }
-                    >
-                        {app} {screen}
-                    </button>
-                ))}
-            </div>
+            <GalleryControls
+                editableContacts={{ value: editableContacts, onChange: setEditableContacts }}
+                surface={{ value: surface, onChange: setSurface }}
+                mode={{
+                    value: mode,
+                    onChange: (next) => {
+                        setMode(next);
+                        setState(fixture(next));
+                        setStatus('');
+                    },
+                }}
+                theme={{ value: theme, onChange: setTheme }}
+                width={{ value: width, onChange: setWidth }}
+                scale={{ value: scale, onChange: setScale }}
+                onVerifyContacts={() => {
+                    setSurface('scenario');
+                    setState((current) =>
+                        current.view.contactsPanelOpen
+                            ? current
+                            : simulatorSessionReducer(current, {
+                                  type: SimulatorDispatchActionType.ToggleContactsPanel,
+                              }),
+                    );
+                }}
+                onDeviceLock={() => {
+                    setSurface('device apps');
+                    setUnlocked(false);
+                }}
+                onUnlock={() => setUnlocked(true)}
+                navigate={navigate}
+            />
             <output>{status}</output>
             {mode === 'error' && (
                 <p role='alert'>Synthetic refresh failed. Existing preview data remains visible.</p>

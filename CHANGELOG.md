@@ -2,6 +2,8 @@
 
 ## 0.22.0 — 2026-11-15
 
+- Make the existing contact-verification dialog reachable in the gallery and give preview selectors explicit accessible names. Keep gallery control rendering in its own typed module.
+
 - Compose core 0.7.3, React 0.22.0 and theme 0.13.5 through exact runtime dependencies.
 - Forward the optional scripted-conversation logical clock through existing typed session props and expose shared semantic anchors for timed navigation/cursor targeting.
 - Keep scenario Forward/Dispose unavailable without a host action callback; retain accessible reasons without adding visible footer prose.
