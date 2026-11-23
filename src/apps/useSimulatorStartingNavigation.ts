@@ -9,12 +9,20 @@ import type { SimulatorEntryTarget } from '@signalsafe/simulator-core/devicePayl
 import type { VaultNavigation } from '@signalsafe/simulator-react/apps/vault/Vault';
 import type { PhotoNavigation } from '@signalsafe/simulator-react/apps/photos/Photos';
 import { useDeviceRecord } from '@signalsafe/simulator-react/hooks/device/useDeviceRecord';
+type HomePage = 'vault' | 'photos' | null;
+
+function startingHomePage(target: SimulatorEntryTarget | undefined): HomePage {
+    if (target?.kind === 'vault-folder' || target?.kind === 'vault-entry') return 'vault';
+    if (target?.kind === 'photo') return 'photos';
+    return null;
+}
+
 /** Load selected records through the store, preserving its paging and cancellation behavior. */
 export function useSimulatorStartingNavigation(
     store: DeviceStore,
     target: SimulatorEntryTarget | undefined,
-    propsHomePage: 'vault' | 'photos' | null | undefined,
-    onHomePageChange: ((page: 'vault' | 'photos' | null) => void) | undefined,
+    propsHomePage: HomePage | undefined,
+    onHomePageChange: ((page: HomePage) => void) | undefined,
     dispatch: (action: SimulatorDispatchAction) => void,
 ) {
     const { record: initialSecret } = useDeviceRecord(
@@ -38,15 +46,9 @@ export function useSimulatorStartingNavigation(
         const photo = initialPhoto;
         return photo ? { revision: 0, photo } : undefined;
     }, [target, initialPhoto]);
-    const [localPage, setLocalPage] = useState<'vault' | 'photos' | null>(() =>
-        target?.kind === 'vault-folder' || target?.kind === 'vault-entry'
-            ? 'vault'
-            : target?.kind === 'photo'
-              ? 'photos'
-              : null,
-    );
+    const [localPage, setLocalPage] = useState<HomePage>(() => startingHomePage(target));
     const page = propsHomePage === undefined ? localPage : propsHomePage;
-    const setPage = (next: 'vault' | 'photos' | null) => {
+    const setPage = (next: HomePage) => {
         setLocalPage(next);
         onHomePageChange?.(next);
     };

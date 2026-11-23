@@ -15,15 +15,15 @@
         "@signalsafe/simulator-theme-bootstrap": "0.13.5",
         "react": "18.3.1",
         "react-dom": "18.3.1",
-        "libphonenumber-js": "1.13.16"
+        "libphonenumber-js": "1.13.17"
     },
     "devDependencies": {
-        "@playwright/test": "1.63.0",
+        "@playwright/test": "1.65.1",
         "@types/node": "22.17.0",
         "@types/react": "18.3.0",
         "@types/react-dom": "18.3.0",
         "typescript": "5.9.3",
-        "vite": "8.3.4"
+        "vite": "8.3.8"
     },
     "engines": {
         "node": ">=22.12.0"

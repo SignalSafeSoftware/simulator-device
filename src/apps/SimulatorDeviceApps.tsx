@@ -4,7 +4,10 @@ import type { VaultNavigation } from '@signalsafe/simulator-react/apps/vault/Vau
 import type { Secret } from '@signalsafe/simulator-core/apps/contracts';
 import { HomeWidgets } from '@signalsafe/simulator-react/views/home/HomeWidgets';
 import { HomeSettingsSectionList } from '@signalsafe/simulator-react/views/home/HomeSettingsScreen';
-import type { SimulatorHomePayload } from '@signalsafe/simulator-react/types/session';
+import type {
+    SimulatorHomePayload,
+    SimulatorSessionState,
+} from '@signalsafe/simulator-react/types/session';
 import SimulatorDeviceSettings, {
     type SimulatorDeviceSettingsProps,
 } from './SimulatorDeviceSettings.js';
@@ -17,7 +20,6 @@ import { SimulatorApp } from '@signalsafe/simulator-core/simulatorApp';
 import { type ReactNode } from 'react';
 import DeviceHome from '@signalsafe/simulator-react/apps/home/DeviceHome';
 import type { HomeClockOptions } from '@signalsafe/simulator-react/apps/home/HomeClock';
-import type { SimulatorSessionState } from '@signalsafe/simulator-react/types/session';
 import SimulatorPhoneShell from '../phone/SimulatorPhoneShell.js';
 import SimulatorPhoneNav from '../phone/SimulatorPhoneNav.js';
 import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
