@@ -192,7 +192,7 @@
     "@types/react-dom": "^18.2.22",
     "@vitest/coverage-v8": "^5.0.1",
     "jscpd": "^5.4.0",
-    "jsdom": "^30.0.1",
+    "jsdom": "^31.0.1",
     "oxfmt": "0.71.0",
     "oxlint": "1.86.0",
     "react": "^18.3.1",
