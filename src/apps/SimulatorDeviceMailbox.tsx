@@ -2,6 +2,7 @@ import {
     SimulatorEmailScreenId,
     type SimulatorEntryTarget,
 } from '@signalsafe/simulator-core/devicePayload';
+import type { ComponentProps } from 'react';
 import type { DeviceStore } from '@signalsafe/simulator-core/apps/store';
 import Mailbox from '@signalsafe/simulator-react/apps/mail/Mailbox';
 
@@ -21,24 +22,21 @@ export function SimulatorDeviceMailbox({
     target?: SimulatorEntryTarget;
     onSelectedEmailChange?: (id: string | undefined) => void;
 }>) {
+    let initialFolder: ComponentProps<typeof Mailbox>['initialFolder'];
+    if (screen === SimulatorEmailScreenId.Outbox) initialFolder = 'sent';
+    else if (screen === SimulatorEmailScreenId.Trash) initialFolder = 'trash';
+    let initialMessageId: string | undefined;
+    if (screen === SimulatorEmailScreenId.Detail) {
+        initialMessageId = selectedEmailId ?? (target?.kind === 'email' ? target.id : undefined);
+    }
     return (
         <Mailbox
             store={store}
             onBack={onBack}
             onSelectedMessageChange={onSelectedEmailChange}
             initialCompose={screen === SimulatorEmailScreenId.Compose}
-            initialFolder={
-                screen === SimulatorEmailScreenId.Outbox
-                    ? 'sent'
-                    : screen === SimulatorEmailScreenId.Trash
-                      ? 'trash'
-                      : undefined
-            }
-            initialMessageId={
-                screen === SimulatorEmailScreenId.Detail
-                    ? (selectedEmailId ?? (target?.kind === 'email' ? target.id : undefined))
-                    : undefined
-            }
+            initialFolder={initialFolder}
+            initialMessageId={initialMessageId}
         />
     );
 }
