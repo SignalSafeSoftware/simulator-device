@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.22.1 — 2026-11-23
+
+- Publish npm releases through GitHub Actions OIDC trusted publishing.
+- Document the designated publisher, validation and token retirement process.
+
 ## 0.22.0 — 2026-11-15
 
 - Make the existing contact-verification dialog reachable in the gallery and give preview selectors explicit accessible names. Keep gallery control rendering in its own typed module.
@@ -16,11 +21,9 @@ The user-authorized release follows the existing gated immutable-tag workflow. E
 - Keep scenario Forward/Dispose unavailable without a host action callback. Their reason remains connected through aria-describedby and visually hidden; full-device mailbox capabilities remain separate. Compose navigation uses the shared fields and one submission path.
 - Verified as unpublished review artifact `0.21.5-mail-ui.0`. Registry version `0.21.4` and release authorization are separate from this checkpoint.
 
-
 ## 0.21.4
 
 - Replace the stale core tarball resolution with a registry-generated lock entry verified with an empty cache. The 0.21.3 publication was blocked by CI; its tag remains immutable.
-
 
 ## 0.21.3 — prepared 2026-11-10
 
@@ -39,7 +42,6 @@ Prepared source version; npm publication and downstream registry-lock refresh ar
 - Adopt exact simulator-theme-bootstrap 0.13.2 for the shared email layout fix.
 - Rebuild the gallery with the same theme; update the portable demo only after the new Device version is public.
 - Preserve device runtime/declarations and public exports unchanged.
-
 
 ## [0.21.1] - Release approved 2026-10-21
 
