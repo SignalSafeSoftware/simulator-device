@@ -11,7 +11,7 @@
 
 Source, registry releases and unpublished review artifacts are tracked separately. See [current summary](docs/current-state-summary.md), [changelog](CHANGELOG.md) and [coordinated release preparation](docs/release-2026-11-10.md). Publication status and installed host versions are tracked separately.
 
-Current release source: **0.22.0**. See the [November 15 scope and verification](docs/current-state-summary.md) and [changelog](CHANGELOG.md). Publication and installed host versions are verified separately; earlier local review archives retain their historical provenance.
+Historical release source checkpoint: **0.22.0**. See the [November 15 scope and verification](docs/current-state-summary.md) and [changelog](CHANGELOG.md). Publication and installed host versions are verified separately; earlier local review archives retain their historical provenance.
 
 ## 0.21.2 — email layout dependency patch approved 2026-10-21
 
