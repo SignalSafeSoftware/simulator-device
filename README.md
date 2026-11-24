@@ -1,10 +1,17 @@
 # @signalsafe/simulator-device
 
+[![Build](https://github.com/SignalSafeSoftware/simulator-device/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/SignalSafeSoftware/simulator-device/actions/workflows/ci.yml)
+[![Quality gate](https://sonarcloud.io/api/project_badges/measure?project=SignalSafeSoftware_simulator-device&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SignalSafeSoftware_simulator-device)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SignalSafeSoftware_simulator-device&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SignalSafeSoftware_simulator-device)
+[![npm version](https://img.shields.io/npm/v/@signalsafe/simulator-device?logo=npm)](https://www.npmjs.com/package/@signalsafe/simulator-device)
+[![npm downloads per month](https://img.shields.io/npm/dm/@signalsafe/simulator-device?label=downloads%2Fmonth)](https://www.npmjs.com/package/@signalsafe/simulator-device)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/SignalSafeSoftware/simulator-device/blob/main/LICENSE)
+
 [Repository](https://github.com/SignalSafeSoftware/simulator-device) · [Live shared device example](https://signalsafesoftware.github.io/simulator-device/) · [Package links and examples](docs/links.md)
 
 Source, registry releases and unpublished review artifacts are tracked separately. See [current summary](docs/current-state-summary.md), [changelog](CHANGELOG.md) and [coordinated release preparation](docs/release-2026-11-10.md). Publication status and installed host versions are tracked separately.
 
-Current release source: **0.22.0**. See the [November 15 scope and verification](docs/current-state-summary.md) and [changelog](CHANGELOG.md). Publication and installed host versions are verified separately; earlier local review archives retain their historical provenance.
+Historical release source checkpoint: **0.22.0**. See the [November 15 scope and verification](docs/current-state-summary.md) and [changelog](CHANGELOG.md). Publication and installed host versions are verified separately; earlier local review archives retain their historical provenance.
 
 ## 0.21.2 — email layout dependency patch approved 2026-10-21
 
